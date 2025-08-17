@@ -445,7 +445,7 @@ export function analyzeRegexPerformance(
       executionTime: 0, // Will be updated during actual execution
       complexityScore: Math.round(complexityScore * 10) / 10,
     }
-  } catch (error) {
+  } catch {
     return {
       compilationTime: performance.now() - startTime,
       executionTime: 0,
@@ -476,7 +476,8 @@ export function analyzeRegexIssues(pattern: string): {
   const unescapedSpecial = pattern.match(/(?<!\\)[.+*?^${}()|[\]]/g)
   if (
     (unescapedSpecial &&
-      unescapedSpecial.length > pattern.match(/\\[.+*?^${}()|[\]]/g)?.length) ??
+      unescapedSpecial.length >
+        (pattern.match(/\\[.+*?^${}()|[\]]/g)?.length ?? 0)) ??
     0
   ) {
     suggestions.push(

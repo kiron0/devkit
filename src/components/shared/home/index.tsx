@@ -21,7 +21,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { CompactRegexTester } from "@/components/regex-tester/compact"
+import { RegexTesterCompact } from "@/components/regex"
 import { ThemeSwitcher } from "@/components/theme-switcher"
 
 export function Home() {
@@ -191,7 +191,7 @@ export function Home() {
           </div>
 
           <div className="mt-12">
-            <CompactRegexTester />
+            <RegexTesterCompact />
           </div>
 
           <div className="mt-8 text-center">

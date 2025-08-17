@@ -61,15 +61,6 @@ export interface RegexExample {
   category: "email" | "phone" | "url" | "date" | "password" | "ip" | "custom"
 }
 
-export interface RegexHistory {
-  id: string
-  pattern: string
-  flags: RegexFlags
-  testString: string
-  timestamp: number
-  favorite?: boolean
-}
-
 export interface RegexPerformanceMetrics {
   compilationTime: number
   executionTime: number

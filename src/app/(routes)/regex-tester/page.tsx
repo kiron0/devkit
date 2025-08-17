@@ -1,6 +1,6 @@
 import { Metadata } from "next"
 
-import { RegexTester } from "@/components/regex-tester"
+import { RegexTesterFull } from "@/components/regex"
 
 export const metadata: Metadata = {
   title: "Advanced Regex Tester | Real-time Regular Expression Testing",
@@ -44,5 +44,35 @@ export const metadata: Metadata = {
 }
 
 export default function RegexTesterPage() {
-  return <RegexTester />
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 dark:from-gray-900 dark:via-blue-900 dark:to-indigo-900">
+      <div className="mx-auto max-w-7xl">
+        <RegexTesterFull showExport={true} />
+
+        {/* Footer */}
+        <div className="text-muted-foreground mt-12 text-center text-sm">
+          <p>
+            Built with ❤️ using{" "}
+            <a
+              href="https://nextjs.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-foreground underline"
+            >
+              Next.js
+            </a>{" "}
+            and{" "}
+            <a
+              href="https://www.typescriptlang.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-foreground underline"
+            >
+              TypeScript
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  )
 }
