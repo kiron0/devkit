@@ -76,21 +76,33 @@ export function RegexTesterFull({
 
   // Load from URL parameters on mount
   useEffect(() => {
-    const urlParams = new URLSearchParams(
-      typeof window !== "undefined" ? window.location.search : ""
-    )
+    if (typeof window === "undefined") {
+      setIsInitialLoad(false)
+      return
+    }
+
+    const urlParams = new URLSearchParams(window.location.search)
     const urlPattern = urlParams.get("pattern")
     const urlTest = urlParams.get("test")
+    const urlFlags = urlParams.get("flags")
 
-    if (urlPattern) {
-      updatePattern(decodeURIComponent(urlPattern))
+    // Only proceed if we have URL parameters to load
+    if (!urlPattern && !urlTest && !urlFlags) {
+      setIsInitialLoad(false)
+      return
     }
+
+    // Load pattern
+    if (urlPattern) {
+      updatePattern(urlPattern) // URLSearchParams handles decoding
+    }
+
+    // Load test string
     if (urlTest) {
-      updateTestString(decodeURIComponent(urlTest))
+      updateTestString(urlTest)
     }
 
     // Set flags from URL
-    const urlFlags = urlParams.get("flags")
     if (urlFlags) {
       const newFlags = {
         global: urlFlags.includes("g"),

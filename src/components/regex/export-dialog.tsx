@@ -1,6 +1,6 @@
 "use client"
 
-import { Download, FileText } from "lucide-react"
+import { Download, ExternalLink, FileText } from "lucide-react"
 
 import type { RegexAnalysis, RegexFlags, RegexTestResult } from "@/types/regex"
 import { Badge } from "@/components/ui/badge"
@@ -96,12 +96,16 @@ Matcher matcher = regex.matcher(testString);`
   }
 
   const generateShareableURL = () => {
+    if (typeof window === "undefined") {
+      return "/regex-tester" // Fallback for SSR
+    }
+
     const params = new URLSearchParams({
-      pattern: encodeURIComponent(pattern),
-      test: encodeURIComponent(testString),
-      flags: flagString,
+      pattern: pattern,
+      test: testString,
+      ...(flagString && { flags: flagString }),
     })
-    return `${typeof window !== "undefined" ? window.location.origin : ""}/regex-tester?${params.toString()}`
+    return `${window.location.origin}/regex-tester?${params.toString()}`
   }
 
   return (
@@ -240,11 +244,25 @@ Matcher matcher = regex.matcher(testString);`
                     Share this regex with others
                   </p>
                 </div>
-                <CopyButton
-                  text={generateShareableURL()}
-                  showText={true}
-                  variant="outline"
-                />
+                <div className="flex gap-2">
+                  <CopyButton
+                    text={generateShareableURL()}
+                    showText={true}
+                    variant="outline"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const url = generateShareableURL()
+                      if (typeof window !== "undefined") {
+                        window.open(url, "_blank")
+                      }
+                    }}
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
               <div>
                 <div className="bg-muted rounded p-3">
