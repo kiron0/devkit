@@ -7,10 +7,8 @@ import { getToolById } from "@/utils"
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -28,11 +26,17 @@ export function ToolsLayout({ children }: { children: React.ReactNode }) {
 
   // Get tool from URL path
   useEffect(() => {
-    const pathSegments = pathname.split("/")
-    const toolFromPath = pathSegments[pathSegments.length - 1]
+    if (pathname) {
+      const pathSegments = pathname.split("/")
+      const toolFromPath = pathSegments[pathSegments.length - 1]
 
-    if (toolFromPath && toolFromPath !== "tools" && getToolById(toolFromPath)) {
-      setSelectedTool(toolFromPath)
+      if (
+        toolFromPath &&
+        toolFromPath !== "tools" &&
+        getToolById(toolFromPath)
+      ) {
+        setSelectedTool(toolFromPath)
+      }
     }
   }, [pathname])
 
@@ -53,29 +57,22 @@ export function ToolsLayout({ children }: { children: React.ReactNode }) {
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
+            <SidebarTrigger className="hover:bg-accent -ml-1 rounded-md p-1 transition-colors" />
             <Separator
               orientation="vertical"
               className="mr-2 data-[orientation=vertical]:h-4"
             />
             <Breadcrumb>
-              <BreadcrumbList>
-                {currentTool ? (
+              <BreadcrumbList className="flex items-center space-x-1">
+                {currentTool && (
                   <>
-                    <BreadcrumbItem className="hidden md:block">
-                      <BreadcrumbLink href="/tools">
-                        Developer Tools
-                      </BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator className="hidden md:block" />
                     <BreadcrumbItem>
-                      <BreadcrumbPage>{currentTool.title}</BreadcrumbPage>
+                      <BreadcrumbPage className="flex items-center gap-2">
+                        <span className="size-4">{currentTool.icon}</span>
+                        <span className="font-medium">{currentTool.title}</span>
+                      </BreadcrumbPage>
                     </BreadcrumbItem>
                   </>
-                ) : (
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>Developer Tools</BreadcrumbPage>
-                  </BreadcrumbItem>
                 )}
               </BreadcrumbList>
             </Breadcrumb>
