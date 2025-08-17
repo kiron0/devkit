@@ -8,6 +8,7 @@ import { analyzeRegex } from "@/lib/regex-engine"
 import { useRegex } from "@/hooks/use-regex"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
 
 import { ExportDialog } from "./export-dialog"
 import { FlagsSelector } from "./flags-selector"
@@ -168,7 +169,7 @@ export function RegexTesterFull({
           <Card>
             <CardContent className="space-y-4 p-6">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium">Results</label>
+                <Label className="text-sm font-medium">Results</Label>
               </div>
 
               <MatchDisplay

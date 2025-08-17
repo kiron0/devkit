@@ -7,6 +7,7 @@ import { ExternalLink, Search } from "lucide-react"
 import { useRegex } from "@/hooks/use-regex"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
 import { EmptyState } from "@/components/common/empty-state"
 
 import { MatchDisplay } from "./match-display"
@@ -57,7 +58,7 @@ export function RegexTesterCompact({
             <Search className="h-5 w-5" />
             Quick Regex Tester
           </div>
-          <Link href="/regex-tester">
+          <Link href="/tools/regex-tester">
             <Button variant="outline" size="sm" className="gap-2">
               Advanced Mode
               <ExternalLink className="h-4 w-4" />
@@ -87,7 +88,7 @@ export function RegexTesterCompact({
           {/* Results Section */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium">Results</label>
+              <Label className="text-sm font-medium">Results</Label>
             </div>
 
             {!showResults ? (

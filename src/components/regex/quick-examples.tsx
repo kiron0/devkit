@@ -5,6 +5,7 @@ import { Zap } from "lucide-react"
 import type { RegexExample } from "@/types/regex"
 import { REGEX_EXAMPLES } from "@/lib/regex-engine"
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 
 interface QuickExamplesProps {
   onLoadExample: (example: RegexExample) => void
@@ -30,7 +31,7 @@ export function QuickExamples({
     <div className={`space-y-3 ${className}`}>
       <div className="flex items-center gap-2">
         <Zap className="h-4 w-4" />
-        <label className="text-sm font-medium">Quick Examples</label>
+        <Label className="text-sm font-medium">Quick Examples</Label>
       </div>
       <div className={layoutClasses[layout]}>
         {examples.map((example) => (

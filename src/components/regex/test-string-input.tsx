@@ -1,5 +1,6 @@
 "use client"
 
+import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { CopyButton } from "@/components/common/copy-button"
 
@@ -25,7 +26,7 @@ export function TestStringInput({
   return (
     <div className={`space-y-2 ${className}`}>
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium">{label}</label>
+        <Label className="text-sm font-medium">{label}</Label>
         {showCopyButton && value.trim() && (
           <CopyButton text={value} size="sm" />
         )}

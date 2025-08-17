@@ -3,6 +3,7 @@
 import type { RegexFlags } from "@/types/regex"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
 
 const flagDefinitions = [
   {
@@ -50,7 +51,7 @@ export function FlagsSelector({
 }: FlagsSelectorProps) {
   return (
     <div className={`space-y-3 ${className}`}>
-      <label className="text-sm font-medium">Flags</label>
+      <Label className="text-sm font-medium">Flags</Label>
       <div className="grid grid-cols-2 gap-3">
         {flagDefinitions.map(({ key, label, description }) => (
           <div key={key} className="flex items-start space-x-2">
@@ -60,7 +61,7 @@ export function FlagsSelector({
               onCheckedChange={(checked) => onChange(key, checked as boolean)}
             />
             <div className="grid gap-1.5 leading-none">
-              <label
+              <Label
                 htmlFor={`flag-${key}`}
                 className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
@@ -75,7 +76,7 @@ export function FlagsSelector({
                     {label === "g" ? "global" : key}
                   </span>
                 </div>
-              </label>
+              </Label>
               <p className="text-muted-foreground text-xs">{description}</p>
             </div>
           </div>

@@ -97,7 +97,7 @@ Matcher matcher = regex.matcher(testString);`
 
   const generateShareableURL = () => {
     if (typeof window === "undefined") {
-      return "/regex-tester" // Fallback for SSR
+      return "/tools/regex-tester" // Fallback for SSR
     }
 
     const params = new URLSearchParams({
@@ -105,7 +105,7 @@ Matcher matcher = regex.matcher(testString);`
       test: testString,
       ...(flagString && { flags: flagString }),
     })
-    return `${window.location.origin}/regex-tester?${params.toString()}`
+    return `${window.location.origin}/tools/regex-tester?${params.toString()}`
   }
 
   return (

@@ -1,5 +1,11 @@
 // Common Reusable Components
 export { CopyButton } from "./copy-button"
 export { EmptyState } from "./empty-state"
+export { FeatureGrid } from "./feature-grid"
+export { FileInfoCard } from "./file-info-card"
 export { LoadingSpinner } from "./loading-spinner"
 export { StatsDisplay } from "./stats-display"
+export { ToolControls } from "./tool-controls"
+export { ToolHeader } from "./tool-header"
+export { ToolLayout } from "./tool-layout"
+export { ValidationBadge } from "./validation-badge"

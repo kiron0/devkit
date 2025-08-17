@@ -177,3 +177,12 @@
       0 0 5px hsla(var(--color-primary)) !important;
   }
 }
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

@@ -128,17 +128,35 @@ print(matches)  # ['5']
 src/
 ├── app/                    # Next.js App Router
 │   ├── (routes)/          # Route groups
+│   │   ├── tools/         # Tools dashboard and individual tools
+│   │   │   ├── page.tsx   # Dashboard home (/tools)
+│   │   │   ├── layout.tsx # Dashboard layout
+│   │   │   └── [tool]/    # Dynamic tool pages (/tools/*)
+│   │   └── dev/           # Development routes
 │   └── globals.css        # Global styles
 ├── components/            # React components
 │   ├── ui/               # Reusable UI components
-│   ├── regex-tester/     # Regex tester components
-│   └── shared/           # Shared components
+│   ├── regex/            # Regex tester components
+│   ├── shared/           # Shared components
+│   │   ├── tools-layout/ # Dashboard layout with sidebar
+│   │   ├── tools-sidebar/ # Tools navigation sidebar
+│   │   └── */            # Individual tool components
+│   └── common/           # Common utility components
 ├── hooks/                # Custom React hooks
 ├── lib/                  # Utility functions
 ├── types/                # TypeScript type definitions
 ├── workers/              # Web Workers
 └── config/               # Configuration files
 ```
+
+## 🎯 Dashboard Structure
+
+The application now features a modern dashboard layout:
+
+- **`/tools`** - Dashboard home with tools overview, stats, and categorized tool listings
+- **`/tools/[tool]`** - Individual tool pages with sidebar navigation
+- **Sidebar Navigation** - Collapsible sidebar with search, categories, and tool selection
+- **Responsive Design** - Works seamlessly on mobile, tablet, and desktop
 
 ## 🔧 Tech Stack
 

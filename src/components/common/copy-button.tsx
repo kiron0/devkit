@@ -12,6 +12,7 @@ interface CopyButtonProps {
   variant?: "default" | "outline" | "ghost" | "secondary"
   size?: "sm" | "lg" | "icon" | "default" | null | undefined
   showText?: boolean
+  title?: string
 }
 
 export function CopyButton({
@@ -20,6 +21,7 @@ export function CopyButton({
   variant = "outline",
   size = "sm",
   showText = false,
+  title,
 }: CopyButtonProps) {
   const [copied, setCopied] = useState(false)
 
@@ -40,6 +42,7 @@ export function CopyButton({
       size={size}
       className={cn("gap-2", className)}
       disabled={!text.trim()}
+      title={title}
     >
       {copied ? (
         <Check className="h-4 w-4 text-green-600" />

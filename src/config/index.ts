@@ -3,11 +3,19 @@ const title = "DevTools Hub"
 export const Config = {
   title,
   slogan: "Professional Development Tools & Utilities",
-  description: `${title} is your comprehensive suite of development tools built with cutting-edge technology. Features advanced regex testing, code validation, and developer utilities - all in a beautiful, responsive interface powered by Next.js 15 and modern web standards.`,
+  description: `${title} is your comprehensive suite of development tools built with cutting-edge technology. Features regex testing, JSON formatting, encoding/decoding utilities, generators, and more - all in a beautiful, responsive interface powered by Next.js 15 and modern web standards.`,
   shortDescription:
-    "Advanced regex testing and developer tools for modern web development",
+    "Complete toolkit of developer utilities for modern web development",
   keywords: [
     "regex tester",
+    "json formatter",
+    "base64 encoder",
+    "url encoder",
+    "password generator",
+    "hash generator",
+    "color converter",
+    "text utilities",
+    "uuid generator",
     "developer tools",
     "next.js",
     "typescript",
@@ -15,15 +23,14 @@ export const Config = {
     "code validation",
     "tailwindcss",
     "shadcn-ui",
-    "regex patterns",
     "development utilities",
   ],
   features: [
     {
-      title: "Advanced Regex Testing",
+      title: "Complete Developer Toolkit",
       description:
-        "Real-time pattern matching with detailed explanations and performance metrics",
-      icon: "🔍",
+        "11+ professional tools covering regex, JSON, encoding, security, and more",
+      icon: "🛠️",
     },
     {
       title: "Beautiful Interface",
@@ -32,14 +39,14 @@ export const Config = {
       icon: "✨",
     },
     {
-      title: "Developer Focused",
+      title: "Privacy Focused",
       description:
-        "Built by developers, for developers with productivity in mind",
-      icon: "🛠️",
+        "All processing happens locally in your browser - your data never leaves your device",
+      icon: "🔒",
     },
     {
       title: "Export & Share",
-      description: "Export patterns as code snippets or share via URL",
+      description: "Export results, share via URL, and copy to clipboard",
       icon: "📤",
     },
   ],

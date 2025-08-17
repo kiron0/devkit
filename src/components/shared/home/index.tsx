@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { Config } from "@/config"
+import { TOOLS } from "@/utils"
 import {
   ArrowRight,
   ExternalLink,
@@ -51,6 +52,12 @@ export function Home() {
               className="hover:text-foreground/80 transition-colors"
             >
               Tools
+            </Link>
+            <Link
+              href="/tools"
+              className="hover:text-foreground/80 transition-colors"
+            >
+              All Tools
             </Link>
             <Link
               href="#about"
@@ -103,7 +110,7 @@ export function Home() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <Link href="/regex-tester">
+              <Link href="/tools/regex-tester">
                 <Button size="lg" className="w-full gap-2 sm:w-auto">
                   Start Testing Regex
                   <ArrowRight className="h-4 w-4" />
@@ -122,22 +129,30 @@ export function Home() {
             </div>
 
             {/* Stats */}
-            <div className="mt-12 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-3">
+            <div className="mt-12 grid grid-cols-2 gap-8 sm:grid-cols-4 lg:grid-cols-4">
               <div className="text-center">
-                <div className="text-2xl font-bold sm:text-3xl">10K+</div>
+                <div className="text-2xl font-bold sm:text-3xl">
+                  {TOOLS.length}+
+                </div>
                 <div className="text-muted-foreground text-sm">
-                  Patterns Tested
+                  Developer Tools
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold sm:text-3xl">99.9%</div>
-                <div className="text-muted-foreground text-sm">Uptime</div>
-              </div>
-              <div className="col-span-2 text-center sm:col-span-1">
-                <div className="text-2xl font-bold sm:text-3xl">&lt; 10ms</div>
+                <div className="text-2xl font-bold sm:text-3xl">100%</div>
                 <div className="text-muted-foreground text-sm">
-                  Response Time
+                  Privacy Focused
                 </div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold sm:text-3xl">0ms</div>
+                <div className="text-muted-foreground text-sm">
+                  Server Latency
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold sm:text-3xl">24/7</div>
+                <div className="text-muted-foreground text-sm">Available</div>
               </div>
             </div>
           </div>
@@ -177,34 +192,83 @@ export function Home() {
         </div>
       </section>
 
-      {/* Interactive Regex Tester Section */}
+      {/* Featured Tools Section */}
       <section id="tools" className="py-16 sm:py-24">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="text-3xl font-bold sm:text-4xl lg:text-5xl">
-              🔍 Try Our Regex Tester
+              🛠️ Featured Developer Tools
             </h2>
             <p className="text-muted-foreground mt-4 text-lg sm:text-xl">
-              Test regular expressions in real-time with instant feedback and
-              highlighting
+              Professional utilities to streamline your development workflow
             </p>
           </div>
 
-          <div className="mt-12">
+          {/* Featured Tools Grid */}
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {TOOLS.filter((tool) => tool.featured).map((tool) => (
+              <Card
+                key={tool.id}
+                className="group from-background to-muted/50 relative overflow-hidden border-0 bg-gradient-to-br backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div className="text-3xl">{tool.icon}</div>
+                    <Badge variant="secondary" className="text-xs">
+                      {tool.category}
+                    </Badge>
+                  </div>
+                  <CardTitle className="text-lg transition-colors group-hover:text-blue-600">
+                    {tool.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <p className="text-muted-foreground mb-4 text-sm">
+                    {tool.description}
+                  </p>
+                  <Link href={tool.path}>
+                    <Button className="w-full transition-colors group-hover:bg-blue-600">
+                      Try Now
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Interactive Demo */}
+          <div className="mt-16">
+            <div className="mx-auto mb-8 max-w-3xl text-center">
+              <h3 className="mb-4 text-2xl font-bold">
+                🔍 Try Our Regex Tester
+              </h3>
+              <p className="text-muted-foreground">
+                Test regular expressions in real-time with instant feedback
+              </p>
+            </div>
             <RegexTesterCompact />
           </div>
 
-          <div className="mt-8 text-center">
-            <p className="text-muted-foreground mb-4 text-sm sm:text-base">
-              Want more features? Try the advanced version with detailed
-              explanations, performance metrics, and export options.
+          <div className="mt-12 text-center">
+            <p className="text-muted-foreground mb-6 text-sm sm:text-base">
+              Explore all {TOOLS.length} professional tools in our comprehensive
+              suite
             </p>
-            <Link href="/regex-tester">
-              <Button variant="outline" className="gap-2">
-                Advanced Regex Tester
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
+            <div className="flex flex-col justify-center gap-4 sm:flex-row">
+              <Link href="/tools">
+                <Button size="lg" className="gap-2">
+                  View All Tools
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href="/tools/regex-tester">
+                <Button variant="outline" size="lg" className="gap-2">
+                  Advanced Regex Tester
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -277,18 +341,58 @@ export function Home() {
               <h3 className="font-semibold">Tools</h3>
               <ul className="text-muted-foreground mt-4 space-y-2 text-sm">
                 <li>
-                  <Link href="/regex-tester" className="hover:text-foreground">
+                  <Link href="/tools" className="hover:text-foreground">
+                    All Tools
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/tools/regex-tester"
+                    className="hover:text-foreground"
+                  >
                     Regex Tester
                   </Link>
                 </li>
                 <li>
-                  <Link href="/dev" className="hover:text-foreground">
-                    Dev Tools
+                  <Link
+                    href="/tools/json-formatter"
+                    className="hover:text-foreground"
+                  >
+                    JSON Formatter
                   </Link>
                 </li>
                 <li>
-                  <Link href="/test" className="hover:text-foreground">
-                    Test Suite
+                  <Link href="/base64" className="hover:text-foreground">
+                    Base64 Tool
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/password-generator"
+                    className="hover:text-foreground"
+                  >
+                    Password Generator
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/color-converter"
+                    className="hover:text-foreground"
+                  >
+                    Color Converter
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/timestamp-converter"
+                    className="hover:text-foreground"
+                  >
+                    Timestamp Converter
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/qr-generator" className="hover:text-foreground">
+                    QR Generator
                   </Link>
                 </li>
               </ul>
