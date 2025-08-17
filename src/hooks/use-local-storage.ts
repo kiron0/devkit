@@ -20,7 +20,8 @@ export function useLocalStorage<T>(
     }
 
     try {
-      const item = window.localStorage.getItem(key)
+      const item =
+        typeof window !== "undefined" ? window.localStorage.getItem(key) : null
       return item ? deserialize(item) : initialValue
     } catch (error) {
       console.warn(`Error reading localStorage key "${key}":`, error)
@@ -74,8 +75,14 @@ export function useLocalStorage<T>(
       }
     }
 
-    window.addEventListener("storage", handleStorageChange)
-    return () => window.removeEventListener("storage", handleStorageChange)
+    if (typeof window !== "undefined") {
+      window.addEventListener("storage", handleStorageChange)
+    }
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("storage", handleStorageChange)
+      }
+    }
   }, [key, deserialize])
 
   return [storedValue, setValue, removeValue]

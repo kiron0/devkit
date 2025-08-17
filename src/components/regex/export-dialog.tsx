@@ -101,7 +101,7 @@ Matcher matcher = regex.matcher(testString);`
       test: encodeURIComponent(testString),
       flags: flagString,
     })
-    return `${window.location.origin}/regex-tester?${params.toString()}`
+    return `${typeof window !== "undefined" ? window.location.origin : ""}/regex-tester?${params.toString()}`
   }
 
   return (

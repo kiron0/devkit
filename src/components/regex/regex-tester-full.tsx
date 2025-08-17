@@ -76,7 +76,9 @@ export function RegexTesterFull({
 
   // Load from URL parameters on mount
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search)
+    const urlParams = new URLSearchParams(
+      typeof window !== "undefined" ? window.location.search : ""
+    )
     const urlPattern = urlParams.get("pattern")
     const urlTest = urlParams.get("test")
 
