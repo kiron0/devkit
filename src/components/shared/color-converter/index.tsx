@@ -264,6 +264,22 @@ export function ColorConverter() {
     updateColorFromHex(randomHex)
   }
 
+  const handleSampleData = () => {
+    const sampleColors = [
+      "#3B82F6", // Blue
+      "#EF4444", // Red
+      "#10B981", // Green
+      "#F59E0B", // Yellow
+      "#8B5CF6", // Purple
+      "#F97316", // Orange
+      "#06B6D4", // Cyan
+      "#EC4899", // Pink
+    ]
+    const randomSample =
+      sampleColors[Math.floor(Math.random() * sampleColors.length)]
+    updateColorFromHex(randomSample)
+  }
+
   useEffect(() => {
     generatePalette()
   }, [generatePalette])
@@ -322,6 +338,14 @@ export function ColorConverter() {
               >
                 <RefreshCw className="mr-2 h-4 w-4" />
                 Random Color
+              </Button>
+              <Button
+                onClick={handleSampleData}
+                variant="outline"
+                className="w-full"
+              >
+                <Palette className="mr-2 h-4 w-4" />
+                Sample Colors
               </Button>
             </CardContent>
           </Card>

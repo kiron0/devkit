@@ -5,6 +5,7 @@ import { Download } from "lucide-react"
 
 import type { RegexExample } from "@/types/regex"
 import { analyzeRegex } from "@/lib/regex-engine"
+import { cn } from "@/lib/utils"
 import { useRegex } from "@/hooks/use-regex"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -127,7 +128,7 @@ export function RegexTesterFull({
   }, [isInitialLoad, immediateTest])
 
   return (
-    <div className={`space-y-6 ${className}`}>
+    <div className={cn("space-y-6", className)}>
       {/* Header */}
       <div className="text-center">
         <h1 className="mb-4 text-4xl font-bold md:text-5xl">{title}</h1>

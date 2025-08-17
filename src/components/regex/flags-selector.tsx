@@ -1,6 +1,7 @@
 "use client"
 
 import type { RegexFlags } from "@/types/regex"
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
@@ -50,7 +51,7 @@ export function FlagsSelector({
   className,
 }: FlagsSelectorProps) {
   return (
-    <div className={`space-y-3 ${className}`}>
+    <div className={cn("space-y-3", className)}>
       <Label className="text-sm font-medium">Flags</Label>
       <div className="grid grid-cols-2 gap-3">
         {flagDefinitions.map(({ key, label, description }) => (

@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -176,13 +177,33 @@
       0 0 10px hsla(var(--color-primary)),
       0 0 5px hsla(var(--color-primary)) !important;
   }
-}
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
+  /* Code Highlighter Customizations */
+  .markdown-preview pre {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
-  body {
-    @apply bg-background text-foreground;
+
+  .markdown-preview pre code {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Ensure code blocks have proper spacing */
+  .markdown-preview .CodeHighlighter {
+    margin: 1rem 0;
+  }
+
+  /* Dark theme adjustments for code blocks */
+  .dark .markdown-preview pre {
+    background: transparent !important;
+  }
+
+  .dark .markdown-preview code {
+    background: transparent !important;
   }
 }

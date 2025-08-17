@@ -397,16 +397,6 @@ export function URLEncoder() {
                         </div>
                         <div className="flex gap-1">
                           <CopyButton
-                            text={param.key}
-                            size="sm"
-                            title="Copy key"
-                          />
-                          <CopyButton
-                            text={param.value}
-                            size="sm"
-                            title="Copy value"
-                          />
-                          <CopyButton
                             text={`${param.key}=${param.value}`}
                             size="sm"
                             title="Copy pair"

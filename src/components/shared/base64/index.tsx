@@ -11,6 +11,7 @@ import {
 } from "lucide-react"
 
 import { getCommonFeatures } from "@/lib/tool-patterns"
+import { cn } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -305,9 +306,10 @@ export function Base64Tool() {
               value={textInput}
               onChange={(e) => handleTextChange(e.target.value)}
               readOnly={mode === "decode"}
-              className={`min-h-[400px] font-mono text-sm ${
+              className={cn(
+                "max-h-[400px] min-h-[400px] resize-none font-mono text-sm",
                 mode === "decode" ? "bg-muted/50" : ""
-              }`}
+              )}
             />
           </CardContent>
         </Card>
@@ -332,9 +334,10 @@ export function Base64Tool() {
               value={base64Input}
               onChange={(e) => handleBase64Change(e.target.value)}
               readOnly={mode === "encode"}
-              className={`min-h-[400px] font-mono text-sm break-all ${
+              className={cn(
+                "max-h-[400px] min-h-[400px] font-mono text-sm break-all",
                 mode === "encode" ? "bg-muted/50" : ""
-              }`}
+              )}
             />
           </CardContent>
         </Card>

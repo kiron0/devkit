@@ -18,6 +18,7 @@ import {
   ToolLayout,
   ValidationBadge,
 } from "@/components/common"
+import { CodeHighlighter } from "@/components/shared/markdown/code-highlighter"
 
 interface JSONError {
   message: string
@@ -298,7 +299,7 @@ export function JSONFormatter() {
               placeholder="Paste your JSON here..."
               value={input}
               onChange={(e) => handleInputChange(e.target.value)}
-              className="min-h-[400px] font-mono text-sm"
+              className="max-h-[400px] min-h-[400px] resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -312,12 +313,18 @@ export function JSONFormatter() {
             </div>
           </CardHeader>
           <CardContent className="pt-0">
-            <Textarea
-              placeholder="Formatted JSON will appear here..."
-              value={output}
-              readOnly
-              className="bg-muted/50 min-h-[400px] font-mono text-sm"
-            />
+            {output ? (
+              <CodeHighlighter
+                language="json"
+                className="max-h-[400px] min-h-[400px] overflow-y-auto"
+              >
+                {output}
+              </CodeHighlighter>
+            ) : (
+              <div className="bg-muted/50 text-muted-foreground flex max-h-[400px] min-h-[400px] items-center justify-center">
+                Formatted JSON will appear here...
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

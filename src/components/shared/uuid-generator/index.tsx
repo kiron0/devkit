@@ -126,6 +126,35 @@ export function UUIDGenerator() {
     })
   }
 
+  const handleSampleData = () => {
+    // Generate a few sample UUIDs to demonstrate different versions
+    const sampleUUIDs = [
+      { uuid: generateUUIDv4(), version: "v4" },
+      { uuid: generateUUIDv1(), version: "v1" },
+      { uuid: generateNil(), version: "nil" },
+      { uuid: generateMax(), version: "max" },
+    ]
+
+    // Set the first one as current
+    setCurrentUUID(sampleUUIDs[0].uuid)
+    setSelectedVersion(sampleUUIDs[0].version)
+
+    // Add all to history
+    const newEntries: GeneratedUUID[] = sampleUUIDs.map((item, index) => ({
+      id: (Date.now() + index).toString(),
+      uuid: item.uuid,
+      version: item.version,
+      timestamp: Date.now() + index,
+    }))
+
+    setHistory((prev) => [...newEntries, ...prev.slice(0, 46)]) // Keep last 50
+
+    toast({
+      title: "Sample UUIDs Generated",
+      description: "Generated sample UUIDs for all versions",
+    })
+  }
+
   const isValidUUID = (uuid: string): boolean => {
     const uuidRegex =
       /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
@@ -182,10 +211,16 @@ export function UUIDGenerator() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">Generated UUID</CardTitle>
-                <Button onClick={handleGenerate}>
-                  <RefreshCw className="mr-2 h-4 w-4" />
-                  Generate
-                </Button>
+                <div className="flex gap-2">
+                  <Button onClick={handleSampleData} variant="outline">
+                    <Download className="mr-2 h-4 w-4" />
+                    Sample
+                  </Button>
+                  <Button onClick={handleGenerate}>
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Generate
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">

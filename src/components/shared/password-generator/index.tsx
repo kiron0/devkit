@@ -187,6 +187,21 @@ export function PasswordGenerator() {
     "PRIVACY",
   ])
 
+  const handleSampleData = () => {
+    // Set common password generation options for sample
+    setOptions({
+      length: 12,
+      includeUppercase: true,
+      includeLowercase: true,
+      includeNumbers: true,
+      includeSymbols: true,
+      excludeSimilar: false,
+      excludeAmbiguous: false,
+    })
+    // Generate a new password with these settings
+    setTimeout(() => generatePassword(), 100)
+  }
+
   return (
     <ToolLayout>
       <div className="grid gap-6 lg:grid-cols-3">
@@ -197,10 +212,16 @@ export function PasswordGenerator() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">Generated Password</CardTitle>
-                <Button onClick={generatePassword}>
-                  <RefreshCw className="mr-2 h-4 w-4" />
-                  Generate
-                </Button>
+                <div className="flex gap-2">
+                  <Button onClick={handleSampleData} variant="outline">
+                    <Shield className="mr-2 h-4 w-4" />
+                    Sample
+                  </Button>
+                  <Button onClick={generatePassword}>
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Generate
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">

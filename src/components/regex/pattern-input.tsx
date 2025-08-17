@@ -1,6 +1,8 @@
 "use client"
 
+import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { CopyButton } from "@/components/common/copy-button"
 
 interface PatternInputProps {
@@ -21,9 +23,9 @@ export function PatternInput({
   showCopyButton = true,
 }: PatternInputProps) {
   return (
-    <div className={`space-y-2 ${className}`}>
+    <div className={cn("space-y-2", className)}>
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium">{label}</label>
+        <Label className="text-sm font-medium">{label}</Label>
         {showCopyButton && value.trim() && (
           <CopyButton text={value} size="sm" />
         )}

@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { ExternalLink, Search } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { useRegex } from "@/hooks/use-regex"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -51,7 +52,7 @@ export function RegexTesterCompact({
   }
 
   return (
-    <Card className={`mx-auto w-full max-w-4xl ${className}`}>
+    <Card className={cn("mx-auto w-full max-w-4xl", className)}>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2">

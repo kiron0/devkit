@@ -336,7 +336,7 @@ export function HashGenerator() {
                 placeholder="Enter text to generate hashes..."
                 value={inputText}
                 onChange={(e) => handleInputChange(e.target.value)}
-                className="min-h-[200px] font-mono text-sm"
+                className="max-h-[200px] min-h-[200px] resize-none font-mono text-sm"
               />
             </CardContent>
           </Card>

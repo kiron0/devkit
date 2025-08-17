@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
 
 interface Feature {
@@ -13,7 +14,7 @@ interface FeatureGridProps {
 
 export function FeatureGrid({ features, className = "" }: FeatureGridProps) {
   return (
-    <div className={`mt-12 ${className}`}>
+    <div className={cn("mt-12", className)}>
       <h2 className="mb-6 text-xl font-bold">Features</h2>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {features.map((feature, index) => (

@@ -1,6 +1,7 @@
 "use client"
 
 import type { RegexTestResult } from "@/types/regex"
+import { cn } from "@/lib/utils"
 import { EmptyState } from "@/components/common/empty-state"
 import { LoadingSpinner } from "@/components/common/loading-spinner"
 
@@ -21,7 +22,11 @@ export function MatchDisplay({
 }: MatchDisplayProps) {
   return (
     <div
-      className={`bg-muted/30 overflow-auto rounded-md border p-3 font-mono text-xs sm:text-sm ${minHeight} ${className}`}
+      className={cn(
+        "bg-muted/30 overflow-auto rounded-md border p-3 font-mono text-xs sm:text-sm",
+        minHeight,
+        className
+      )}
     >
       {isProcessing ? (
         <div className="flex h-full items-center justify-center">

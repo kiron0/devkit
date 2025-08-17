@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 
 interface ValidationBadgeProps {
@@ -18,7 +19,7 @@ export function ValidationBadge({
   return (
     <Badge
       variant={isValid ? "default" : "destructive"}
-      className={`text-xs ${className}`}
+      className={cn("text-xs", className)}
     >
       {isValid ? validText : invalidText}
     </Badge>
