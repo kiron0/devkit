@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import { Eye, EyeOff, History, RefreshCw, Shield, Zap } from "lucide-react"
 
 import { getCommonFeatures } from "@/lib/tool-patterns"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -43,7 +43,6 @@ export function PasswordGenerator() {
     excludeSimilar: false,
     excludeAmbiguous: false,
   })
-  const { toast } = useToast()
 
   const getCharacterSets = useCallback(() => {
     let chars = ""
@@ -130,7 +129,7 @@ export function PasswordGenerator() {
       title: "Password Generated",
       description: `${options.length} character password created`,
     })
-  }, [options, getCharacterSets, calculateStrength, toast])
+  }, [options, getCharacterSets, calculateStrength])
 
   const getStrengthInfo = (strength: number) => {
     if (strength <= 3)

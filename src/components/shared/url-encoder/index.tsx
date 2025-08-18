@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react"
 import { Link as LinkIcon, RotateCcw, Zap } from "lucide-react"
 
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -31,23 +31,19 @@ export function URLEncoder() {
   const [queryBuilder, setQueryBuilder] = useState<QueryParam[]>([
     { key: "", value: "" },
   ])
-  const { toast } = useToast()
 
-  const encodeURL = useCallback(
-    (url: string) => {
-      try {
-        return encodeURIComponent(url)
-      } catch {
-        toast({
-          title: "Encoding Error",
-          description: "Failed to encode URL",
-          variant: "destructive",
-        })
-        return ""
-      }
-    },
-    [toast]
-  )
+  const encodeURL = useCallback((url: string) => {
+    try {
+      return encodeURIComponent(url)
+    } catch {
+      toast({
+        title: "Encoding Error",
+        description: "Failed to encode URL",
+        variant: "destructive",
+      })
+      return ""
+    }
+  }, [])
 
   const decodeURL = useCallback(
     (url: string) => {

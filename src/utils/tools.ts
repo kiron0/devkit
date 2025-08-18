@@ -2,7 +2,7 @@ import React from "react"
 
 // Import all tool components
 import { Base64Tool } from "@/components/shared/base64"
-// Newly added tools (implemented in this codebase)
+import { CodeBeautifier } from "@/components/shared/code-beautifier"
 import { ColorConverter } from "@/components/shared/color-converter"
 import { CronCalculator } from "@/components/shared/cron-calculator"
 import { CsvJsonConverter } from "@/components/shared/csv-json-converter"
@@ -212,6 +212,17 @@ export const TOOLS: Tool[] = [
     path: "/tools/json-to-typescript",
     featured: false,
     component: JsonToTypescript,
+  },
+  {
+    id: "code-beautifier",
+    title: "Code Beautifier & Minifier",
+    description:
+      "Beautify or minify JavaScript, CSS, and HTML code with customizable options",
+    icon: "✨",
+    category: "Formatting",
+    path: "/tools/code-beautifier",
+    featured: true,
+    component: CodeBeautifier,
   },
   {
     id: "sql-formatter",

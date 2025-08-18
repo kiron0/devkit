@@ -12,7 +12,7 @@ import {
 
 import { getCommonFeatures } from "@/lib/tool-patterns"
 import { cn } from "@/lib/utils"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -36,23 +36,19 @@ export function Base64Tool() {
     size: number
     type: string
   } | null>(null)
-  const { toast } = useToast()
 
-  const encodeToBase64 = useCallback(
-    (text: string) => {
-      try {
-        return btoa(unescape(encodeURIComponent(text)))
-      } catch {
-        toast({
-          title: "Encoding Error",
-          description: "Failed to encode text to Base64",
-          variant: "destructive",
-        })
-        return ""
-      }
-    },
-    [toast]
-  )
+  const encodeToBase64 = useCallback((text: string) => {
+    try {
+      return btoa(unescape(encodeURIComponent(text)))
+    } catch {
+      toast({
+        title: "Encoding Error",
+        description: "Failed to encode text to Base64",
+        variant: "destructive",
+      })
+      return ""
+    }
+  }, [])
 
   const decodeFromBase64 = useCallback(
     (base64: string) => {

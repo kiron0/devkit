@@ -4,7 +4,7 @@ import { useCallback, useState } from "react"
 import { Download, FileText, RotateCcw, Upload, Zap } from "lucide-react"
 
 import { getCommonFeatures } from "@/lib/tool-patterns"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -32,7 +32,6 @@ export function JSONFormatter() {
   const [isValid, setIsValid] = useState<boolean | null>(null)
   const [error, setError] = useState<JSONError | null>(null)
   const [isMinified, setIsMinified] = useState(false)
-  const { toast } = useToast()
 
   const formatJSON = useCallback(
     (jsonString: string, minify: boolean = false) => {

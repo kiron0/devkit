@@ -4,7 +4,7 @@ import { useCallback, useState } from "react"
 import { FileText, Lock, RefreshCw, Upload } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -38,7 +38,6 @@ export function HashGenerator() {
     name: string
     size: number
   } | null>(null)
-  const { toast } = useToast()
 
   // Simple hash implementations (for demo purposes)
   const generateMD5 = useCallback(async (text: string): Promise<string> => {
@@ -147,7 +146,6 @@ export function HashGenerator() {
       generateSHA1,
       generateSHA256,
       generateSHA512,
-      toast,
     ]
   )
 

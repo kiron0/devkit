@@ -362,7 +362,9 @@ export function Home() {
         <div className="container mx-auto px-4 text-center">
           <div className="mb-4 flex items-center justify-center space-x-2">
             <div className="from-primary/90 to-primary/50 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br">
-              <span className="text-sm font-bold">DH</span>
+              <span className="text-primary-foreground text-sm font-bold">
+                DH
+              </span>
             </div>
             <span className="font-bold">{Config.title}</span>
           </div>

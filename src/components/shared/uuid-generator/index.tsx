@@ -4,7 +4,7 @@ import React, { useCallback, useState } from "react"
 import { Download, RefreshCw, Trash2 } from "lucide-react"
 
 import { getCommonFeatures } from "@/lib/tool-patterns"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -24,7 +24,6 @@ export function UUIDGenerator() {
   const [selectedVersion, setSelectedVersion] = useState("v4")
   const [history, setHistory] = useState<GeneratedUUID[]>([])
   const [bulkCount, setBulkCount] = useState(10)
-  const { toast } = useToast()
 
   const generateUUIDv4 = useCallback((): string => {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
@@ -96,7 +95,7 @@ export function UUIDGenerator() {
       title: "UUID Generated",
       description: `${selectedVersion.toUpperCase()} UUID created`,
     })
-  }, [generateUUID, selectedVersion, toast])
+  }, [generateUUID, selectedVersion])
 
   const generateBulkUUIDs = useCallback(() => {
     const uuids = Array.from({ length: bulkCount }, () => generateUUID())
@@ -116,7 +115,7 @@ export function UUIDGenerator() {
       title: "Bulk UUIDs Generated",
       description: `${bulkCount} UUIDs downloaded`,
     })
-  }, [generateUUID, bulkCount, selectedVersion, toast])
+  }, [generateUUID, bulkCount, selectedVersion])
 
   const clearHistory = () => {
     setHistory([])

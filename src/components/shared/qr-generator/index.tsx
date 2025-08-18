@@ -16,7 +16,7 @@ import QRCode from "qrcode"
 
 import { getCommonFeatures } from "@/lib/tool-patterns"
 import { cn } from "@/lib/utils"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -58,7 +58,6 @@ export function QRGenerator() {
     organization: "",
     website: "",
   })
-  const { toast } = useToast()
 
   // Generate real QR code using qrcode library
   const generateQRCode = useCallback(
@@ -89,7 +88,7 @@ export function QRGenerator() {
         })
       }
     },
-    [toast]
+    []
   )
 
   const getFormattedText = useCallback(() => {

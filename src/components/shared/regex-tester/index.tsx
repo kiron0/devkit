@@ -7,7 +7,7 @@ import type { RegexExample } from "@/types/regex"
 import { analyzeRegex } from "@/lib/regex-engine"
 import { getCommonFeatures } from "@/lib/tool-patterns"
 import { useRegex } from "@/hooks/use-regex"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -34,7 +34,6 @@ export function RegexTesterAdvanced() {
     setFlags,
   } = useRegex(300)
 
-  const { toast } = useToast()
   const [showExportDialog, setShowExportDialog] = useState(false)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
 
