@@ -127,7 +127,7 @@ export default function ToolsDashboard() {
                             {tool.featured && (
                               <Badge
                                 variant="secondary"
-                                className="bg-orange-600 text-xs"
+                                className="bg-orange-600 text-xs text-white"
                               >
                                 Popular
                               </Badge>

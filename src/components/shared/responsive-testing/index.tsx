@@ -1,12 +1,19 @@
 "use client"
 
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
+import Link from "next/link"
 import { DevicePreset, devicePresets } from "@/utils"
-import { ExternalLink, Monitor, RefreshCw, RotateCcw } from "lucide-react"
+import {
+  ExternalLink,
+  Monitor,
+  RefreshCw,
+  RotateCcw,
+  Smartphone,
+} from "lucide-react"
 
 import { toast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -31,6 +38,19 @@ export function ResponsiveTestingTool() {
   const [error, setError] = useState<string | null>(null)
   const [currentUrl, setCurrentUrl] = useState("")
   const [isCustom, setIsCustom] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
 
   const getCurrentDimensions = useCallback(() => {
     if (isCustom) {
@@ -120,6 +140,56 @@ export function ResponsiveTestingTool() {
     { label: "Device", value: isCustom ? "Custom" : selectedDevice.name },
   ]
 
+  // Show mobile restriction message
+  if (isMobile) {
+    return (
+      <ToolLayout>
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <Card className="mx-auto max-w-md text-center">
+            <CardHeader>
+              <div className="bg-muted mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+                <Smartphone className="text-muted-foreground h-8 w-8" />
+              </div>
+              <CardTitle className="text-xl">Desktop Only Tool</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-muted-foreground">
+                The Responsive Testing Tool is designed for desktop and tablet
+                devices to provide the best experience for testing website
+                responsiveness across different screen sizes.
+              </p>
+              <div className="text-muted-foreground space-y-2 text-sm">
+                <p>
+                  📱 <strong>Mobile devices</strong> are too small to
+                  effectively preview other device sizes
+                </p>
+                <p>
+                  💻 <strong>Desktop/Tablet</strong> provides optimal testing
+                  experience
+                </p>
+                <p>
+                  🔄 <strong>Orientation switching</strong> and device presets
+                  work best on larger screens
+                </p>
+              </div>
+              <div className="pt-4">
+                <Link
+                  href="/tools"
+                  className={buttonVariants({
+                    variant: "outline",
+                    className: "w-full",
+                  })}
+                >
+                  Browse Other Tools
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </ToolLayout>
+    )
+  }
+
   return (
     <ToolLayout>
       <div className="space-y-6">
@@ -192,7 +262,8 @@ export function ResponsiveTestingTool() {
                       .filter((d) => d.category === "mobile")
                       .map((device) => (
                         <SelectItem key={device.name} value={device.name}>
-                          {device.name} ({device.width}×{device.height})
+                          {device.icon} {device.name} ({device.width}×
+                          {device.height})
                         </SelectItem>
                       ))}
 
@@ -204,7 +275,8 @@ export function ResponsiveTestingTool() {
                       .filter((d) => d.category === "tablet")
                       .map((device) => (
                         <SelectItem key={device.name} value={device.name}>
-                          {device.name} ({device.width}×{device.height})
+                          {device.icon} {device.name} ({device.width}×
+                          {device.height})
                         </SelectItem>
                       ))}
 
@@ -216,7 +288,8 @@ export function ResponsiveTestingTool() {
                       .filter((d) => d.category === "desktop")
                       .map((device) => (
                         <SelectItem key={device.name} value={device.name}>
-                          {device.name} ({device.width}×{device.height})
+                          {device.icon} {device.name} ({device.width}×
+                          {device.height})
                         </SelectItem>
                       ))}
                   </SelectContent>
