@@ -17,6 +17,7 @@ import { PasswordGenerator } from "@/components/shared/password-generator"
 import { Playground } from "@/components/shared/playground"
 import { QRGenerator } from "@/components/shared/qr-generator"
 import { RegexTesterAdvanced } from "@/components/shared/regex-tester"
+import { ResponsiveTestingTool } from "@/components/shared/responsive-testing"
 import { SqlFormatterTool } from "@/components/shared/sql-formatter"
 import { TextUtilities } from "@/components/shared/text-utilities"
 import { TimestampConverter } from "@/components/shared/timestamp-converter"
@@ -263,6 +264,17 @@ export const TOOLS: Tool[] = [
     path: "/tools/playground",
     featured: false,
     component: Playground,
+  },
+  {
+    id: "responsive-testing",
+    title: "Responsive Testing Tool",
+    description:
+      "Preview websites at different screen sizes and test responsive design across various devices",
+    icon: "📱",
+    category: "Development Tools",
+    path: "/tools/responsive-testing",
+    featured: true,
+    component: ResponsiveTestingTool,
   },
 ]
 
