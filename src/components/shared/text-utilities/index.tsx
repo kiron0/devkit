@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useState } from "react"
+import { Config } from "@/config"
 import { FileText, RotateCcw, Upload } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -150,9 +151,9 @@ export function TextUtilities() {
   }
 
   const handleSampleData = () => {
-    const sampleText = `DevTools Hub: Professional Development Tools
+    const sampleText = `${Config.title}: Professional Development Tools
 
-Welcome to DevTools Hub, your comprehensive suite of development tools. Our platform offers a wide range of utilities designed to streamline your development workflow.
+Welcome to ${Config.title}, your comprehensive suite of development tools. Our platform offers a wide range of utilities designed to streamline your development workflow.
 
 Key Features:
 - JSON Formatter and Validator
@@ -164,9 +165,9 @@ Key Features:
 - URL Encoder/Decoder
 - Text Utilities
 
-Each tool is built with modern web technologies and provides real-time processing, beautiful interfaces, and comprehensive functionality. Whether you're a seasoned developer or just starting out, DevTools Hub has the tools you need to be productive.
+Each tool is built with modern web technologies and provides real-time processing, beautiful interfaces, and comprehensive functionality. Whether you're a seasoned developer or just starting out, ${Config.title} has the tools you need to be productive.
 
-Join thousands of developers who trust DevTools Hub for their daily development tasks!`
+Join thousands of developers who trust ${Config.title} for their daily development tasks!`
 
     setInputText(sampleText)
     handleInputChange(sampleText)

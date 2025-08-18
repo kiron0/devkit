@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useState } from "react"
+import { Config } from "@/config"
 import { FileText, Lock, RefreshCw, Upload } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -185,8 +186,7 @@ export function HashGenerator() {
   }
 
   const handleSampleData = () => {
-    const sampleText =
-      "Hello, DevTools Hub! This is a sample text for hash generation."
+    const sampleText = `Hello, ${Config.title} This is a sample text for hash generation.`
     setInputText(sampleText)
     generateHashes(sampleText)
   }

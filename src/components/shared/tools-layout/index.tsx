@@ -1,8 +1,9 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { getToolById } from "@/utils"
+import { useRouter } from "nextjs-toploader/app"
 
 import {
   Breadcrumb,
@@ -58,7 +59,7 @@ export function ToolsLayout({ children }: { children: React.ReactNode }) {
       />
 
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+        <header className="bg-background sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="hover:bg-accent -ml-1 rounded-md p-1 transition-colors" />
             <Separator
@@ -67,16 +68,21 @@ export function ToolsLayout({ children }: { children: React.ReactNode }) {
             />
             <Breadcrumb>
               <BreadcrumbList className="flex items-center space-x-1">
-                {currentTool && (
-                  <>
-                    <BreadcrumbItem>
-                      <BreadcrumbPage className="flex items-center gap-2">
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="flex items-center gap-2">
+                    {currentTool ? (
+                      <>
                         <span className="size-4">{currentTool.icon}</span>
                         <span className="font-medium">{currentTool.title}</span>
-                      </BreadcrumbPage>
-                    </BreadcrumbItem>
-                  </>
-                )}
+                      </>
+                    ) : (
+                      <>
+                        <span className="size-4">🧰</span>
+                        <span className="font-medium">Tools</span>
+                      </>
+                    )}
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>

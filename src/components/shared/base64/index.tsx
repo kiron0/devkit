@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useState } from "react"
+import { Config } from "@/config"
 import {
   ArrowDown,
   ArrowUp,
@@ -155,8 +156,7 @@ export function Base64Tool() {
   }
 
   const handleSampleData = () => {
-    const sampleText =
-      "Hello, DevTools Hub! 🚀\n\nThis is a sample text with:\n- Unicode characters: café, naïve, résumé\n- Emojis: 😊 🎉 💻\n- Special chars: @#$%^&*()\n\nPerfect for Base64 encoding!"
+    const sampleText = `Hello, ${Config.title}! 🚀\n\nThis is a sample text with:\n- Unicode characters: café, naïve, résumé\n- Emojis: 😊 🎉 💻\n- Special chars: @#$%^&*()\n\nPerfect for Base64 encoding!`
     setTextInput(sampleText)
     setBase64Input(encodeToBase64(sampleText))
     setMode("encode")

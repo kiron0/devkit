@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { Config } from "@/config"
 import { FileText, RotateCcw } from "lucide-react"
 
 import { getCommonFeatures } from "@/lib/tool-patterns"
@@ -21,7 +22,7 @@ export function MarkdownTool() {
   const [input, setInput] = useState<string>("# Markdown\n\nType here...")
 
   const handleSampleData = () => {
-    const sampleMarkdown = `# Welcome to DevTools Hub
+    const sampleMarkdown = `# Welcome to ${Config.title}
 
 ## Features
 

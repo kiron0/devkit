@@ -158,7 +158,7 @@ export function NumberBaseConverter() {
           <CardContent className="pt-0">
             <Textarea
               readOnly
-              className="bg-muted/50 max-h-[250px] min-h-[250px] resize-none font-mono text-sm"
+              className="bg-muted/50 max-h-[150px] min-h-[130px] resize-none font-mono text-sm"
               value={
                 conversions
                   ? `Binary: ${conversions.binary}\nOctal: ${conversions.octal}\nDecimal: ${conversions.decimal}\nHex: ${conversions.hex}`

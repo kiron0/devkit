@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 import Image from "next/image"
+import { Config } from "@/config"
 import {
   Download,
   Link as LinkIcon,
@@ -160,9 +161,9 @@ export function QRGenerator() {
 
   const handleSampleData = () => {
     const samples = {
-      text: "Hello, DevTools Hub!",
-      url: "https://devtools-hub.com",
-      email: "hello@devtools-hub.com",
+      text: `Hello, ${Config.title}!`,
+      url: `https://${Config.title.replace(/\s+/g, "-").toLowerCase()}.com`,
+      email: `hello@${Config.title.toLowerCase()}.com`,
       phone: "+1234567890",
       sms: "+1234567890",
     }

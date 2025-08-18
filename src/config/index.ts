@@ -2,10 +2,10 @@ const title = "DevTools Hub"
 
 export const Config = {
   title,
-  slogan: "Professional Development Tools & Utilities",
-  description: `${title} is your comprehensive suite of development tools built with cutting-edge technology. Features regex testing, JSON formatting, encoding/decoding utilities, generators, and more - all in a beautiful, responsive interface powered by Next.js 15 and modern web standards.`,
+  slogan: "Essential Tools for Modern Developers",
+  description: `${title} offers a powerful suite of development utilities designed for productivity and efficiency. Access regex testing, JSON formatting, encoding/decoding, generators, and more—all in a sleek, responsive interface powered by Next.js 15 and the latest web technologies.`,
   shortDescription:
-    "Complete toolkit of developer utilities for modern web development",
+    "All-in-one toolkit for web developers: regex, JSON, encoding, generators, and more.",
   keywords: [
     "regex tester",
     "json formatter",
@@ -27,37 +27,38 @@ export const Config = {
   ],
   features: [
     {
-      title: "Complete Developer Toolkit",
+      title: "Comprehensive Toolset",
       description:
-        "11+ professional tools covering regex, JSON, encoding, security, and more",
+        "12+ essential tools for regex, JSON, encoding, security, and more—all in one place.",
       icon: "🛠️",
     },
     {
-      title: "Beautiful Interface",
+      title: "Modern User Experience",
       description:
-        "Modern, responsive design that works perfectly on all devices",
+        "Intuitive, responsive design that adapts seamlessly to any device.",
       icon: "✨",
     },
     {
-      title: "Privacy Focused",
+      title: "Privacy First",
       description:
-        "All processing happens locally in your browser - your data never leaves your device",
+        "All processing is done locally in your browser—your data stays private.",
       icon: "🔒",
     },
     {
-      title: "Export & Share",
-      description: "Export results, share via URL, and copy to clipboard",
+      title: "Easy Export & Sharing",
+      description:
+        "Quickly export results, share via URL, or copy to clipboard. No sign-up required.",
       icon: "📤",
     },
   ],
   author: {
     name: "DevTools Team",
-    url: "https://github.com/kironix/glow-next",
+    url: "https://github.com/kiron0",
   },
   defaultAvatar: "/favicon.ico",
   ogImage: "/og.png",
   social: {
-    github: "https://github.com/kironix/glow-next",
+    github: "https://github.com/kiron0/devtools-hub",
     twitter: "#",
     linkedin: "#",
   },

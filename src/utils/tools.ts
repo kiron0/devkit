@@ -54,7 +54,7 @@ export const TOOLS: Tool[] = [
     id: "regex-tester",
     title: "Regex Tester",
     description:
-      "Test and validate regular expressions with real-time feedback",
+      "Test and validate regular expressions with real-time feedback. Supports advanced features like regex groups, flags, and more.",
     icon: "🔍",
     category: "Development Tools",
     path: "/tools/regex-tester",
@@ -65,7 +65,7 @@ export const TOOLS: Tool[] = [
     id: "json-formatter",
     title: "JSON Formatter",
     description:
-      "Format, validate, and minify JSON data with syntax highlighting",
+      "Format, validate, and minify JSON data with syntax highlighting. Supports file upload and download.",
     icon: "📄",
     category: "Text & Content",
     path: "/tools/json-formatter",
@@ -75,7 +75,8 @@ export const TOOLS: Tool[] = [
   {
     id: "base64",
     title: "Base64 Encoder/Decoder",
-    description: "Encode and decode Base64 strings and files",
+    description:
+      "Encode and decode Base64 strings and files. Supports URL-safe encoding.",
     icon: "🔐",
     category: "Encoding & Conversion",
     path: "/tools/base64",
@@ -85,7 +86,8 @@ export const TOOLS: Tool[] = [
   {
     id: "url-encoder",
     title: "URL Encoder/Decoder",
-    description: "URL encode/decode and parse query parameters",
+    description:
+      "URL encode/decode and parse query parameters. Supports file upload.",
     icon: "🌐",
     category: "Encoding & Conversion",
     path: "/tools/url-encoder",
@@ -95,7 +97,8 @@ export const TOOLS: Tool[] = [
   {
     id: "number-base-converter",
     title: "Number Base Converter",
-    description: "Convert numbers between binary, octal, decimal, and hex",
+    description:
+      "Convert numbers between binary, octal, decimal, and hex. Supports large numbers and custom bases.",
     icon: "🔢",
     category: "Encoding & Conversion",
     path: "/tools/number-base-converter",
@@ -105,7 +108,8 @@ export const TOOLS: Tool[] = [
   {
     id: "csv-json-converter",
     title: "CSV ↔ JSON Converter",
-    description: "Convert between CSV and JSON with header support",
+    description:
+      "Convert between CSV and JSON with header support. Handles validation and formatting.",
     icon: "🧮",
     category: "Encoding & Conversion",
     path: "/tools/csv-json-converter",
@@ -115,7 +119,8 @@ export const TOOLS: Tool[] = [
   {
     id: "password-generator",
     title: "Password Generator",
-    description: "Generate secure passwords with customizable options",
+    description:
+      "Generate secure passwords with customizable options. Supports length, character types, and more.",
     icon: "🔑",
     category: "Generators & Utilities",
     path: "/tools/password-generator",
@@ -125,7 +130,8 @@ export const TOOLS: Tool[] = [
   {
     id: "hash-generator",
     title: "Hash Generator",
-    description: "Generate MD5, SHA-1, SHA-256 hashes for text and files",
+    description:
+      "Generate MD5, SHA-1, SHA-256 hashes for text and files. Supports HMAC.",
     icon: "🔐",
     category: "Generators & Utilities",
     path: "/tools/hash-generator",
@@ -146,7 +152,8 @@ export const TOOLS: Tool[] = [
   {
     id: "text-utilities",
     title: "Text Utilities",
-    description: "Word count, case conversion, text comparison and more",
+    description:
+      "Word count, case conversion, text comparison and more. Supports file upload.",
     icon: "📝",
     category: "Text & Content",
     path: "/tools/text-utilities",
@@ -156,7 +163,8 @@ export const TOOLS: Tool[] = [
   {
     id: "uuid-generator",
     title: "UUID Generator",
-    description: "Generate UUIDs in various formats (v1, v4, v5)",
+    description:
+      "Generate UUIDs in various formats (v1, v4, v5). Supports custom namespaces.",
     icon: "🆔",
     category: "Generators & Utilities",
     path: "/tools/uuid-generator",
@@ -177,7 +185,8 @@ export const TOOLS: Tool[] = [
   {
     id: "qr-generator",
     title: "QR Code Generator",
-    description: "Generate QR codes for text, URLs, WiFi & contacts",
+    description:
+      "Generate QR codes for text, URLs, WiFi & contacts. Supports customization.",
     icon: "📱",
     category: "Generators & Utilities",
     path: "/tools/qr-generator",
@@ -187,7 +196,8 @@ export const TOOLS: Tool[] = [
   {
     id: "lorem-generator",
     title: "Lorem Generator",
-    description: "Generate placeholder text for designs and layouts",
+    description:
+      "Generate placeholder text for designs and layouts. Supports customization of length and format.",
     icon: "✍️",
     category: "Generators & Utilities",
     path: "/tools/lorem-generator",
@@ -197,7 +207,8 @@ export const TOOLS: Tool[] = [
   {
     id: "jwt-decoder",
     title: "JWT Decoder",
-    description: "Decode and inspect JSON Web Tokens locally",
+    description:
+      "Decode and inspect JSON Web Tokens locally. Supports validation and signature verification.",
     icon: "🔓",
     category: "Development Tools",
     path: "/tools/jwt-decoder",
@@ -207,7 +218,8 @@ export const TOOLS: Tool[] = [
   {
     id: "json-to-typescript",
     title: "JSON to TypeScript",
-    description: "Convert JSON objects to TypeScript interfaces",
+    description:
+      "Convert JSON objects to TypeScript interfaces. Supports nested structures.",
     icon: "🧩",
     category: "Development Tools",
     path: "/tools/json-to-typescript",
@@ -228,7 +240,8 @@ export const TOOLS: Tool[] = [
   {
     id: "sql-formatter",
     title: "SQL Formatter",
-    description: "Format and beautify SQL queries",
+    description:
+      "Format and beautify SQL queries. Supports syntax highlighting and minification.",
     icon: "🗄️",
     category: "Formatting",
     path: "/tools/sql-formatter",
@@ -238,7 +251,8 @@ export const TOOLS: Tool[] = [
   {
     id: "cron-calculator",
     title: "Cron Calculator",
-    description: "Build and validate cron expressions",
+    description:
+      "Build and validate cron expressions. Supports visualization and scheduling",
     icon: "⏱️",
     category: "Development Tools",
     path: "/tools/cron-calculator",
@@ -248,7 +262,8 @@ export const TOOLS: Tool[] = [
   {
     id: "markdown",
     title: "Markdown",
-    description: "Write and preview Markdown",
+    description:
+      "Write and preview Markdown. Supports syntax highlighting and export.",
     icon: "📝",
     category: "Text & Content",
     path: "/tools/markdown",
@@ -258,7 +273,8 @@ export const TOOLS: Tool[] = [
   {
     id: "playground",
     title: "Playground",
-    description: "Experiment with JavaScript/TypeScript snippets",
+    description:
+      "Experiment with JavaScript/TypeScript snippets. Supports live preview.",
     icon: "🎮",
     category: "Development Tools",
     path: "/tools/playground",

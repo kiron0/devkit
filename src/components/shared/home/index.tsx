@@ -36,9 +36,15 @@ export function Home() {
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <Link href="/" className="group flex items-center space-x-2">
             <div className="from-primary/90 to-primary/50 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br transition-transform duration-200 group-hover:scale-105">
-              <span className="text-sm font-bold text-white">DH</span>
+              <span
+                role="img"
+                aria-label="dev"
+                className="text-primary-foreground text-sm font-bold"
+              >
+                💻
+              </span>
             </div>
-            <span className="group-hover:text-primary hidden font-bold transition-colors sm:inline-block">
+            <span className="group-hover:text-primary text-lg font-bold transition-colors md:text-xl">
               {Config.title}
             </span>
           </Link>
@@ -111,7 +117,7 @@ export function Home() {
             {/* Badge */}
             <Badge
               variant="outline"
-              className="bg-primary text-primary-foreground border-primary mx-auto w-fit border transition-colors"
+              className="bg-muted text-primary border-primary mx-auto w-fit border transition-colors"
             >
               <Sparkles className="h-3 w-3" />
               Professional Developer Tools Suite
@@ -123,7 +129,7 @@ export function Home() {
             </h1>
 
             {/* Subheading */}
-            <p className="text-muted-foreground mx-auto max-w-3xl text-xl leading-relaxed sm:text-2xl lg:text-3xl">
+            <p className="text-muted-foreground mx-auto max-w-3xl text-base leading-relaxed sm:text-lg lg:text-xl">
               {Config.shortDescription}
             </p>
 
@@ -134,7 +140,7 @@ export function Home() {
                 className={buttonVariants({
                   size: "lg",
                   className:
-                    "from-primary/90 to-primary/30 w-full transform gap-2 bg-gradient-to-r shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl sm:w-auto",
+                    "from-primary/90 to-primary/30 transform gap-2 bg-gradient-to-r shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl sm:w-auto",
                 })}
               >
                 <Rocket className="h-5 w-5" />
@@ -186,7 +192,7 @@ export function Home() {
           <div className="mx-auto mb-16 max-w-4xl text-center">
             <Badge
               variant="outline"
-              className="mb-4 border-green-200 bg-green-50 text-green-700"
+              className="border-primary bg-muted text-primary mb-4"
             >
               <CheckCircle className="h-3 w-3" />
               Why Choose Us
@@ -233,7 +239,7 @@ export function Home() {
           <div className="mx-auto mb-16 max-w-4xl text-center">
             <Badge
               variant="outline"
-              className="mb-4 border-purple-200 bg-purple-50 text-purple-700"
+              className="border-primary bg-muted text-primary mb-4"
             >
               <Code className="h-3 w-3" />
               Featured Tools
@@ -292,7 +298,7 @@ export function Home() {
           <div className="mx-auto mb-16 max-w-4xl text-center">
             <Badge
               variant="outline"
-              className="mb-4 border-orange-200 bg-orange-50 text-orange-700"
+              className="border-primary bg-muted text-primary mb-4"
             >
               <Zap className="h-3 w-3" />
               Try It Now
@@ -317,10 +323,10 @@ export function Home() {
           <div className="mx-auto max-w-4xl text-center">
             <Badge
               variant="outline"
-              className="border-primary bg-primary text-primary-foreground mb-4 border"
+              className="border-primary bg-muted text-primary mb-4"
             >
               <Shield className="h-3 w-3" />
-              About DevTools Hub
+              About {Config.title}
             </Badge>
             <h2 className="mb-6 text-4xl font-bold sm:text-5xl lg:text-6xl">
               Built for Developers, by Developers
@@ -362,11 +368,15 @@ export function Home() {
         <div className="container mx-auto px-4 text-center">
           <div className="mb-4 flex items-center justify-center space-x-2">
             <div className="from-primary/90 to-primary/50 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br">
-              <span className="text-primary-foreground text-sm font-bold">
-                DH
+              <span
+                role="img"
+                aria-label="dev"
+                className="text-primary-foreground text-sm font-bold"
+              >
+                💻
               </span>
             </div>
-            <span className="font-bold">{Config.title}</span>
+            <span className="text-lg font-bold md:text-xl">{Config.title}</span>
           </div>
           <p className="text-muted-foreground mb-4">
             Professional development tools for modern developers

@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useState } from "react"
+import { Config } from "@/config"
 import { Download, FileText, RotateCcw, Upload, Zap } from "lucide-react"
 
 import { getCommonFeatures } from "@/lib/tool-patterns"
@@ -139,7 +140,7 @@ export function JSONFormatter() {
 
   const handleSampleData = () => {
     const sampleJSON = {
-      name: "DevTools Hub",
+      name: Config.title,
       version: "1.0.0",
       description: "Professional development tools suite",
       features: [
