@@ -51,21 +51,18 @@ export function Base64Tool() {
     }
   }, [])
 
-  const decodeFromBase64 = useCallback(
-    (base64: string) => {
-      try {
-        return decodeURIComponent(escape(atob(base64.replace(/\s/g, ""))))
-      } catch {
-        toast({
-          title: "Decoding Error",
-          description: "Invalid Base64 string",
-          variant: "destructive",
-        })
-        return ""
-      }
-    },
-    [toast]
-  )
+  const decodeFromBase64 = useCallback((base64: string) => {
+    try {
+      return decodeURIComponent(escape(atob(base64.replace(/\s/g, ""))))
+    } catch {
+      toast({
+        title: "Decoding Error",
+        description: "Invalid Base64 string",
+        variant: "destructive",
+      })
+      return ""
+    }
+  }, [])
 
   const handleTextChange = (value: string) => {
     setTextInput(value)

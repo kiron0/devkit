@@ -45,21 +45,18 @@ export function URLEncoder() {
     }
   }, [])
 
-  const decodeURL = useCallback(
-    (url: string) => {
-      try {
-        return decodeURIComponent(url)
-      } catch {
-        toast({
-          title: "Decoding Error",
-          description: "Invalid URL encoding",
-          variant: "destructive",
-        })
-        return ""
-      }
-    },
-    [toast]
-  )
+  const decodeURL = useCallback((url: string) => {
+    try {
+      return decodeURIComponent(url)
+    } catch {
+      toast({
+        title: "Decoding Error",
+        description: "Invalid URL encoding",
+        variant: "destructive",
+      })
+      return ""
+    }
+  }, [])
 
   const parseQueryParams = useCallback((url: string) => {
     try {
