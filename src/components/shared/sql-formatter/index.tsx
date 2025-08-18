@@ -15,6 +15,8 @@ import {
   ToolLayout,
 } from "@/components/common"
 
+import { CodeHighlighter } from "../markdown/code-highlighter"
+
 const KEYWORDS = [
   "select",
   "from",
@@ -133,11 +135,18 @@ export function SqlFormatterTool() {
             </div>
           </CardHeader>
           <CardContent className="pt-0">
-            <Textarea
-              value={output}
-              readOnly
-              className="bg-muted/50 max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
-            />
+            {output ? (
+              <CodeHighlighter
+                language="sql"
+                className="max-h-[300px] min-h-[300px] overflow-y-auto"
+              >
+                {output}
+              </CodeHighlighter>
+            ) : (
+              <div className="dark:bg-input/30 text-muted-foreground border-border flex max-h-[300px] min-h-[300px] items-center justify-center rounded-md border bg-transparent text-sm">
+                Formatted SQL will appear here
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

@@ -38,7 +38,7 @@ export function Home() {
             <div className="from-primary/90 to-primary/50 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br transition-transform duration-200 group-hover:scale-105">
               <span className="text-sm font-bold text-white">DH</span>
             </div>
-            <span className="hidden font-bold transition-colors group-hover:text-blue-600 sm:inline-block">
+            <span className="group-hover:text-primary hidden font-bold transition-colors sm:inline-block">
               {Config.title}
             </span>
           </Link>
@@ -50,7 +50,7 @@ export function Home() {
                   .getElementById("features")
                   ?.scrollIntoView({ behavior: "smooth" })
               }
-              className="cursor-pointer transition-colors duration-200 hover:text-blue-600"
+              className="hover:text-primary cursor-pointer transition-colors duration-200"
             >
               Features
             </button>
@@ -60,13 +60,13 @@ export function Home() {
                   .getElementById("tools")
                   ?.scrollIntoView({ behavior: "smooth" })
               }
-              className="cursor-pointer transition-colors duration-200 hover:text-blue-600"
+              className="hover:text-primary cursor-pointer transition-colors duration-200"
             >
               Tools
             </button>
             <Link
               href="/tools"
-              className="transition-colors duration-200 hover:text-blue-600"
+              className="hover:text-primary transition-colors duration-200"
             >
               All Tools
             </Link>
@@ -76,7 +76,7 @@ export function Home() {
                   .getElementById("about")
                   ?.scrollIntoView({ behavior: "smooth" })
               }
-              className="cursor-pointer transition-colors duration-200 hover:text-blue-600"
+              className="hover:text-primary cursor-pointer transition-colors duration-200"
             >
               About
             </button>
@@ -146,7 +146,7 @@ export function Home() {
             {/* Stats */}
             <div className="mt-16 grid grid-cols-2 gap-8 sm:grid-cols-4 lg:grid-cols-4">
               <div className="group text-center">
-                <div className="text-3xl font-bold text-blue-600 transition-transform duration-200 group-hover:scale-110 sm:text-4xl">
+                <div className="text-primary text-3xl font-bold transition-transform duration-200 group-hover:scale-110 sm:text-4xl">
                   {TOOLS.length}+
                 </div>
                 <div className="text-muted-foreground text-sm">

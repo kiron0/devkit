@@ -244,7 +244,7 @@ export function QRGenerator() {
                     className={cn(
                       "rounded-lg border p-2 text-center transition-colors",
                       qrType === type.id
-                        ? "border-primary bg-primary dark:bg-primary/50"
+                        ? "border-primary bg-primary text-primary-foreground dark:bg-primary/50"
                         : "border-border hover:bg-muted/50"
                     )}
                   >

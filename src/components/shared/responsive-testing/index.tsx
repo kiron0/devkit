@@ -396,7 +396,9 @@ export function ResponsiveTestingTool() {
                       loading="lazy"
                       onLoad={() => setIsLoading(false)}
                       onError={() => {
-                        setError("Failed to load website")
+                        setError(
+                          "This site cannot be previewed because it blocks embedding in an iframe (X-Frame-Options or Content-Security-Policy). Try another site."
+                        )
                         setIsLoading(false)
                       }}
                     />

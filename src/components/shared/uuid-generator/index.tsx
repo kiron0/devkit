@@ -4,6 +4,7 @@ import React, { useCallback, useState } from "react"
 import { Download, RefreshCw, Trash2 } from "lucide-react"
 
 import { getCommonFeatures } from "@/lib/tool-patterns"
+import { cn } from "@/lib/utils"
 import { toast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -229,16 +230,15 @@ export function UUIDGenerator() {
                     <button
                       key={option.value}
                       onClick={() => setSelectedVersion(option.value)}
-                      className={`rounded-lg border p-3 text-left transition-colors ${
+                      className={cn(
+                        "rounded-lg border p-3 text-left transition-colors",
                         selectedVersion === option.value
-                          ? "border-blue-600 bg-blue-50 dark:bg-blue-950/50"
+                          ? "border-primary bg-primary text-primary-foreground dark:bg-primary/50"
                           : "border-border hover:bg-muted/50"
-                      }`}
+                      )}
                     >
                       <div className="text-sm font-medium">{option.label}</div>
-                      <div className="text-muted-foreground text-xs">
-                        {option.description}
-                      </div>
+                      <div className="text-xs">{option.description}</div>
                     </button>
                   ))}
                 </div>

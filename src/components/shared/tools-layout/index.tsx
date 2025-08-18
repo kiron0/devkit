@@ -16,6 +16,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { ThemeSwitcher } from "@/components/theme-switcher"
 
 import { ToolsSidebar } from "../tools-sidebar"
 
@@ -57,7 +58,7 @@ export function ToolsLayout({ children }: { children: React.ReactNode }) {
       />
 
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+        <header className="flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="hover:bg-accent -ml-1 rounded-md p-1 transition-colors" />
             <Separator
@@ -78,6 +79,11 @@ export function ToolsLayout({ children }: { children: React.ReactNode }) {
                 )}
               </BreadcrumbList>
             </Breadcrumb>
+          </div>
+
+          {/* Theme Switcher */}
+          <div className="flex items-center gap-2 px-4">
+            <ThemeSwitcher />
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 pt-0 md:p-4">

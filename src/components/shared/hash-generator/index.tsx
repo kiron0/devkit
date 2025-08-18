@@ -354,7 +354,7 @@ export function HashGenerator() {
                     className={cn(
                       "rounded-lg border p-3 text-left transition-colors",
                       selectedAlgorithms.includes(algorithm.id)
-                        ? "border-primary bg-primary dark:bg-primary/50"
+                        ? "border-primary bg-primary text-primary-foreground dark:bg-primary/50"
                         : "border-border hover:bg-muted/50"
                     )}
                   >

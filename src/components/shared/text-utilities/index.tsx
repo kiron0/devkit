@@ -352,7 +352,7 @@ Join thousands of developers who trust DevTools Hub for their daily development 
                 className={cn(
                   "rounded-lg border p-2 text-center transition-colors",
                   selectedOperation === operation.id
-                    ? "border-primary bg-primary dark:bg-primary/50"
+                    ? "border-primary bg-primary text-primary-foreground dark:bg-primary/50"
                     : "border-border hover:bg-muted/50"
                 )}
               >

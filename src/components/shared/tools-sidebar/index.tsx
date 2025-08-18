@@ -42,18 +42,34 @@ export function ToolsSidebar({
     <Sidebar collapsible="offcanvas">
       <SidebarHeader>
         <Link
-          href="/tools"
+          href="/"
           onClick={() => handleToolClick(null)}
           className="flex items-center gap-2 px-2 py-1"
         >
           <div className="from-primary/90 to-primary/50 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r">
-            <span className="text-sm font-bold">DH</span>
+            <span className="text-primary-foreground text-sm font-bold">
+              DH
+            </span>
           </div>
           <span className="font-semibold">{Config.title}</span>
         </Link>
       </SidebarHeader>
 
       <SidebarContent>
+        <SidebarGroup>
+          <SidebarMenu>
+            <SidebarMenuItem key="tools">
+              <SidebarMenuButton
+                isActive={selectedTool === "tools"}
+                onClick={() => handleToolClick("")}
+                tooltip="Tools"
+              >
+                <span className="text-lg">🔧</span>
+                <span>Tools</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
         {Object.entries(toolsByCategory).map(([category, tools]) => (
           <SidebarGroup key={category}>
             <SidebarGroupLabel>{category}</SidebarGroupLabel>
