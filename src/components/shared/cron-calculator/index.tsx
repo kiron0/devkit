@@ -137,11 +137,11 @@ export function CronCalculator() {
     <ToolLayout>
       <ToolControls>
         <Button onClick={clear} variant="outline">
-          <RotateCcw className="mr-2 h-4 w-4" />
+          <RotateCcw className="h-4 w-4" />
           Reset
         </Button>
         <Button onClick={handleSampleData} variant="outline">
-          <Clock className="mr-2 h-4 w-4" />
+          <Clock className="h-4 w-4" />
           Sample
         </Button>
       </ToolControls>

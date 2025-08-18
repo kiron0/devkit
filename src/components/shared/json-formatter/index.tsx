@@ -199,7 +199,7 @@ export function JSONFormatter() {
       {/* Controls */}
       <ToolControls>
         <Button onClick={handleFormat} disabled={!input.trim()}>
-          <Zap className="mr-2 h-4 w-4" />
+          <Zap className="h-4 w-4" />
           Format
         </Button>
         <Button
@@ -207,7 +207,7 @@ export function JSONFormatter() {
           variant="outline"
           disabled={!input.trim()}
         >
-          <FileText className="mr-2 h-4 w-4" />
+          <FileText className="h-4 w-4" />
           Minify
         </Button>
         <Button
@@ -215,17 +215,17 @@ export function JSONFormatter() {
           variant="outline"
           disabled={!input.trim()}
         >
-          <RotateCcw className="mr-2 h-4 w-4" />
+          <RotateCcw className="h-4 w-4" />
           Clear
         </Button>
         <Button onClick={handleSampleData} variant="outline">
-          <FileText className="mr-2 h-4 w-4" />
+          <FileText className="h-4 w-4" />
           Sample Data
         </Button>
         <Label className="inline-flex">
           <Button variant="outline" asChild>
             <span>
-              <Upload className="mr-2 h-4 w-4" />
+              <Upload className="h-4 w-4" />
               Upload JSON
             </span>
           </Button>
@@ -238,7 +238,7 @@ export function JSONFormatter() {
         </Label>
         {output && (
           <Button onClick={handleDownload} variant="outline">
-            <Download className="mr-2 h-4 w-4" />
+            <Download className="h-4 w-4" />
             Download
           </Button>
         )}
@@ -321,7 +321,7 @@ export function JSONFormatter() {
                 {output}
               </CodeHighlighter>
             ) : (
-              <div className="bg-muted/50 text-muted-foreground flex max-h-[400px] min-h-[400px] items-center justify-center">
+              <div className="dark:bg-input/30 text-muted-foreground border-border flex max-h-[400px] min-h-[400px] items-center justify-center rounded-md border bg-transparent text-sm">
                 Formatted JSON will appear here...
               </div>
             )}

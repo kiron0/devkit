@@ -235,13 +235,13 @@ export function ToolsDirectory() {
                 rel="noopener noreferrer"
               >
                 <Button variant="outline">
-                  <Github className="mr-2 h-4 w-4" />
+                  <Github className="h-4 w-4" />
                   Request Feature
                 </Button>
               </a>
               <Link href="/">
                 <Button>
-                  <Home className="mr-2 h-4 w-4" />
+                  <Home className="h-4 w-4" />
                   Back to Home
                 </Button>
               </Link>

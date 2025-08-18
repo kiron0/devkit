@@ -336,7 +336,7 @@ export function ColorConverter() {
                 variant="outline"
                 className="w-full"
               >
-                <RefreshCw className="mr-2 h-4 w-4" />
+                <RefreshCw className="h-4 w-4" />
                 Random Color
               </Button>
               <Button
@@ -344,7 +344,7 @@ export function ColorConverter() {
                 variant="outline"
                 className="w-full"
               >
-                <Palette className="mr-2 h-4 w-4" />
+                <Palette className="h-4 w-4" />
                 Sample Colors
               </Button>
             </CardContent>
@@ -531,7 +531,7 @@ export function ColorConverter() {
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg">Generated Palette</CardTitle>
             <Button onClick={generatePalette} variant="outline" size="sm">
-              <Palette className="mr-2 h-4 w-4" />
+              <Palette className="h-4 w-4" />
               Regenerate
             </Button>
           </div>

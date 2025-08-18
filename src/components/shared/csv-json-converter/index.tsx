@@ -14,7 +14,6 @@ import {
   ToolControls,
   ToolLayout,
 } from "@/components/common"
-import { CodeHighlighter } from "@/components/shared/markdown/code-highlighter"
 
 function csvToJson(csv: string): string {
   const lines = csv.split(/\r?\n/).filter(Boolean)
@@ -30,6 +29,36 @@ function csvToJson(csv: string): string {
     }, {})
   )
   return JSON.stringify(json, null, 2)
+}
+
+function validateCsv(csv: string): string | null {
+  if (!csv.trim()) return "CSV is empty"
+  const lines = csv.split(/\r?\n/).filter(Boolean)
+  if (lines.length === 0) return "CSV has no data"
+  const headers = lines[0].split(",").map((h) => h.trim())
+  if (headers.length === 0) return "CSV header is missing"
+  // check row column counts
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(",")
+    if (cols.length !== headers.length) {
+      return `Row ${i + 1} has ${cols.length} columns, expected ${headers.length}`
+    }
+  }
+  return null
+}
+
+function validateJson(jsonString: string): string | null {
+  if (!jsonString.trim()) return "JSON is empty"
+  try {
+    const data = JSON.parse(jsonString)
+    if (!Array.isArray(data)) return "JSON must be an array of objects"
+    if (data.length === 0) return "JSON array is empty"
+    if (!data.every((item) => typeof item === "object" && item !== null))
+      return "JSON array must contain objects"
+  } catch {
+    return "Malformed JSON"
+  }
+  return null
 }
 
 function jsonToCsv(jsonString: string): string {
@@ -53,22 +82,43 @@ export function CsvJsonConverter() {
   const [csv, setCsv] = useState("")
   const [json, setJson] = useState("")
   const [error, setError] = useState<string | null>(null)
+  const [errorLocation, setErrorLocation] = useState<"csv" | "json" | null>(
+    null
+  )
 
   const handleToJson = () => {
+    const csvValidation = validateCsv(csv)
+    if (csvValidation) {
+      setError(csvValidation)
+      setErrorLocation("csv")
+      return
+    }
+
     try {
       setError(null)
+      setErrorLocation(null)
       setJson(csvToJson(csv))
     } catch {
       setError("Failed to convert CSV to JSON")
+      setErrorLocation("csv")
     }
   }
 
   const handleToCsv = () => {
+    const jsonValidation = validateJson(json)
+    if (jsonValidation) {
+      setError(jsonValidation)
+      setErrorLocation("json")
+      return
+    }
+
     try {
       setError(null)
+      setErrorLocation(null)
       setCsv(jsonToCsv(json))
     } catch {
       setError("Invalid JSON input")
+      setErrorLocation("json")
     }
   }
 
@@ -76,6 +126,7 @@ export function CsvJsonConverter() {
     setCsv("")
     setJson("")
     setError(null)
+    setErrorLocation(null)
   }
 
   const handleSampleData = () => {
@@ -98,7 +149,15 @@ Eve,31,Seattle,Product Manager`
     },
     {
       label: "JSON Objects",
-      value: json ? (JSON.parse(json)?.length || 0).toString() : "0",
+      value: (() => {
+        if (!json) return "0"
+        try {
+          const parsed = JSON.parse(json)
+          return (Array.isArray(parsed) ? parsed.length : 0).toString()
+        } catch {
+          return "0"
+        }
+      })(),
       icon: "📄",
     },
     {
@@ -132,7 +191,7 @@ Eve,31,Seattle,Product Manager`
           Clear
         </Button>
         <Button onClick={handleSampleData} variant="outline">
-          <FileText className="mr-2 h-4 w-4" />
+          <FileText className="h-4 w-4" />
           Sample
         </Button>
       </ToolControls>
@@ -146,17 +205,14 @@ Eve,31,Seattle,Product Manager`
             </div>
           </CardHeader>
           <CardContent className="pt-0">
-            {csv ? (
-              <CodeHighlighter language="csv" className="min-h-[300px]">
-                {csv}
-              </CodeHighlighter>
-            ) : (
-              <Textarea
-                placeholder="name,age\nAlice,32\nBob,28"
-                value={csv}
-                onChange={(e) => setCsv(e.target.value)}
-                className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
-              />
+            <Textarea
+              placeholder="name,age\nAlice,32\nBob,28"
+              value={csv}
+              onChange={(e) => setCsv(e.target.value)}
+              className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
+            />
+            {error && errorLocation === "csv" && (
+              <div className="text-destructive mt-2 text-sm">{error}</div>
             )}
           </CardContent>
         </Card>
@@ -175,7 +231,7 @@ Eve,31,Seattle,Product Manager`
               onChange={(e) => setJson(e.target.value)}
               className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
             />
-            {error && (
+            {error && errorLocation === "json" && (
               <div className="text-destructive mt-2 text-sm">{error}</div>
             )}
           </CardContent>

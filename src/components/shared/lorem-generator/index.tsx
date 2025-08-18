@@ -87,7 +87,7 @@ export function LoremGenerator() {
     <ToolLayout>
       <ToolControls>
         <Button onClick={handleSampleData} variant="outline">
-          <FileText className="mr-2 h-4 w-4" />
+          <FileText className="h-4 w-4" />
           Sample Config
         </Button>
       </ToolControls>
@@ -132,7 +132,7 @@ export function LoremGenerator() {
             <Textarea
               value={output}
               readOnly
-              className="min-h-[300px] font-mono text-sm"
+              className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>

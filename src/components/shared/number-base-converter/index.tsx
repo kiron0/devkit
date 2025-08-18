@@ -131,7 +131,7 @@ export function NumberBaseConverter() {
                 value={base.toString()}
                 onValueChange={(value) => setBase(parseInt(value))}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select base" />
                 </SelectTrigger>
                 <SelectContent>

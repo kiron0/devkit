@@ -99,15 +99,15 @@ console.log('Fibonacci(10):', fibonacci(10));`
     <ToolLayout>
       <ToolControls>
         <Button onClick={run}>
-          <Play className="mr-2 h-4 w-4" />
+          <Play className="h-4 w-4" />
           Run
         </Button>
         <Button onClick={clear} variant="outline">
-          <RotateCcw className="mr-2 h-4 w-4" />
+          <RotateCcw className="h-4 w-4" />
           Clear
         </Button>
         <Button onClick={handleSampleData} variant="outline">
-          <Code className="mr-2 h-4 w-4" />
+          <Code className="h-4 w-4" />
           Sample
         </Button>
       </ToolControls>
@@ -145,7 +145,7 @@ console.log('Fibonacci(10):', fibonacci(10));`
                 {output}
               </CodeHighlighter>
             ) : (
-              <div className="bg-muted/50 text-muted-foreground flex max-h-[360px] min-h-[360px] items-center justify-center">
+              <div className="dark:bg-input/30 text-muted-foreground border-border flex max-h-[360px] min-h-[360px] items-center justify-center rounded-md border bg-transparent text-sm">
                 Run your code to see the output here
               </div>
             )}

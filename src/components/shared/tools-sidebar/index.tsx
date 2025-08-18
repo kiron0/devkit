@@ -17,8 +17,8 @@ import {
 } from "@/components/ui/sidebar"
 
 interface ToolsSidebarProps {
-  selectedTool?: string
-  onToolSelect: (toolId: string) => void
+  selectedTool?: string | null
+  onToolSelect: (toolId: string | null) => void
 }
 
 export function ToolsSidebar({
@@ -27,7 +27,7 @@ export function ToolsSidebar({
 }: ToolsSidebarProps) {
   const { isMobile, setOpenMobile } = useSidebar()
 
-  const handleToolClick = (toolId: string) => {
+  const handleToolClick = (toolId: string | null) => {
     onToolSelect(toolId)
     // Close mobile sidebar when tool is selected
     if (isMobile) {
@@ -41,9 +41,13 @@ export function ToolsSidebar({
   return (
     <Sidebar collapsible="offcanvas">
       <SidebarHeader>
-        <Link href="/tools" className="flex items-center gap-2 px-2 py-1">
-          <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-lg">
-            <span className="text-sm font-bold">DT</span>
+        <Link
+          href="/tools"
+          onClick={() => handleToolClick(null)}
+          className="flex items-center gap-2 px-2 py-1"
+        >
+          <div className="from-primary/90 to-primary/50 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r">
+            <span className="text-sm font-bold">DH</span>
           </div>
           <span className="font-semibold">{Config.title}</span>
         </Link>

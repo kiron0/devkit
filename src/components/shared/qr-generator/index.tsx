@@ -15,6 +15,7 @@ import {
 import QRCode from "qrcode"
 
 import { getCommonFeatures } from "@/lib/tool-patterns"
+import { cn } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -206,7 +207,7 @@ export function QRGenerator() {
       {/* Controls */}
       <div className="mb-6 flex flex-wrap gap-2">
         <Button onClick={handleSampleData} variant="outline">
-          <QrCode className="mr-2 h-4 w-4" />
+          <QrCode className="h-4 w-4" />
           Sample Data
         </Button>
 
@@ -215,13 +216,13 @@ export function QRGenerator() {
           variant="outline"
           disabled={!inputText && !qrDataURL}
         >
-          <RotateCcw className="mr-2 h-4 w-4" />
+          <RotateCcw className="h-4 w-4" />
           Clear
         </Button>
 
         {qrDataURL && (
           <Button onClick={handleDownload} variant="outline">
-            <Download className="mr-2 h-4 w-4" />
+            <Download className="h-4 w-4" />
             Download PNG
           </Button>
         )}
@@ -241,11 +242,12 @@ export function QRGenerator() {
                   <button
                     key={type.id}
                     onClick={() => handleTypeChange(type.id)}
-                    className={`rounded-lg border p-2 text-center transition-colors ${
+                    className={cn(
+                      "rounded-lg border p-2 text-center transition-colors",
                       qrType === type.id
-                        ? "border-blue-600 bg-blue-50 dark:bg-blue-950/50"
+                        ? "border-primary bg-primary dark:bg-primary/50"
                         : "border-border hover:bg-muted/50"
-                    }`}
+                    )}
                   >
                     <div className="mb-1 text-lg">{type.icon}</div>
                     <div className="text-xs font-medium">{type.name}</div>
@@ -260,7 +262,7 @@ export function QRGenerator() {
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg">
-                  <Wifi className="mr-2 inline h-4 w-4" />
+                  <Wifi className="inline h-4 w-4" />
                   WiFi Configuration
                 </CardTitle>
               </CardHeader>
@@ -315,7 +317,7 @@ export function QRGenerator() {
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg">
-                  <Smartphone className="mr-2 inline h-4 w-4" />
+                  <Smartphone className="inline h-4 w-4" />
                   Contact Information
                 </CardTitle>
               </CardHeader>
@@ -496,13 +498,13 @@ export function QRGenerator() {
             <CardContent className="pt-0">
               {qrDataURL ? (
                 <div className="space-y-4 text-center">
-                  <div className="inline-block rounded-lg bg-white p-4">
+                  <div className="inline-block">
                     <Image
                       src={qrDataURL}
                       width={qrOptions.size}
                       height={qrOptions.size}
                       alt="Generated QR Code"
-                      className="h-auto max-w-full"
+                      className="h-auto max-w-full rounded-lg"
                       style={{
                         width: Math.min(qrOptions.size, 256),
                         height: Math.min(qrOptions.size, 256),
@@ -543,7 +545,7 @@ export function QRGenerator() {
                   setInputText("https://github.com")
                 }}
               >
-                <LinkIcon className="mr-2 h-4 w-4" />
+                <LinkIcon className="h-4 w-4" />
                 GitHub URL
               </Button>
               <Button
@@ -554,7 +556,7 @@ export function QRGenerator() {
                   setInputText("hello@example.com")
                 }}
               >
-                <Mail className="mr-2 h-4 w-4" />
+                <Mail className="h-4 w-4" />
                 Email Contact
               </Button>
               <Button
@@ -565,7 +567,7 @@ export function QRGenerator() {
                   setInputText("+1234567890")
                 }}
               >
-                <Phone className="mr-2 h-4 w-4" />
+                <Phone className="h-4 w-4" />
                 Phone Number
               </Button>
             </CardContent>

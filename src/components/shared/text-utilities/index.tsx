@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react"
 import { FileText, RotateCcw, Upload } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
@@ -312,14 +313,14 @@ Join thousands of developers who trust DevTools Hub for their daily development 
       {/* Controls */}
       <ToolControls>
         <Button onClick={handleSampleData} variant="outline">
-          <FileText className="mr-2 h-4 w-4" />
+          <FileText className="h-4 w-4" />
           Sample Text
         </Button>
 
         <Label className="inline-flex">
           <Button variant="outline" asChild>
             <span>
-              <Upload className="mr-2 h-4 w-4" />
+              <Upload className="h-4 w-4" />
               Upload File
             </span>
           </Button>
@@ -332,7 +333,7 @@ Join thousands of developers who trust DevTools Hub for their daily development 
         </Label>
 
         <Button onClick={handleClear} variant="outline" disabled={!inputText}>
-          <RotateCcw className="mr-2 h-4 w-4" />
+          <RotateCcw className="h-4 w-4" />
           Clear
         </Button>
       </ToolControls>
@@ -343,21 +344,20 @@ Join thousands of developers who trust DevTools Hub for their daily development 
           <CardTitle className="text-lg">Text Operations</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
             {operations.map((operation) => (
               <button
                 key={operation.id}
                 onClick={() => handleOperationChange(operation.id)}
-                className={`rounded-lg border p-2 text-left transition-colors ${
+                className={cn(
+                  "rounded-lg border p-2 text-center transition-colors",
                   selectedOperation === operation.id
-                    ? "border-blue-600 bg-blue-50 dark:bg-blue-950/50"
+                    ? "border-primary bg-primary dark:bg-primary/50"
                     : "border-border hover:bg-muted/50"
-                }`}
+                )}
               >
                 <div className="text-sm font-medium">{operation.name}</div>
-                <div className="text-muted-foreground text-xs">
-                  {operation.description}
-                </div>
+                <div className="text-xs">{operation.description}</div>
               </button>
             ))}
           </div>
@@ -385,7 +385,7 @@ Join thousands of developers who trust DevTools Hub for their daily development 
               placeholder="Enter or paste your text here..."
               value={inputText}
               onChange={(e) => handleInputChange(e.target.value)}
-              className="min-h-[300px] font-mono text-sm"
+              className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -478,7 +478,7 @@ Join thousands of developers who trust DevTools Hub for their daily development 
                     placeholder="Enter text to compare with..."
                     value={comparisonText}
                     onChange={(e) => setComparisonText(e.target.value)}
-                    className="min-h-[150px] font-mono text-sm"
+                    className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
                   />
                 </CardContent>
               </Card>
@@ -538,7 +538,7 @@ Join thousands of developers who trust DevTools Hub for their daily development 
                     placeholder="Transformed text will appear here..."
                     value={outputText}
                     readOnly
-                    className="bg-muted/50 min-h-[300px] font-mono text-sm"
+                    className="bg-muted/50 max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
                   />
                 </CardContent>
               </Card>

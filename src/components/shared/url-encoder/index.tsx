@@ -243,7 +243,7 @@ export function URLEncoder() {
         </div>
 
         <Button onClick={switchMode} variant="outline">
-          <RotateCcw className="mr-2 h-4 w-4" />
+          <RotateCcw className="h-4 w-4" />
           Switch Mode
         </Button>
 
@@ -252,7 +252,7 @@ export function URLEncoder() {
         </Button>
 
         <Button onClick={handleSampleData} variant="outline">
-          <LinkIcon className="mr-2 h-4 w-4" />
+          <LinkIcon className="h-4 w-4" />
           Sample URL
         </Button>
       </ToolControls>
@@ -340,7 +340,7 @@ export function URLEncoder() {
                 </div>
               ))}
               <Button onClick={generateUrlFromParams} className="w-full">
-                <Zap className="mr-2 h-4 w-4" />
+                <Zap className="h-4 w-4" />
                 Generate URL
               </Button>
             </CardContent>

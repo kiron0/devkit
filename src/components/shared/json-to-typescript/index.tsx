@@ -207,11 +207,11 @@ export function JsonToTypescript() {
       <ToolControls>
         <Button onClick={convert}>Convert</Button>
         <Button onClick={clear} variant="outline" disabled={!input && !output}>
-          <RotateCcw className="mr-2 h-4 w-4" />
+          <RotateCcw className="h-4 w-4" />
           Clear
         </Button>
         <Button onClick={handleSampleData} variant="outline">
-          <Code className="mr-2 h-4 w-4" />
+          <Code className="h-4 w-4" />
           Sample
         </Button>
       </ToolControls>
@@ -260,7 +260,7 @@ export function JsonToTypescript() {
                 {output}
               </CodeHighlighter>
             ) : (
-              <div className="bg-muted/50 text-muted-foreground flex max-h-[300px] min-h-[300px] items-center justify-center">
+              <div className="dark:bg-input/30 text-muted-foreground border-border flex max-h-[300px] min-h-[300px] items-center justify-center rounded-md border bg-transparent text-sm">
                 Converted TypeScript will appear here
               </div>
             )}

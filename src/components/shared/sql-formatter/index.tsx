@@ -98,11 +98,11 @@ export function SqlFormatterTool() {
     <ToolLayout>
       <ToolControls>
         <Button onClick={clear} variant="outline" disabled={!input}>
-          <RotateCcw className="mr-2 h-4 w-4" />
+          <RotateCcw className="h-4 w-4" />
           Clear
         </Button>
         <Button onClick={handleSampleData} variant="outline">
-          <Database className="mr-2 h-4 w-4" />
+          <Database className="h-4 w-4" />
           Sample
         </Button>
       </ToolControls>
@@ -120,7 +120,7 @@ export function SqlFormatterTool() {
               placeholder="select * from users where active = true order by created_at desc"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="min-h-[300px] font-mono text-sm"
+              className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -136,7 +136,7 @@ export function SqlFormatterTool() {
             <Textarea
               value={output}
               readOnly
-              className="bg-muted/50 min-h-[300px] font-mono text-sm"
+              className="bg-muted/50 max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>

@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react"
 import { FileText, Lock, RefreshCw, Upload } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -279,14 +280,14 @@ export function HashGenerator() {
       {/* Controls */}
       <ToolControls>
         <Button onClick={handleSampleData} variant="outline">
-          <FileText className="mr-2 h-4 w-4" />
+          <FileText className="h-4 w-4" />
           Sample Data
         </Button>
 
         <Label className="inline-flex">
           <Button variant="outline" asChild>
             <span>
-              <Upload className="mr-2 h-4 w-4" />
+              <Upload className="h-4 w-4" />
               Upload File
             </span>
           </Button>
@@ -299,7 +300,7 @@ export function HashGenerator() {
         </Label>
 
         <Button onClick={handleClear} variant="outline" disabled={!inputText}>
-          <RefreshCw className="mr-2 h-4 w-4" />
+          <RefreshCw className="h-4 w-4" />
           Clear
         </Button>
       </ToolControls>
@@ -352,16 +353,20 @@ export function HashGenerator() {
                   <button
                     key={algorithm.id}
                     onClick={() => handleAlgorithmToggle(algorithm.id)}
-                    className={`rounded-lg border p-3 text-left transition-colors ${
+                    className={cn(
+                      "rounded-lg border p-3 text-left transition-colors",
                       selectedAlgorithms.includes(algorithm.id)
-                        ? "border-blue-600 bg-blue-50 dark:bg-blue-950/50"
+                        ? "border-primary bg-primary dark:bg-primary/50"
                         : "border-border hover:bg-muted/50"
-                    }`}
+                    )}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <div
-                          className={`h-3 w-3 rounded-full ${algorithm.color}`}
+                          className={cn(
+                            "h-3 w-3 rounded-full",
+                            algorithm.color
+                          )}
                         />
                         <span className="text-sm font-medium">
                           {algorithm.name}
@@ -373,9 +378,7 @@ export function HashGenerator() {
                         </Badge>
                       )}
                     </div>
-                    <p className="text-muted-foreground mt-1 text-xs">
-                      {algorithm.description}
-                    </p>
+                    <p className="mt-1 text-xs">{algorithm.description}</p>
                   </button>
                 ))}
               </div>
@@ -442,7 +445,7 @@ export function HashGenerator() {
                   if (inputText.trim()) generateHashes(inputText)
                 }}
               >
-                <Lock className="mr-2 h-4 w-4" />
+                <Lock className="h-4 w-4" />
                 MD5 Only
               </Button>
               <Button
@@ -453,7 +456,7 @@ export function HashGenerator() {
                   if (inputText.trim()) generateHashes(inputText)
                 }}
               >
-                <Lock className="mr-2 h-4 w-4" />
+                <Lock className="h-4 w-4" />
                 SHA-256 Only
               </Button>
               <Button
@@ -464,7 +467,7 @@ export function HashGenerator() {
                   if (inputText.trim()) generateHashes(inputText)
                 }}
               >
-                <Lock className="mr-2 h-4 w-4" />
+                <Lock className="h-4 w-4" />
                 All Algorithms
               </Button>
             </CardContent>

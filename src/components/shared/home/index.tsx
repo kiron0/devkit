@@ -7,7 +7,6 @@ import {
   ArrowRight,
   CheckCircle,
   Code,
-  ExternalLink,
   Github,
   Rocket,
   Shield,
@@ -36,7 +35,7 @@ export function Home() {
       <header className="bg-background/80 fixed top-0 z-50 w-full border-b backdrop-blur-sm">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <Link href="/" className="group flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 transition-transform duration-200 group-hover:scale-105">
+            <div className="from-primary/90 to-primary/50 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br transition-transform duration-200 group-hover:scale-105">
               <span className="text-sm font-bold text-white">DH</span>
             </div>
             <span className="hidden font-bold transition-colors group-hover:text-blue-600 sm:inline-block">
@@ -85,7 +84,7 @@ export function Home() {
 
           <div className="flex items-center space-x-2">
             <ThemeSwitcher />
-            <a
+            <Link
               href={Config.social.github}
               target="_blank"
               rel="noopener noreferrer"
@@ -93,7 +92,7 @@ export function Home() {
             >
               <Github className="h-4 w-4" />
               <span className="sr-only">GitHub</span>
-            </a>
+            </Link>
           </div>
         </div>
       </header>
@@ -102,9 +101,9 @@ export function Home() {
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 pt-16">
         {/* Background Effects */}
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-indigo-600/20 blur-3xl" />
-          <div className="absolute top-1/4 right-1/4 h-[400px] w-[400px] animate-pulse rounded-full bg-gradient-to-r from-pink-500/10 to-orange-500/10 blur-2xl delay-1000" />
-          <div className="absolute bottom-1/4 left-1/4 h-[300px] w-[300px] animate-pulse rounded-full bg-gradient-to-r from-green-500/10 to-blue-500/10 blur-2xl delay-2000" />
+          <div className="from-primary/20 via-secondary/20 to-primary/20 absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-gradient-to-r blur-3xl" />
+          <div className="from-primary/10 to-secondary/10 absolute top-1/4 right-1/4 h-[400px] w-[400px] animate-pulse rounded-full bg-gradient-to-r blur-2xl delay-1000" />
+          <div className="from-primary/10 to-secondary/10 absolute bottom-1/4 left-1/4 h-[300px] w-[300px] animate-pulse rounded-full bg-gradient-to-r blur-2xl delay-2000" />
         </div>
 
         <div className="container mx-auto text-center">
@@ -112,14 +111,14 @@ export function Home() {
             {/* Badge */}
             <Badge
               variant="outline"
-              className="mx-auto w-fit border-blue-200 bg-blue-50 text-blue-700 transition-colors hover:bg-blue-100"
+              className="bg-primary text-primary-foreground border-primary mx-auto w-fit border transition-colors"
             >
-              <Sparkles className="mr-2 h-3 w-3" />
+              <Sparkles className="h-3 w-3" />
               Professional Developer Tools Suite
             </Badge>
 
             {/* Main Heading */}
-            <h1 className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-5xl leading-tight font-bold text-transparent sm:text-6xl lg:text-7xl xl:text-8xl">
+            <h1 className="from-primary/90 to-primary/50 bg-gradient-to-r bg-clip-text text-5xl leading-tight font-bold text-transparent sm:text-6xl lg:text-7xl xl:text-8xl">
               {Config.title}
             </h1>
 
@@ -130,29 +129,18 @@ export function Home() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <Link href="/tools">
-                <Button
-                  size="lg"
-                  className="w-full transform gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg transition-all duration-200 hover:scale-105 hover:from-blue-700 hover:to-purple-700 hover:shadow-xl sm:w-auto"
-                >
-                  <Rocket className="h-5 w-5" />
-                  Explore Tools
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
-              <a
-                href={Config.social.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={
-                  buttonVariants({ variant: "outline", size: "lg" }) +
-                  " hover:bg-accent hover:text-accent-foreground w-full transition-all duration-200 sm:w-auto"
-                }
+              <Link
+                href="/tools"
+                className={buttonVariants({
+                  size: "lg",
+                  className:
+                    "from-primary/90 to-primary/30 w-full transform gap-2 bg-gradient-to-r shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl sm:w-auto",
+                })}
               >
-                <Github className="mr-2 h-5 w-5" />
-                View on GitHub
-                <ExternalLink className="ml-1 h-3 w-3" />
-              </a>
+                <Rocket className="h-5 w-5" />
+                Explore Tools
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
 
             {/* Stats */}
@@ -200,13 +188,12 @@ export function Home() {
               variant="outline"
               className="mb-4 border-green-200 bg-green-50 text-green-700"
             >
-              <CheckCircle className="mr-2 h-3 w-3" />
+              <CheckCircle className="h-3 w-3" />
               Why Choose Us
             </Badge>
             <h2 className="mb-6 text-4xl font-bold sm:text-5xl lg:text-6xl">
               Powerful Features for
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                {" "}
+              <span className="from-primary/90 to-primary/50 bg-gradient-to-r bg-clip-text text-transparent">
                 Developers
               </span>
             </h2>
@@ -219,14 +206,13 @@ export function Home() {
             {Config.features.map((feature, index) => (
               <Card
                 key={index}
-                className="bg-background/50 group relative overflow-hidden border-0 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                className="from-background to-muted/30 group relative overflow-hidden border-0 bg-gradient-to-br backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-xl"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-purple-50/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 <CardHeader className="relative z-10 pb-3">
                   <div className="mb-4 text-5xl transition-transform duration-300 group-hover:scale-110">
                     {feature.icon}
                   </div>
-                  <CardTitle className="text-xl transition-colors group-hover:text-blue-600">
+                  <CardTitle className="group-hover:text-primary text-xl transition-colors">
                     {feature.title}
                   </CardTitle>
                 </CardHeader>
@@ -249,7 +235,7 @@ export function Home() {
               variant="outline"
               className="mb-4 border-purple-200 bg-purple-50 text-purple-700"
             >
-              <Code className="mr-2 h-3 w-3" />
+              <Code className="h-3 w-3" />
               Featured Tools
             </Badge>
             <h2 className="mb-6 text-4xl font-bold sm:text-5xl lg:text-6xl">
@@ -271,7 +257,7 @@ export function Home() {
                     <div className="mb-3 text-4xl transition-transform duration-300 group-hover:scale-110">
                       {tool.icon}
                     </div>
-                    <CardTitle className="text-lg transition-colors group-hover:text-blue-600">
+                    <CardTitle className="group-hover:text-primary text-lg transition-colors">
                       {tool.title}
                     </CardTitle>
                   </CardHeader>
@@ -279,7 +265,7 @@ export function Home() {
                     <CardDescription className="text-sm leading-relaxed">
                       {tool.description}
                     </CardDescription>
-                    <div className="mt-4 flex items-center text-sm font-medium text-blue-600 transition-transform duration-200 group-hover:translate-x-1">
+                    <div className="text-primary mt-4 flex items-center text-sm font-medium transition-transform duration-200 group-hover:translate-x-1">
                       Try Tool
                       <ArrowRight className="ml-1 h-4 w-4" />
                     </div>
@@ -308,7 +294,7 @@ export function Home() {
               variant="outline"
               className="mb-4 border-orange-200 bg-orange-50 text-orange-700"
             >
-              <Zap className="mr-2 h-3 w-3" />
+              <Zap className="h-3 w-3" />
               Try It Now
             </Badge>
             <h2 className="mb-6 text-4xl font-bold sm:text-5xl lg:text-6xl">
@@ -331,9 +317,9 @@ export function Home() {
           <div className="mx-auto max-w-4xl text-center">
             <Badge
               variant="outline"
-              className="mb-4 border-blue-200 bg-blue-50 text-blue-700"
+              className="border-primary bg-primary text-primary-foreground mb-4 border"
             >
-              <Shield className="mr-2 h-3 w-3" />
+              <Shield className="h-3 w-3" />
               About DevTools Hub
             </Badge>
             <h2 className="mb-6 text-4xl font-bold sm:text-5xl lg:text-6xl">
@@ -375,8 +361,8 @@ export function Home() {
       <footer className="bg-muted/50 border-t py-12">
         <div className="container mx-auto px-4 text-center">
           <div className="mb-4 flex items-center justify-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-600">
-              <span className="text-sm font-bold text-white">DH</span>
+            <div className="from-primary/90 to-primary/50 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br">
+              <span className="text-sm font-bold">DH</span>
             </div>
             <span className="font-bold">{Config.title}</span>
           </div>
@@ -384,14 +370,14 @@ export function Home() {
             Professional development tools for modern developers
           </p>
           <div className="flex items-center justify-center space-x-4">
-            <a
+            <Link
               href={Config.social.github}
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
               <Github className="h-5 w-5" />
-            </a>
+            </Link>
           </div>
 
           {/* Scroll to Top Button */}

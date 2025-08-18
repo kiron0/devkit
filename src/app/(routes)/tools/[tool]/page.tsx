@@ -1,27 +1,42 @@
-"use client"
+import type { Metadata } from "next"
+import { notFound } from "next/navigation"
+import { getToolById, getToolComponent, Tool } from "@/utils"
 
-import { useEffect, useState } from "react"
-import { notFound, useParams } from "next/navigation"
-import { getToolById, getToolComponent } from "@/utils"
+interface ToolPageProps {
+  params: Promise<{
+    tool: string
+  }>
+}
 
-export default function ToolPage() {
-  const params = useParams()
-  const toolId = params.tool as string
-  const [isValidTool, setIsValidTool] = useState(false)
+export async function generateMetadata({
+  params,
+}: ToolPageProps): Promise<Metadata> {
+  const { tool } = await params
+  const toolId = getToolById(tool) as Tool
 
-  useEffect(() => {
-    const tool = getToolById(toolId)
-    if (!tool) {
-      notFound()
+  if (!toolId) {
+    return {
+      title: "Tool Not Found",
+      description: "The requested tool does not exist.",
     }
-    setIsValidTool(true)
-  }, [toolId])
-
-  if (!isValidTool) {
-    return null
   }
 
-  const ToolComponent = getToolComponent(toolId)
+  return {
+    title: toolId.title,
+    description: toolId.description,
+  }
+}
+
+export default async function ToolPage({ params }: ToolPageProps) {
+  const { tool } = await params
+
+  const toolId = getToolById(tool) as Tool
+
+  if (!toolId) {
+    notFound()
+  }
+
+  const ToolComponent = getToolComponent(tool)
 
   if (!ToolComponent) {
     notFound()

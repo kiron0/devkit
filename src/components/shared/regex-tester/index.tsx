@@ -169,7 +169,7 @@ export function RegexTesterAdvanced() {
           variant="outline"
           disabled={!pattern.trim()}
         >
-          <RefreshCw className="mr-2 h-4 w-4" />
+          <RefreshCw className="h-4 w-4" />
           Test Pattern
         </Button>
 
@@ -178,7 +178,7 @@ export function RegexTesterAdvanced() {
           variant="outline"
           disabled={!pattern && !testString}
         >
-          <RotateCcw className="mr-2 h-4 w-4" />
+          <RotateCcw className="h-4 w-4" />
           Clear
         </Button>
 
@@ -187,7 +187,7 @@ export function RegexTesterAdvanced() {
           variant="outline"
           disabled={!pattern.trim()}
         >
-          <Share2 className="mr-2 h-4 w-4" />
+          <Share2 className="h-4 w-4" />
           Share
         </Button>
 
@@ -196,7 +196,7 @@ export function RegexTesterAdvanced() {
           variant="outline"
           disabled={!pattern.trim()}
         >
-          <Download className="mr-2 h-4 w-4" />
+          <Download className="h-4 w-4" />
           Export
         </Button>
       </div>

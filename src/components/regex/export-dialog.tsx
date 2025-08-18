@@ -176,7 +176,7 @@ Matcher matcher = regex.matcher(testString);`
                       URL.revokeObjectURL(url)
                     }}
                   >
-                    <FileText className="mr-2 h-4 w-4" />
+                    <FileText className="h-4 w-4" />
                     Download
                   </Button>
                 </div>

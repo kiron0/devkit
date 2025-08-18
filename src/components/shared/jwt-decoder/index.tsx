@@ -94,11 +94,11 @@ export function JwtDecoder() {
     <ToolLayout>
       <ToolControls>
         <Button onClick={clear} variant="outline" disabled={!token}>
-          <RotateCcw className="mr-2 h-4 w-4" />
+          <RotateCcw className="h-4 w-4" />
           Clear
         </Button>
         <Button onClick={handleSampleData} variant="outline">
-          <Key className="mr-2 h-4 w-4" />
+          <Key className="h-4 w-4" />
           Sample
         </Button>
       </ToolControls>

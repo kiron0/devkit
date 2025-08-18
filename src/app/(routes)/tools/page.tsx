@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { Config } from "@/config"
 import { TOOL_CATEGORIES, TOOLS } from "@/utils"
 import { ArrowRight, Grid3X3, Search, Sparkles } from "lucide-react"
 
@@ -14,12 +15,12 @@ import {
 
 export default function ToolsDashboard() {
   return (
-    <div className="flex flex-1 flex-col gap-6 p-6">
+    <div className="flex flex-1 flex-col gap-10 p-6">
       {/* Header Section */}
       <div className="space-y-4 text-center">
         <div className="flex items-center justify-center gap-2">
-          <Sparkles className="h-6 w-6 text-blue-600" />
-          <h1 className="text-3xl font-bold">Developer Tools Hub</h1>
+          <Sparkles className="text-primary h-6 w-6" />
+          <h1 className="text-3xl font-bold">{Config.title}</h1>
         </div>
         <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
           Professional-grade development tools designed to streamline your
@@ -28,7 +29,7 @@ export default function ToolsDashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid auto-rows-min gap-4 md:grid-cols-4">
+      <div className="grid auto-rows-min gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100 dark:border-blue-800 dark:from-blue-950/50 dark:to-blue-900/50">
           <CardContent className="p-6">
             <div className="text-center">
@@ -118,11 +119,8 @@ export default function ToolsDashboard() {
                           </div>
                           <div className="flex gap-1">
                             {tool.featured && (
-                              <Badge
-                                variant="default"
-                                className="bg-blue-600 text-xs"
-                              >
-                                <Sparkles className="mr-1 h-3 w-3" />
+                              <Badge variant="default" className="text-xs">
+                                <Sparkles className="h-3 w-3" />
                                 Featured
                               </Badge>
                             )}
@@ -136,7 +134,7 @@ export default function ToolsDashboard() {
                             )}
                           </div>
                         </div>
-                        <CardTitle className="text-lg transition-colors group-hover:text-blue-600">
+                        <CardTitle className="group-hover:text-primary text-lg transition-colors">
                           {tool.title}
                         </CardTitle>
                       </CardHeader>
@@ -144,7 +142,7 @@ export default function ToolsDashboard() {
                         <CardDescription className="mb-4 text-sm leading-relaxed">
                           {tool.description}
                         </CardDescription>
-                        <div className="flex items-center text-sm font-medium text-blue-600 transition-transform duration-200 group-hover:translate-x-1">
+                        <div className="text-primary flex items-center text-sm font-medium transition-transform duration-200 group-hover:translate-x-1">
                           Try Tool
                           <ArrowRight className="ml-1 h-4 w-4" />
                         </div>
@@ -163,19 +161,19 @@ export default function ToolsDashboard() {
         <h3 className="text-xl font-semibold">Quick Actions</h3>
         <div className="flex flex-wrap justify-center gap-4">
           <Link href="/tools/regex-tester">
-            <Button variant="default" className="gap-2">
+            <Button variant="default">
               <Search className="h-4 w-4" />
               Test Regex
             </Button>
           </Link>
           <Link href="/tools/json-formatter">
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline">
               <Grid3X3 className="h-4 w-4" />
               Format JSON
             </Button>
           </Link>
           <Link href="/tools/password-generator">
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline">
               <Sparkles className="h-4 w-4" />
               Generate Password
             </Button>

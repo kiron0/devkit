@@ -216,10 +216,8 @@ export function RegexTesterFull({
                         <div className="space-y-1">
                           {analysis.explanation.map((item, index) => (
                             <p key={index} className="text-muted-foreground">
-                              <span className="font-mono font-medium">
-                                {item.token}
-                              </span>
-                              : {item.explanation}
+                              <span className="font-medium">{item.token}</span>:{" "}
+                              {item.explanation}
                             </p>
                           ))}
                         </div>

@@ -210,7 +210,7 @@ export function Base64Tool() {
             size="sm"
             onClick={() => setMode("encode")}
           >
-            <ArrowUp className="mr-2 h-4 w-4" />
+            <ArrowUp className="h-4 w-4" />
             Encode
           </Button>
           <Button
@@ -218,13 +218,13 @@ export function Base64Tool() {
             size="sm"
             onClick={() => setMode("decode")}
           >
-            <ArrowDown className="mr-2 h-4 w-4" />
+            <ArrowDown className="h-4 w-4" />
             Decode
           </Button>
         </div>
 
         <Button onClick={switchMode} variant="outline">
-          <RotateCcw className="mr-2 h-4 w-4" />
+          <RotateCcw className="h-4 w-4" />
           Switch Mode
         </Button>
 
@@ -237,14 +237,14 @@ export function Base64Tool() {
         </Button>
 
         <Button onClick={handleSampleData} variant="outline">
-          <FileText className="mr-2 h-4 w-4" />
+          <FileText className="h-4 w-4" />
           Sample Data
         </Button>
 
         <Label className="inline-flex">
           <Button variant="outline" asChild>
             <span>
-              <Upload className="mr-2 h-4 w-4" />
+              <Upload className="h-4 w-4" />
               Upload File
             </span>
           </Button>
@@ -253,7 +253,7 @@ export function Base64Tool() {
 
         {base64Input && mode === "decode" && (
           <Button onClick={handleDownloadAsFile} variant="outline">
-            <Download className="mr-2 h-4 w-4" />
+            <Download className="h-4 w-4" />
             Download File
           </Button>
         )}

@@ -22,7 +22,7 @@ import { ToolsSidebar } from "../tools-sidebar"
 export function ToolsLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
-  const [selectedTool, setSelectedTool] = useState<string | undefined>()
+  const [selectedTool, setSelectedTool] = useState<string | null>(null)
 
   // Get tool from URL path
   useEffect(() => {
@@ -36,11 +36,13 @@ export function ToolsLayout({ children }: { children: React.ReactNode }) {
         getToolById(toolFromPath)
       ) {
         setSelectedTool(toolFromPath)
+      } else if (toolFromPath === "tools") {
+        setSelectedTool(null)
       }
     }
   }, [pathname])
 
-  const handleToolSelect = (toolId: string) => {
+  const handleToolSelect = (toolId: string | null) => {
     setSelectedTool(toolId)
     router.push(`/tools/${toolId}`)
   }
@@ -60,7 +62,7 @@ export function ToolsLayout({ children }: { children: React.ReactNode }) {
             <SidebarTrigger className="hover:bg-accent -ml-1 rounded-md p-1 transition-colors" />
             <Separator
               orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
+              className="data-[orientation=vertical]:h-4"
             />
             <Breadcrumb>
               <BreadcrumbList className="flex items-center space-x-1">
@@ -78,8 +80,8 @@ export function ToolsLayout({ children }: { children: React.ReactNode }) {
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl p-6 md:min-h-min">
+        <div className="flex flex-1 flex-col gap-4 pt-0 md:p-4">
+          <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min md:p-6">
             {children}
           </div>
         </div>

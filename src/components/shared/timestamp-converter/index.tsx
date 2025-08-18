@@ -185,8 +185,8 @@ export function TimestampConverter() {
       <Card className="mb-6">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg">
-              <Clock className="mr-2 inline h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Clock className="inline h-5 w-5" />
               Current Time
             </CardTitle>
             <Button onClick={handleCurrentTime} variant="outline" size="sm">
@@ -262,9 +262,9 @@ export function TimestampConverter() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="flex flex-col gap-6">
         {/* Converter */}
-        <div className="space-y-6 lg:col-span-2">
+        <div className="space-y-6">
           {/* Input */}
           <Card>
             <CardHeader className="pb-3">
@@ -412,8 +412,8 @@ export function TimestampConverter() {
           {/* Preset Timestamps */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg">
-                <Calendar className="mr-2 inline h-4 w-4" />
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Calendar className="inline h-4 w-4" />
                 Famous Timestamps
               </CardTitle>
             </CardHeader>

@@ -114,7 +114,9 @@ export function RegexTesterCompact({
           <div className="mb-4 text-sm font-medium">Quick Examples:</div>
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
             <Button
-              variant="ghost"
+              variant={
+                pattern === "\\b\\w+@\\w+\\.\\w+\\b" ? "default" : "outline"
+              }
               size="sm"
               onClick={() =>
                 handleLoadExample(
@@ -122,17 +124,19 @@ export function RegexTesterCompact({
                   "Contact us at support@example.com or sales@company.org"
                 )
               }
-              className="h-auto p-3 text-left"
+              className="h-auto p-3"
             >
               <div>
                 <div className="text-xs font-medium">📧 Email</div>
-                <div className="text-muted-foreground text-xs">
-                  Find email addresses
-                </div>
+                <div className="text-xs">Find email addresses</div>
               </div>
             </Button>
             <Button
-              variant="ghost"
+              variant={
+                pattern === "\\d{3}[-.]?\\d{3}[-.]?\\d{4}"
+                  ? "default"
+                  : "outline"
+              }
               size="sm"
               onClick={() =>
                 handleLoadExample(
@@ -140,17 +144,15 @@ export function RegexTesterCompact({
                   "Call us at 555-123-4567 or 555.987.6543"
                 )
               }
-              className="h-auto p-3 text-left"
+              className="h-auto p-3"
             >
               <div>
                 <div className="text-xs font-medium">📞 Phone</div>
-                <div className="text-muted-foreground text-xs">
-                  Match phone numbers
-                </div>
+                <div className="text-xs">Match phone numbers</div>
               </div>
             </Button>
             <Button
-              variant="ghost"
+              variant={pattern === "\\d+" ? "default" : "outline"}
               size="sm"
               onClick={() =>
                 handleLoadExample(
@@ -158,13 +160,11 @@ export function RegexTesterCompact({
                   "I have 5 apples and 10 oranges, total 15 fruits"
                 )
               }
-              className="h-auto p-3 text-left"
+              className="h-auto p-3"
             >
               <div>
                 <div className="text-xs font-medium">🔢 Numbers</div>
-                <div className="text-muted-foreground text-xs">
-                  Extract numbers
-                </div>
+                <div className="text-xs">Extract numbers</div>
               </div>
             </Button>
           </div>
