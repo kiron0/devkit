@@ -1,4 +1,4 @@
-const title = "DevTools Hub"
+const title = "DevKit"
 
 export const Config = {
   title,

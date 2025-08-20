@@ -1,10 +1,10 @@
-# DevTools Hub 🛠️
+# DevKit 🛠️
 
 **Professional Development Tools & Utilities**
 
-DevTools Hub is your comprehensive suite of development tools built with cutting-edge technology. Features advanced regex testing, code validation, and developer utilities - all in a beautiful, responsive interface powered by Next.js 15 and modern web standards.
+DevKit is your comprehensive suite of development tools built with cutting-edge technology. Features advanced regex testing, code validation, and developer utilities - all in a beautiful, responsive interface powered by Next.js 15 and modern web standards.
 
-🔗 **Live Demo**: [Visit DevTools Hub](https://devtools-hub.vercel.app)
+🔗 **Live Demo**: [Visit DevKit](https://devtools-hub.vercel.app)
 📚 **Documentation**: [Read the Docs](https://github.com/kiron0/devtools-hub)
 
 ## ✨ Key Features
@@ -79,7 +79,7 @@ DevTools Hub is your comprehensive suite of development tools built with cutting
 
 ## 📱 Responsive Breakpoints
 
-DevTools Hub is designed with a mobile-first approach:
+DevKit is designed with a mobile-first approach:
 
 | Device | Width | Features |
 |--------|-------|----------|
