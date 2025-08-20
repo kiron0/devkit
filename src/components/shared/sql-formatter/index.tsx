@@ -122,7 +122,7 @@ export function SqlFormatterTool() {
               placeholder="select * from users where active = true order by created_at desc"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
+              className="max-h-[400px] min-h-[400px] resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -138,12 +138,12 @@ export function SqlFormatterTool() {
             {output ? (
               <CodeHighlighter
                 language="sql"
-                className="max-h-[300px] min-h-[300px] overflow-y-auto"
+                className="max-h-[400px] min-h-[400px] overflow-y-auto"
               >
                 {output}
               </CodeHighlighter>
             ) : (
-              <div className="dark:bg-input/30 text-muted-foreground border-border flex max-h-[300px] min-h-[300px] items-center justify-center rounded-md border bg-transparent text-sm">
+              <div className="dark:bg-input/30 text-muted-foreground border-border flex max-h-[400px] min-h-[400px] items-center justify-center rounded-md border bg-transparent text-sm">
                 Formatted SQL will appear here
               </div>
             )}

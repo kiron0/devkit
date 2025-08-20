@@ -386,7 +386,7 @@ Join thousands of developers who trust ${Config.title} for their daily developme
               placeholder="Enter or paste your text here..."
               value={inputText}
               onChange={(e) => handleInputChange(e.target.value)}
-              className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
+              className="max-h-[400px] min-h-[400px] resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -479,7 +479,7 @@ Join thousands of developers who trust ${Config.title} for their daily developme
                     placeholder="Enter text to compare with..."
                     value={comparisonText}
                     onChange={(e) => setComparisonText(e.target.value)}
-                    className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
+                    className="max-h-[400px] min-h-[400px] resize-none font-mono text-sm"
                   />
                 </CardContent>
               </Card>
@@ -539,7 +539,7 @@ Join thousands of developers who trust ${Config.title} for their daily developme
                     placeholder="Transformed text will appear here..."
                     value={outputText}
                     readOnly
-                    className="bg-muted/50 max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
+                    className="bg-muted/50 max-h-[400px] min-h-[400px] resize-none font-mono text-sm"
                   />
                 </CardContent>
               </Card>

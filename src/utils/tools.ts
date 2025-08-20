@@ -1,17 +1,27 @@
 import React from "react"
 
+// Import new tools
+import { APIResponseFormatter } from "@/components/shared/api-response-formatter"
 // Import all tool components
 import { Base64Tool } from "@/components/shared/base64"
 import { CodeBeautifier } from "@/components/shared/code-beautifier"
 import { ColorConverter } from "@/components/shared/color-converter"
 import { CronCalculator } from "@/components/shared/cron-calculator"
+import { CSSAnimationGenerator } from "@/components/shared/css-animation-generator"
+import { CSSBoxShadowGenerator } from "@/components/shared/css-box-shadow-generator"
+import { CSSLayoutGenerator } from "@/components/shared/css-layout-generator"
 import { CsvJsonConverter } from "@/components/shared/csv-json-converter"
+import { FontPairingSuggestions } from "@/components/shared/font-pairing-suggestions"
+import { GitCommandGenerator } from "@/components/shared/git-command-generator"
 import { HashGenerator } from "@/components/shared/hash-generator"
+import { HTTPStatusLookup } from "@/components/shared/http-status-lookup"
+import { ImageConverter } from "@/components/shared/image-converter"
 import { JSONFormatter } from "@/components/shared/json-formatter"
 import { JsonToTypescript } from "@/components/shared/json-to-typescript"
 import { JwtDecoder } from "@/components/shared/jwt-decoder"
 import { LoremGenerator } from "@/components/shared/lorem-generator"
 import { MarkdownTool } from "@/components/shared/markdown"
+import { MetaTagGenerator } from "@/components/shared/meta-tag-generator"
 import { NumberBaseConverter } from "@/components/shared/number-base-converter"
 import { PasswordGenerator } from "@/components/shared/password-generator"
 import { Playground } from "@/components/shared/playground"
@@ -291,6 +301,105 @@ export const TOOLS: Tool[] = [
     path: "/tools/responsive-testing",
     featured: true,
     component: ResponsiveTestingTool,
+  },
+  {
+    id: "image-converter",
+    title: "Image Format Converter",
+    description:
+      "Convert images between PNG, JPG, WebP, SVG formats with compression and basic editing",
+    icon: "🖼️",
+    category: "Design",
+    path: "/tools/image-converter",
+    featured: false,
+    component: ImageConverter,
+  },
+  {
+    id: "css-layout-generator",
+    title: "CSS Layout Generator",
+    description:
+      "Visual CSS Grid and Flexbox builder with live preview and code generation",
+    icon: "🎨",
+    category: "Design",
+    path: "/tools/css-layout-generator",
+    featured: false,
+    component: CSSLayoutGenerator,
+  },
+  {
+    id: "http-status-lookup",
+    title: "HTTP Status Lookup",
+    description:
+      "Searchable database of HTTP status codes with common use cases and troubleshooting tips",
+    icon: "🌐",
+    category: "Development Tools",
+    path: "/tools/http-status-lookup",
+    featured: false,
+    component: HTTPStatusLookup,
+  },
+  {
+    id: "git-command-generator",
+    title: "Git Command Generator",
+    description:
+      "Interactive Git command builder with common workflows and explanations",
+    icon: "📚",
+    category: "Development Tools",
+    path: "/tools/git-command-generator",
+    featured: false,
+    component: GitCommandGenerator,
+  },
+  {
+    id: "css-animation-generator",
+    title: "CSS Animation Generator",
+    description:
+      "Create custom CSS animations with keyframes, presets, and live preview",
+    icon: "✨",
+    category: "Design",
+    path: "/tools/css-animation-generator",
+    featured: false,
+    component: CSSAnimationGenerator,
+  },
+  {
+    id: "api-response-formatter",
+    title: "API Response Formatter",
+    description:
+      "Format, validate, and convert JSON/XML API responses with syntax highlighting",
+    icon: "🔧",
+    category: "Development Tools",
+    path: "/tools/api-response-formatter",
+    featured: false,
+    component: APIResponseFormatter,
+  },
+  {
+    id: "font-pairing-suggestions",
+    title: "Font Pairing Suggestions",
+    description:
+      "Discover beautiful typography combinations with Google Fonts integration",
+    icon: "🔤",
+    category: "Design",
+    path: "/tools/font-pairing-suggestions",
+    featured: false,
+    component: FontPairingSuggestions,
+  },
+  {
+    id: "css-box-shadow-generator",
+    title: "CSS Box Shadow Generator",
+    description:
+      "Create beautiful box shadows with visual builder and multiple layers",
+    icon: "🌗",
+    category: "Design",
+    path: "/tools/css-box-shadow-generator",
+    featured: false,
+    component: CSSBoxShadowGenerator,
+  },
+  {
+    id: "meta-tag-generator",
+    title: "Meta Tag Generator",
+    description:
+      "Generate SEO meta tags, Open Graph, and Twitter Card tags for your website",
+    icon: "🏷️",
+    category: "Development Tools",
+    path: "/tools/meta-tag-generator",
+    featured: false,
+    component: MetaTagGenerator,
   },
 ]
 

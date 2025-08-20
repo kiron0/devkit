@@ -132,7 +132,7 @@ export function LoremGenerator() {
             <Textarea
               value={output}
               readOnly
-              className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
+              className="max-h-[400px] min-h-[400px] resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>

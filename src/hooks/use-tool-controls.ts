@@ -1,14 +1,12 @@
 import { useCallback } from "react"
 
-import { useToast } from "./use-toast"
+import { toast } from "./use-toast"
 
 interface UseToolControlsProps {
   hasData?: boolean
 }
 
 export function useToolControls({ hasData }: UseToolControlsProps) {
-  const { toast } = useToast()
-
   const handleDownload = useCallback(
     (content: string, filename: string, mimeType = "text/plain") => {
       if (!content.trim()) {
@@ -35,7 +33,7 @@ export function useToolControls({ hasData }: UseToolControlsProps) {
         description: `${filename} has been downloaded`,
       })
     },
-    [toast]
+    []
   )
 
   const handleFileUpload = useCallback(

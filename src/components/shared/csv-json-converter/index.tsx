@@ -209,7 +209,7 @@ Eve,31,Seattle,Product Manager`
               placeholder="name,age\nAlice,32\nBob,28"
               value={csv}
               onChange={(e) => setCsv(e.target.value)}
-              className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
+              className="max-h-[400px] min-h-[400px] resize-none font-mono text-sm"
             />
             {error && errorLocation === "csv" && (
               <div className="text-destructive mt-2 text-sm">{error}</div>
@@ -229,7 +229,7 @@ Eve,31,Seattle,Product Manager`
               placeholder='[{"name":"Alice","age":"32"}]'
               value={json}
               onChange={(e) => setJson(e.target.value)}
-              className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
+              className="max-h-[400px] min-h-[400px] resize-none font-mono text-sm"
             />
             {error && errorLocation === "json" && (
               <div className="text-destructive mt-2 text-sm">{error}</div>
