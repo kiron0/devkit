@@ -52,13 +52,13 @@ export const Config = {
     },
   ],
   author: {
-    name: "DevTools Team",
+    name: "Toufiq Hasan Kiron",
     url: "https://github.com/kiron0",
   },
   defaultAvatar: "/favicon.ico",
   ogImage: "/og.png",
   social: {
-    github: "https://github.com/kiron0/devtools-hub",
+    github: "https://github.com/kiron0/devkit",
     twitter: "#",
     linkedin: "#",
   },
