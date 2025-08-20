@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 import type { RegexFlags, RegexMatch, RegexTestResult } from "@/types/regex"
 
@@ -181,19 +181,16 @@ export function useRegex(debounceDelay = 300) {
       setIsProcessing(true)
 
       try {
-        const currentFlagString = createFlagString(flagsRef.current)
-        const newResult = testRegex(
-          patternRef.current,
-          testStringRef.current,
-          currentFlagString
-        )
+        // Use current state values instead of refs to ensure we have the latest data
+        const currentFlagString = createFlagString(flags)
+        const newResult = testRegex(pattern, testString, currentFlagString)
         setResult(newResult)
       } catch (error) {
         console.error("Error in debouncedTest:", error)
       } finally {
         setIsProcessing(false)
       }
-    }, [testRegex, createFlagString]), // Depend on stable functions
+    }, [testRegex, createFlagString, pattern, testString, flags]), // Include state dependencies
     debounceDelay
   )
 
@@ -203,22 +200,22 @@ export function useRegex(debounceDelay = 300) {
   }, [])
 
   // Update pattern
-  const updatePattern = useCallback(
-    (newPattern: string) => {
-      setPattern(newPattern)
-      debouncedTest()
-    },
-    [debouncedTest]
-  )
+  const updatePattern = useCallback((newPattern: string) => {
+    setPattern(newPattern)
+  }, [])
 
   // Update test string
-  const updateTestString = useCallback(
-    (newTestString: string) => {
-      setTestString(newTestString)
+  const updateTestString = useCallback((newTestString: string) => {
+    setTestString(newTestString)
+  }, [])
+
+  // Trigger test when pattern, testString, or flags change
+  useEffect(() => {
+    // Only run if we have meaningful data (not just empty strings)
+    if (pattern.trim() && testString.trim()) {
       debouncedTest()
-    },
-    [debouncedTest]
-  )
+    }
+  }, [pattern, testString, flags, debouncedTest])
 
   // Immediate test (for flag changes) - using refs for stable access
   const immediateTest = useCallback(() => {

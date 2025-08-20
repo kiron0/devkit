@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { Route } from "next"
 import Link from "next/link"
 import { Config } from "@/config"
 import { TOOL_CATEGORIES, TOOLS } from "@/utils"
@@ -214,7 +215,7 @@ export default function ToolsDashboard() {
             // Flat list for search results
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {filteredTools.map((tool) => (
-                <Link key={tool.id} href={tool.path}>
+                <Link key={tool.id} href={tool.path as Route}>
                   <Card className="group from-background to-muted/30 border-0 bg-gradient-to-br transition-all duration-200 hover:scale-105 hover:shadow-lg">
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between">
@@ -270,7 +271,7 @@ export default function ToolsDashboard() {
 
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {categoryTools.map((tool) => (
-                      <Link key={tool.id} href={tool.path}>
+                      <Link key={tool.id} href={tool.path as Route}>
                         <Card className="group from-background to-muted/30 border-0 bg-gradient-to-br transition-all duration-200 hover:scale-105 hover:shadow-lg">
                           <CardHeader className="pb-3">
                             <div className="flex items-center justify-between">

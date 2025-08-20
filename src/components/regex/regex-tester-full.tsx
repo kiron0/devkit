@@ -61,17 +61,18 @@ export function RegexTesterFull({
 
   // Load example
   const handleLoadExample = (example: RegexExample) => {
-    // Set flags first
-    setFlags({
+    // Use a single state update to avoid race conditions
+    const newFlags = {
       global: example.flags.global ?? false,
       ignoreCase: example.flags.ignoreCase ?? false,
       multiline: example.flags.multiline ?? false,
       dotAll: example.flags.dotAll ?? false,
       unicode: example.flags.unicode ?? false,
       sticky: example.flags.sticky ?? false,
-    })
+    }
 
-    // Use the update functions which trigger debounced test
+    // Update all state at once to ensure consistency
+    setFlags(newFlags)
     updatePattern(example.pattern)
     updateTestString(example.testString)
   }

@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useState } from "react"
+import { CodeAction, Language, sampleCode } from "@/utils"
 import {
   css as cssBeautify,
   html as htmlBeautify,
@@ -32,20 +33,17 @@ import {
 } from "@/components/common"
 import { CodeHighlighter } from "@/components/shared/markdown/code-highlighter"
 
-type Language = "javascript" | "css" | "html"
-type Action = "beautify" | "minify"
-
 export function CodeBeautifier() {
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")
   const [language, setLanguage] = useState<Language>("javascript")
-  const [action, setAction] = useState<Action>("beautify")
+  const [action, setAction] = useState<CodeAction>("beautify")
   const [isValid, setIsValid] = useState<boolean | null>(null)
   const [error, setError] = useState<{ message: string } | null>(null)
   const [indentSize, setIndentSize] = useState(2)
 
   const processCode = useCallback(
-    (code: string, lang: Language, actionType: Action, indent: number) => {
+    (code: string, lang: Language, actionType: CodeAction, indent: number) => {
       if (!code.trim()) {
         setOutput("")
         setIsValid(null)
@@ -54,7 +52,7 @@ export function CodeBeautifier() {
       }
 
       try {
-        let processed = ""
+        let processed: string | undefined
 
         if (actionType === "beautify") {
           switch (lang) {
@@ -87,22 +85,33 @@ export function CodeBeautifier() {
           }
         }
 
+        // Ensure we have output
+        if (!processed || processed.trim() === "") {
+          throw new Error(`No output generated for ${lang} ${actionType}`)
+        }
+
         setOutput(processed)
         setIsValid(true)
         setError(null)
       } catch (err) {
+        console.error(`Error processing ${lang} code:`, err)
         setIsValid(false)
         setOutput("")
         setError({
           message:
-            err instanceof Error ? err.message : `Failed to ${actionType} code`,
+            err instanceof Error
+              ? err.message
+              : `Failed to ${actionType} ${lang} code`,
         })
       }
     },
     []
   )
 
-  const beautifyJavaScript = (code: string, indent: number): string => {
+  const beautifyJavaScript = (
+    code: string,
+    indent: number
+  ): string | undefined => {
     return jsBeautify(code, {
       indent_size: indent,
       indent_char: " ",
@@ -122,7 +131,7 @@ export function CodeBeautifier() {
     })
   }
 
-  const beautifyCSS = (code: string, indent: number): string => {
+  const beautifyCSS = (code: string, indent: number): string | undefined => {
     return cssBeautify(code, {
       indent_size: indent,
       indent_char: " ",
@@ -134,19 +143,30 @@ export function CodeBeautifier() {
     })
   }
 
-  const beautifyHTML = (code: string, indent: number): string => {
-    return htmlBeautify(code, {
-      indent_size: indent,
-      indent_char: " ",
-      max_preserve_newlines: 2,
-      preserve_newlines: true,
-      indent_inner_html: true,
-      wrap_line_length: 0,
-      wrap_attributes: "auto",
-      wrap_attributes_indent_size: indent,
-      end_with_newline: false,
-      indent_empty_lines: false,
-    })
+  const beautifyHTML = (code: string, indent: number): string | undefined => {
+    try {
+      return htmlBeautify(code, {
+        indent_size: indent,
+        indent_char: " ",
+        max_preserve_newlines: 5,
+        preserve_newlines: true,
+        indent_inner_html: true,
+        wrap_line_length: 120,
+        wrap_attributes: "force-expand-multiline",
+        wrap_attributes_indent_size: indent,
+        end_with_newline: true,
+        indent_empty_lines: false,
+        unformatted: ["code", "pre", "em", "strong", "span"],
+        content_unformatted: ["pre"],
+        extra_liners: ["head", "body", "/html"],
+        indent_scripts: "normal",
+      })
+    } catch (err) {
+      console.warn(
+        "js-beautify failed, using fallback HTML beautification:",
+        err
+      )
+    }
   }
 
   // Minify functions
@@ -219,9 +239,10 @@ export function CodeBeautifier() {
 
   const handleLanguageChange = (newLanguage: Language) => {
     setLanguage(newLanguage)
-    if (input.trim()) {
-      processCode(input, newLanguage, action, indentSize)
-    }
+    const code = sampleCode[newLanguage]
+
+    setInput(code)
+    processCode(code, newLanguage, action, indentSize)
   }
 
   const handleIndentChange = (newIndent: string) => {
@@ -232,7 +253,7 @@ export function CodeBeautifier() {
     }
   }
 
-  const handleActionChange = (newAction: Action) => {
+  const handleActionChange = (newAction: CodeAction) => {
     setAction(newAction)
     if (input.trim()) {
       processCode(input, language, newAction, indentSize)
@@ -287,22 +308,10 @@ export function CodeBeautifier() {
   }
 
   const handleSampleData = () => {
-    let sampleCode = ""
+    const code = sampleCode[language]
 
-    switch (language) {
-      case "javascript":
-        sampleCode = `function calculateSum(a,b){if(a&&b){return a+b;}return 0;}const numbers=[1,2,3,4,5];const result=numbers.reduce((sum,num)=>sum+num,0);console.log('Sum:',result);class Calculator{constructor(initial=0){this.value=initial;}add(x){this.value+=x;return this;}multiply(x){this.value*=x;return this;}getResult(){return this.value;}}const calc=new Calculator(10).add(5).multiply(2);`
-        break
-      case "css":
-        sampleCode = `.container{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background-color:#f5f5f5;}.button{padding:12px 24px;border:none;border-radius:6px;background-color:#007bff;color:white;cursor:pointer;transition:background-color 0.3s ease;}`
-        break
-      case "html":
-        sampleCode = `<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Document</title></head><body><h1>Hello World</h1><p>This is a sample HTML document</p><button class="btn">Click me</button></body></html>`
-        break
-    }
-
-    setInput(sampleCode)
-    processCode(sampleCode, language, action, indentSize)
+    setInput(code)
+    processCode(code, language, action, indentSize)
   }
 
   const stats = [

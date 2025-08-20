@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useState } from "react"
-import { Code, RotateCcw } from "lucide-react"
+import { Code, RotateCcw, Zap } from "lucide-react"
 
 import { getCommonFeatures } from "@/lib/tool-patterns"
 import { Button } from "@/components/ui/button"
@@ -56,7 +56,7 @@ function toTypeScript(
       const fields = Object.entries(obj)
         .map(
           ([k, v]) =>
-            `  ${JSON.stringify(k)}: ${toTypeScript(ifaceName + capitalize(k), v, acc)};`
+            `  ${k}: ${toTypeScript(ifaceName + capitalize(k), v, acc)};`
         )
         .join("\n")
       acc[ifaceName] = `interface ${ifaceName} {\n${fields}\n}`
@@ -91,28 +91,17 @@ export function JsonToTypescript() {
       return
     }
     try {
-      // Try to parse as JSON5 or fallback to JSON
       let obj: unknown
       try {
-        // Try JSON5 if available (optional, fallback to JSON)
-        // @ts-expect-error - JSON5 is a global variable
-        if (typeof window !== "undefined" && window.JSON5) {
-          // @ts-expect-error - JSON5 is a global variable
-          obj = window.JSON5.parse(input)
-        } else {
-          obj = JSON.parse(input)
-        }
+        obj = JSON.parse(input)
       } catch {
         obj = JSON.parse(input)
       }
 
-      // Deep type analysis: try to infer literal types for small enums, union types for arrays, etc.
-      // For now, just use generateTypes, but could be extended for more advanced inference.
       const types = generateTypes("Root", obj)
 
-      // Optionally, run a quick validation for circular references or very deep objects
       const checkDepth = (value: unknown, depth = 0): boolean => {
-        if (depth > 20) return false // Too deep, likely recursive
+        if (depth > 20) return false
         if (typeof value !== "object" || value === null) return true
         if (Array.isArray(value))
           return value.every((v) => checkDepth(v, depth + 1))
@@ -124,13 +113,12 @@ export function JsonToTypescript() {
         return
       }
 
-      // Optionally, pretty-print the output and add a comment header
-      const header = `// TypeScript interfaces generated from JSON\n// Generated at: ${new Date().toLocaleString()}\n`
-      setOutput(header + types)
+      setOutput(types)
       setIsValid(true)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      setOutput(`// Error: ${err?.message || "Invalid JSON"}`)
+    } catch (err: unknown) {
+      setOutput(
+        `// Error: ${err instanceof Error ? err.message : "Invalid JSON"}`
+      )
       setIsValid(false)
     }
   }, [input])
@@ -140,6 +128,19 @@ export function JsonToTypescript() {
     setOutput("")
     setIsValid(null)
   }
+
+  const formatJSON = useCallback(() => {
+    if (!input.trim()) return
+
+    try {
+      const parsed = JSON.parse(input)
+      const formatted = JSON.stringify(parsed, null, 2)
+      setInput(formatted)
+      setIsValid(null)
+    } catch (err: unknown) {
+      console.error(err)
+    }
+  }, [input])
 
   const handleSampleData = () => {
     const sampleJSON = {
@@ -205,7 +206,17 @@ export function JsonToTypescript() {
   return (
     <ToolLayout>
       <ToolControls>
-        <Button onClick={convert}>Convert</Button>
+        <Button onClick={convert} disabled={!input.trim()}>
+          Convert
+        </Button>
+        <Button
+          onClick={formatJSON}
+          variant="outline"
+          disabled={!input.trim() || isValid === false}
+        >
+          <Zap className="h-4 w-4" />
+          Format
+        </Button>
         <Button onClick={clear} variant="outline" disabled={!input && !output}>
           <RotateCcw className="h-4 w-4" />
           Clear
