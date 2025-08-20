@@ -65,6 +65,16 @@ To contribute, please follow these general steps:
 
 Please ensure your code adheres to our style guidelines (enforced by Prettier) and passes all automated checks.
 
+## 📄 License
+
+DevKit is an open-source project released under the **MIT License**. This means you are free to use, modify, and distribute the software, provided you include the original copyright and license notice.
+
+<p align="center">
+  <a href="https://github.com/kiron0/devkit/blob/main/LICENSE" target="_blank">
+    <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="License: MIT">
+  </a>
+</p>
+
 ## 📧 Contact & Support
 
 We're here to help and eager to hear your feedback!
