@@ -1,5 +1,6 @@
 "use client"
 
+import { Route } from "next"
 import Link from "next/link"
 import { Config } from "@/config"
 import { TOOLS } from "@/utils"
@@ -91,7 +92,7 @@ export function Home() {
           <div className="flex items-center space-x-2">
             <ThemeSwitcher />
             <Link
-              href={Config.social.github}
+              href={Config.social.github as Route}
               target="_blank"
               rel="noopener noreferrer"
               className={buttonVariants({ variant: "ghost", size: "sm" })}
@@ -258,7 +259,7 @@ export function Home() {
                 key={tool.id}
                 className="group from-background to-muted/30 relative overflow-hidden border-0 bg-gradient-to-br transition-all duration-300 hover:scale-105 hover:shadow-xl"
               >
-                <Link href={tool.path} className="block p-6">
+                <Link href={tool.path as Route} className="block p-6">
                   <CardHeader className="pb-3">
                     <div className="mb-3 text-4xl transition-transform duration-300 group-hover:scale-110">
                       {tool.icon}
@@ -383,7 +384,7 @@ export function Home() {
           </p>
           <div className="flex items-center justify-center space-x-4">
             <Link
-              href={Config.social.github}
+              href={Config.social.github as Route}
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-foreground transition-colors"
