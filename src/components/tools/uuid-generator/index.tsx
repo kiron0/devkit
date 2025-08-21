@@ -84,13 +84,20 @@ export function UUIDGenerator() {
     setCurrentUUID(uuid)
 
     const newEntry: GeneratedUUID = {
-      id: Date.now().toString(),
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       uuid,
       version: selectedVersion,
       timestamp: Date.now(),
     }
 
-    setHistory((prev) => [newEntry, ...prev.slice(0, 49)]) // Keep last 50
+    setHistory((prev) => {
+      // Ensure no duplicate IDs
+      const existingIds = new Set(prev.map((item) => item.id))
+      if (existingIds.has(newEntry.id)) {
+        newEntry.id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      }
+      return [newEntry, ...prev.slice(0, 49)] // Keep last 50
+    })
 
     toast({
       title: "UUID Generated",
@@ -152,7 +159,9 @@ export function UUIDGenerator() {
 
   // Generate initial UUID
   React.useEffect(() => {
-    handleGenerate()
+    if (!currentUUID) {
+      handleGenerate()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Only run once on mount
 
