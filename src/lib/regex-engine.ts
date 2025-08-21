@@ -171,9 +171,8 @@ export const REGEX_EXAMPLES: RegexExample[] = [
     name: "Strong Password",
     pattern:
       "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
-    testString:
-      "Password123! (valid)\\npassword (invalid)\\nPass1! (invalid)\\nMySecure123@ (valid)",
-    flags: { multiline: true },
+    testString: "Password123!\nMySecure123@\nweakpass\nPass1!",
+    flags: { global: true, multiline: true },
     description:
       "Validates strong passwords: 8+ chars, uppercase, lowercase, digit, special char",
     category: "password",

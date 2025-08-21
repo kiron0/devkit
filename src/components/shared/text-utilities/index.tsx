@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import {
   CopyButton,
   FeatureGrid,
-  StatsDisplay,
+  FileInfoCard,
   ToolControls,
   ToolLayout,
 } from "@/components/common"
@@ -34,6 +34,11 @@ export function TextUtilities() {
   const [selectedOperation, setSelectedOperation] = useState("analyze")
   const [analysis, setAnalysis] = useState<TextAnalysis | null>(null)
   const [comparisonText, setComparisonText] = useState("")
+  const [fileInfo, setFileInfo] = useState<{
+    name: string
+    size: number
+    type: string
+  } | null>(null)
 
   const analyzeText = useCallback((text: string): TextAnalysis => {
     const characters = text.length
@@ -144,6 +149,11 @@ export function TextUtilities() {
       reader.onload = (e) => {
         const content = e.target?.result as string
         setInputText(content)
+        setFileInfo({
+          name: file.name,
+          size: file.size,
+          type: file.type,
+        })
         handleInputChange(content)
       }
       reader.readAsText(file)
@@ -178,6 +188,7 @@ Join thousands of developers who trust ${Config.title} for their daily developme
     setOutputText("")
     setAnalysis(null)
     setComparisonText("")
+    setFileInfo(null)
   }
 
   const getTextDifferences = useCallback((text1: string, text2: string) => {
@@ -260,27 +271,6 @@ Join thousands of developers who trust ${Config.title} for their daily developme
     },
   ]
 
-  const stats = analysis
-    ? [
-        {
-          label: "Characters",
-          value: analysis.characters.toLocaleString(),
-          icon: "📝",
-        },
-        { label: "Words", value: analysis.words.toLocaleString(), icon: "📖" },
-        {
-          label: "Sentences",
-          value: analysis.sentences.toLocaleString(),
-          icon: "📄",
-        },
-        {
-          label: "Paragraphs",
-          value: analysis.paragraphs.toLocaleString(),
-          icon: "📑",
-        },
-      ]
-    : []
-
   const differences =
     selectedOperation === "compare" && inputText && comparisonText
       ? getTextDifferences(inputText, comparisonText)
@@ -339,6 +329,15 @@ Join thousands of developers who trust ${Config.title} for their daily developme
         </Button>
       </ToolControls>
 
+      {/* File Info */}
+      {fileInfo && (
+        <FileInfoCard
+          fileInfo={fileInfo}
+          onRemove={() => setFileInfo(null)}
+          className="mb-4"
+        />
+      )}
+
       {/* Operation Selector */}
       <Card className="mb-6">
         <CardHeader className="pb-3">
@@ -365,14 +364,7 @@ Join thousands of developers who trust ${Config.title} for their daily developme
         </CardContent>
       </Card>
 
-      {/* Stats */}
-      {analysis && (
-        <div className="mb-6">
-          <StatsDisplay stats={stats} />
-        </div>
-      )}
-
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Input */}
         <Card>
           <CardHeader className="pb-3">
@@ -386,7 +378,7 @@ Join thousands of developers who trust ${Config.title} for their daily developme
               placeholder="Enter or paste your text here..."
               value={inputText}
               onChange={(e) => handleInputChange(e.target.value)}
-              className="max-h-[400px] min-h-[400px] resize-none font-mono text-sm"
+              className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -479,7 +471,7 @@ Join thousands of developers who trust ${Config.title} for their daily developme
                     placeholder="Enter text to compare with..."
                     value={comparisonText}
                     onChange={(e) => setComparisonText(e.target.value)}
-                    className="max-h-[400px] min-h-[400px] resize-none font-mono text-sm"
+                    className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
                   />
                 </CardContent>
               </Card>
@@ -539,7 +531,7 @@ Join thousands of developers who trust ${Config.title} for their daily developme
                     placeholder="Transformed text will appear here..."
                     value={outputText}
                     readOnly
-                    className="bg-muted/50 max-h-[400px] min-h-[400px] resize-none font-mono text-sm"
+                    className="bg-muted/50 max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
                   />
                 </CardContent>
               </Card>

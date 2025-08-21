@@ -68,7 +68,7 @@ export function RegexTesterCompact({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* Input Section */}
           <div className="space-y-4">
             <PatternInput
@@ -81,6 +81,7 @@ export function RegexTesterCompact({
               value={testString}
               onChange={handleTestStringChange}
               placeholder="Enter text to test..."
+              textareaClassName="resize-none min-h-[105px] font-mono text-sm"
               rows={5}
               showCopyButton={false}
             />
@@ -93,15 +94,19 @@ export function RegexTesterCompact({
             </div>
 
             {!showResults ? (
-              <div className="bg-muted/30 min-h-[140px] rounded-md border p-3 sm:min-h-[160px]">
-                <EmptyState icon="🔍" title="Enter a pattern to see matches" />
+              <div className="bg-muted/30 rounded-md border p-3">
+                <EmptyState
+                  icon="🔍"
+                  title="Enter a pattern to see matches"
+                  className="min-h-[140px] sm:min-h-[150px]"
+                />
               </div>
             ) : (
               <>
                 <MatchDisplay
                   result={result}
                   isProcessing={isProcessing}
-                  minHeight="min-h-[140px] sm:min-h-[160px]"
+                  className="min-h-[140px] sm:min-h-[160px]"
                 />
                 <MatchStats result={result} showResults={showResults} />
               </>

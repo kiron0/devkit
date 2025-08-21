@@ -10,7 +10,6 @@ import { Textarea } from "@/components/ui/textarea"
 import {
   CopyButton,
   FeatureGrid,
-  StatsDisplay,
   ToolControls,
   ToolLayout,
 } from "@/components/common"
@@ -75,24 +74,6 @@ console.log('Fibonacci(10):', fibonacci(10));`
     setOutput("")
   }
 
-  const stats = [
-    {
-      label: "Code Lines",
-      value: code.split("\n").length.toString(),
-      icon: "📝",
-    },
-    {
-      label: "Output Lines",
-      value: output.split("\n").filter(Boolean).length.toString(),
-      icon: "📄",
-    },
-    {
-      label: "Characters",
-      value: code.length.toString(),
-      icon: "🔤",
-    },
-  ]
-
   const features = getCommonFeatures(["REAL_TIME", "COPY_READY", "PRIVACY"])
 
   return (
@@ -112,7 +93,7 @@ console.log('Fibonacci(10):', fibonacci(10));`
         </Button>
       </ToolControls>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -152,8 +133,6 @@ console.log('Fibonacci(10):', fibonacci(10));`
           </CardContent>
         </Card>
       </div>
-
-      <StatsDisplay stats={stats} className="my-6" />
       <FeatureGrid features={features} />
     </ToolLayout>
   )

@@ -56,6 +56,7 @@ export const Config = {
     url: "https://github.com/kiron0",
   },
   defaultAvatar: "/favicon.ico",
+  logo: "/logo.png",
   ogImage: "/og.png",
   social: {
     github: "https://github.com/kiron0/devkit",

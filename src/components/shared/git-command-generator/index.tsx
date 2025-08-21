@@ -162,7 +162,7 @@ export function GitCommandGenerator() {
           </TabsList>
 
           <TabsContent value="builder" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Command Builder */}
               <Card>
                 <CardHeader>
@@ -309,7 +309,7 @@ export function GitCommandGenerator() {
           </TabsContent>
 
           <TabsContent value="workflows" className="space-y-6">
-            <div className="grid gap-6">
+            <div className="grid grid-cols-1 gap-6">
               {COMMON_WORKFLOWS.map((workflow, index) => (
                 <Card key={index}>
                   <CardHeader>
@@ -344,7 +344,7 @@ export function GitCommandGenerator() {
           </TabsContent>
 
           <TabsContent value="reference" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {Object.entries(GIT_FLAGS).map(([operation, flags]) => (
                 <Card key={operation}>
                   <CardHeader>

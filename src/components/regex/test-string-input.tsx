@@ -13,6 +13,7 @@ interface TestStringInputProps {
   rows?: number
   className?: string
   showCopyButton?: boolean
+  textareaClassName?: string
 }
 
 export function TestStringInput({
@@ -23,6 +24,7 @@ export function TestStringInput({
   rows = 5,
   className,
   showCopyButton = true,
+  textareaClassName,
 }: TestStringInputProps) {
   return (
     <div className={cn("space-y-2", className)}>
@@ -36,7 +38,7 @@ export function TestStringInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="resize-none font-mono text-sm sm:text-base"
+        className={cn("font-mono text-sm sm:text-base", textareaClassName)}
         rows={rows}
       />
     </div>

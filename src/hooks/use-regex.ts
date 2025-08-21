@@ -236,11 +236,37 @@ export function useRegex(debounceDelay = 300) {
     }
   }, [testRegex, createFlagString]) // Depend on stable functions
 
+  const onClear = useCallback(() => {
+    setPattern("")
+    setTestString("")
+    setFlags({
+      global: false,
+      ignoreCase: false,
+      multiline: false,
+      dotAll: false,
+      unicode: false,
+      sticky: false,
+    })
+    setResult({
+      isValid: false,
+      matches: [],
+      highlightedText: "",
+      stats: {
+        matchCount: 0,
+        uniqueMatches: 0,
+        totalLength: 0,
+        executionTime: 0,
+      },
+    })
+    setIsProcessing(false)
+  }, [])
+
   return {
     pattern,
     testString,
     flags,
     result,
+    onClear,
     isProcessing,
     updatePattern,
     updateTestString,

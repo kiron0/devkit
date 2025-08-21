@@ -11,7 +11,7 @@ import { toast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { CopyButton, FeatureGrid, ToolLayout } from "@/components/common"
+import { FeatureGrid, ToolLayout } from "@/components/common"
 import { ExportDialog } from "@/components/regex/export-dialog"
 import { FlagsSelector } from "@/components/regex/flags-selector"
 import { MatchDisplay } from "@/components/regex/match-display"
@@ -26,6 +26,7 @@ export function RegexTesterAdvanced() {
     testString,
     flags,
     result,
+    onClear,
     isProcessing,
     updatePattern,
     updateTestString,
@@ -63,14 +64,7 @@ export function RegexTesterAdvanced() {
   const handleClear = () => {
     updatePattern("")
     updateTestString("")
-    setFlags({
-      global: false,
-      ignoreCase: false,
-      multiline: false,
-      dotAll: false,
-      unicode: false,
-      sticky: false,
-    })
+    onClear()
     toast({
       title: "Cleared",
       description: "Pattern and test string have been cleared",
@@ -206,10 +200,7 @@ export function RegexTesterAdvanced() {
           {/* Pattern Input */}
           <Card>
             <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Regex Pattern</CardTitle>
-                <CopyButton text={pattern} />
-              </div>
+              <CardTitle className="text-lg">Regex Pattern</CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
               <PatternInput
@@ -233,16 +224,14 @@ export function RegexTesterAdvanced() {
           {/* Test String */}
           <Card>
             <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Test String</CardTitle>
-                <CopyButton text={testString} />
-              </div>
+              <CardTitle className="text-lg">Test String</CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
               <TestStringInput
                 value={testString}
                 onChange={updateTestString}
                 placeholder="Enter text to test against..."
+                textareaClassName="resize-none min-h-[180px] font-mono text-sm"
                 rows={6}
               />
             </CardContent>
@@ -270,7 +259,7 @@ export function RegexTesterAdvanced() {
               <MatchDisplay
                 result={result}
                 isProcessing={isProcessing}
-                minHeight="min-h-[200px]"
+                className="min-h-[150px]"
               />
               <div className="mt-4">
                 <MatchStats
@@ -289,7 +278,7 @@ export function RegexTesterAdvanced() {
                   Analysis & Explanation
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 pt-0">
+              <CardContent className="max-h-[400px] space-y-4 overflow-y-auto">
                 {analysis.explanation &&
                   Array.isArray(analysis.explanation) && (
                     <div>
@@ -365,7 +354,6 @@ export function RegexTesterAdvanced() {
         result={result}
         analysis={analysis}
       />
-
       <FeatureGrid features={features} />
     </ToolLayout>
   )

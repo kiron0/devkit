@@ -12,7 +12,6 @@ import { Textarea } from "@/components/ui/textarea"
 import {
   CopyButton,
   FeatureGrid,
-  StatsDisplay,
   ToolControls,
   ToolLayout,
 } from "@/components/common"
@@ -167,27 +166,6 @@ export function URLEncoder() {
     })
   }
 
-  const stats = [
-    {
-      label: "Characters",
-      value: inputUrl.length.toLocaleString(),
-      icon: "📝",
-    },
-    {
-      label: "Query Params",
-      value: queryParams.length.toString(),
-      icon: "🔗",
-    },
-    {
-      label: "Encoded Size",
-      value:
-        mode === "encode"
-          ? `${encodedUrl.length} chars`
-          : `${decodedUrl.length} chars`,
-      icon: "📊",
-    },
-  ]
-
   const outputValue = mode === "encode" ? encodedUrl : decodedUrl
   const outputLabel = mode === "encode" ? "Encoded URL" : "Decoded URL"
 
@@ -257,14 +235,7 @@ export function URLEncoder() {
         </Badge>
       </div>
 
-      {/* Stats */}
-      {inputUrl && (
-        <div className="mb-6">
-          <StatsDisplay stats={stats} />
-        </div>
-      )}
-
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Input Section */}
         <div className="space-y-6">
           {/* URL Input */}
@@ -410,7 +381,7 @@ export function URLEncoder() {
       {/* Use Cases */}
       <div className="mt-12">
         <h2 className="mb-6 text-xl font-bold">Common Use Cases</h2>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">🌐 API Development</CardTitle>

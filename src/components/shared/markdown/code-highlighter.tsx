@@ -30,7 +30,7 @@ export function CodeHighlighter({
 
   return (
     <div className={cn("markdown-preview rounded-lg border", className)}>
-      <div className="overflow-x-auto p-4">
+      <div className="overflow-auto p-4">
         <SyntaxHighlighter
           language={language}
           style={style}
@@ -41,10 +41,12 @@ export function CodeHighlighter({
             lineHeight: "1.5",
             borderRadius: "0",
             minWidth: "100%",
+            maxWidth: "100%",
+            overflow: "auto",
           }}
           showLineNumbers={false}
           wrapLines={false}
-          wrapLongLines={false}
+          wrapLongLines={true}
         >
           {children}
         </SyntaxHighlighter>

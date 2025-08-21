@@ -430,7 +430,7 @@ ${keyframesCSS}
           </TabsList>
 
           <TabsContent value="builder" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Animation Settings */}
               <Card>
                 <CardHeader>
@@ -581,7 +581,7 @@ ${keyframesCSS}
                     </Button>
                   </div>
                 </CardHeader>
-                <CardContent className="max-h-[300px] space-y-4 overflow-y-auto">
+                <CardContent className="max-h-[300px] min-h-[300px] space-y-4 overflow-y-auto">
                   {animation.keyframes.map((keyframe) => (
                     <div
                       key={keyframe.id}
@@ -711,7 +711,7 @@ ${keyframesCSS}
                 </div>
                 <CodeHighlighter
                   language="css"
-                  className="max-h-[400px] overflow-y-auto"
+                  className="max-h-[300px] overflow-y-auto"
                 >
                   {generateCSS()}
                 </CodeHighlighter>
@@ -720,7 +720,7 @@ ${keyframesCSS}
           </TabsContent>
 
           <TabsContent value="presets" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {ANIMATION_PRESETS.map((preset, index) => {
                 const IconComponent = preset.icon
                 return (

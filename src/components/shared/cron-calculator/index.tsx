@@ -18,7 +18,6 @@ import {
 import {
   CopyButton,
   FeatureGrid,
-  StatsDisplay,
   ToolControls,
   ToolLayout,
 } from "@/components/common"
@@ -56,24 +55,6 @@ export function CronCalculator() {
     setDow(preset.dow)
   }
 
-  const stats = [
-    {
-      label: "Expression",
-      value: expr,
-      icon: "⏰",
-    },
-    {
-      label: "Valid",
-      value: valid ? "Yes" : "No",
-      icon: valid ? "✅" : "❌",
-    },
-    {
-      label: "Fields",
-      value: "5/5",
-      icon: "📊",
-    },
-  ]
-
   const features = getCommonFeatures([
     "REAL_TIME",
     "VALIDATION",
@@ -104,13 +85,13 @@ export function CronCalculator() {
             onClick={() => handlePreset(preset)}
             className="gap-2"
           >
-            <Zap className="text-primary-foreground h-4 w-4" />
+            <Zap className="h-4 w-4" />
             {preset.label}
           </Button>
         ))}
       </ToolControls>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-lg">Fields</CardTitle>
@@ -238,8 +219,6 @@ export function CronCalculator() {
           </CardContent>
         </Card>
       </div>
-
-      <StatsDisplay stats={stats} className="my-6" />
       <FeatureGrid features={features} />
     </ToolLayout>
   )

@@ -60,17 +60,15 @@ export function FlagsSelector({
               id={`flag-${key}`}
               checked={flags[key]}
               onCheckedChange={(checked) => onChange(key, checked as boolean)}
+              className="mt-0.5"
             />
-            <div className="grid gap-1.5 leading-none">
+            <div className="grid grid-cols-1 gap-1.5 leading-none">
               <Label
                 htmlFor={`flag-${key}`}
                 className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 <div className="flex items-center gap-2">
-                  <Badge
-                    variant="outline"
-                    className="px-1.5 py-0.5 font-mono text-xs"
-                  >
+                  <Badge variant="outline" className="text-xs">
                     {label}
                   </Badge>
                   <span className="text-xs">

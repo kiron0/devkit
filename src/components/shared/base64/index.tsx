@@ -23,7 +23,6 @@ import {
   CopyButton,
   FeatureGrid,
   FileInfoCard,
-  StatsDisplay,
   ToolControls,
   ToolLayout,
 } from "@/components/common"
@@ -159,33 +158,6 @@ export function Base64Tool() {
     setMode("encode")
   }
 
-  const stats = [
-    {
-      label: "Input Size",
-      value:
-        mode === "encode"
-          ? `${textInput.length} chars`
-          : `${base64Input.length} chars`,
-      icon: "📝",
-    },
-    {
-      label: "Output Size",
-      value:
-        mode === "encode"
-          ? `${base64Input.length} chars`
-          : `${textInput.length} chars`,
-      icon: "📄",
-    },
-    {
-      label: "Size Change",
-      value:
-        mode === "encode"
-          ? `+${textInput ? Math.round(((base64Input.length - textInput.length) / textInput.length) * 100) : 0}%`
-          : `${base64Input ? Math.round(((textInput.length - base64Input.length) / base64Input.length) * 100) : 0}%`,
-      icon: "📊",
-    },
-  ]
-
   const features = getCommonFeatures([
     "REAL_TIME",
     "FILE_SUPPORT",
@@ -268,15 +240,8 @@ export function Base64Tool() {
         />
       )}
 
-      {/* Stats */}
-      {(textInput || base64Input) && (
-        <div className="mb-6">
-          <StatsDisplay stats={stats} />
-        </div>
-      )}
-
       {/* Main Content */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Text Input */}
         <Card>
           <CardHeader className="pb-3">
@@ -300,7 +265,7 @@ export function Base64Tool() {
               onChange={(e) => handleTextChange(e.target.value)}
               readOnly={mode === "decode"}
               className={cn(
-                "max-h-[400px] min-h-[400px] resize-none font-mono text-sm",
+                "max-h-[300px] min-h-[300px] resize-none font-mono text-sm",
                 mode === "decode" ? "bg-muted/50" : ""
               )}
             />
@@ -328,7 +293,7 @@ export function Base64Tool() {
               onChange={(e) => handleBase64Change(e.target.value)}
               readOnly={mode === "encode"}
               className={cn(
-                "max-h-[400px] min-h-[400px] font-mono text-sm break-all",
+                "max-h-[300px] min-h-[300px] resize-none font-mono text-sm break-all",
                 mode === "encode" ? "bg-muted/50" : ""
               )}
             />

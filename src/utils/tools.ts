@@ -1,8 +1,5 @@
-import React from "react"
+import * as React from "react"
 
-// Import new tools
-import { APIResponseFormatter } from "@/components/shared/api-response-formatter"
-// Import all tool components
 import { Base64Tool } from "@/components/shared/base64"
 import { CodeBeautifier } from "@/components/shared/code-beautifier"
 import { ColorConverter } from "@/components/shared/color-converter"
@@ -16,7 +13,7 @@ import { GitCommandGenerator } from "@/components/shared/git-command-generator"
 import { HashGenerator } from "@/components/shared/hash-generator"
 import { HTTPStatusLookup } from "@/components/shared/http-status-lookup"
 import { ImageConverter } from "@/components/shared/image-converter"
-import { JSONFormatter } from "@/components/shared/json-formatter"
+import { JsonFormatter } from "@/components/shared/json-formatter"
 import { JsonToTypescript } from "@/components/shared/json-to-typescript"
 import { JwtDecoder } from "@/components/shared/jwt-decoder"
 import { LoremGenerator } from "@/components/shared/lorem-generator"
@@ -34,7 +31,6 @@ import { TimestampConverter } from "@/components/shared/timestamp-converter"
 import { URLEncoder } from "@/components/shared/url-encoder"
 import { UUIDGenerator } from "@/components/shared/uuid-generator"
 
-// Tool interface
 export interface Tool {
   id: string
   title: string
@@ -46,7 +42,6 @@ export interface Tool {
   component: React.ComponentType
 }
 
-// Categories
 export const TOOL_CATEGORIES = [
   "Text & Content",
   "Encoding & Conversion",
@@ -58,7 +53,6 @@ export const TOOL_CATEGORIES = [
 
 export type ToolCategory = (typeof TOOL_CATEGORIES)[number]
 
-// Centralized tools array with all information
 export const TOOLS: Tool[] = [
   {
     id: "regex-tester",
@@ -75,12 +69,12 @@ export const TOOLS: Tool[] = [
     id: "json-formatter",
     title: "JSON Formatter",
     description:
-      "Format, validate, and minify JSON data with syntax highlighting. Supports file upload and download.",
+      "Format, validate, and convert JSON/XML with advanced validation and syntax highlighting. Supports file upload and multiple output formats.",
     icon: "📄",
-    category: "Text & Content",
+    category: "Formatting",
     path: "/tools/json-formatter",
     featured: true,
-    component: JSONFormatter,
+    component: JsonFormatter,
   },
   {
     id: "base64",
@@ -350,23 +344,12 @@ export const TOOLS: Tool[] = [
     id: "css-animation-generator",
     title: "CSS Animation Generator",
     description:
-      "Create custom CSS animations with keyframes, presets, and live preview",
-    icon: "✨",
+      "Create smooth CSS animations with keyframes and transitions. Visual timeline editor.",
+    icon: "🎬",
     category: "Design",
     path: "/tools/css-animation-generator",
     featured: false,
     component: CSSAnimationGenerator,
-  },
-  {
-    id: "api-response-formatter",
-    title: "API Response Formatter",
-    description:
-      "Format, validate, and convert JSON/XML API responses with syntax highlighting",
-    icon: "🔧",
-    category: "Development Tools",
-    path: "/tools/api-response-formatter",
-    featured: false,
-    component: APIResponseFormatter,
   },
   {
     id: "font-pairing-suggestions",
@@ -403,21 +386,24 @@ export const TOOLS: Tool[] = [
   },
 ]
 
-// Utility functions
 export const getToolById = (id: string): Tool | undefined => {
   return TOOLS.find((tool) => tool.id === id)
 }
 
 export const getToolsByCategory = (category: ToolCategory): Tool[] => {
-  return TOOLS.filter((tool) => tool.category === category)
+  return TOOLS.filter((tool) => tool.category === category).sort((a, b) =>
+    a.title.localeCompare(b.title)
+  )
 }
 
 export const getFeaturedTools = (): Tool[] => {
-  return TOOLS.filter((tool) => tool.featured)
+  return TOOLS.filter((tool) => tool.featured).sort((a, b) =>
+    a.title.localeCompare(b.title)
+  )
 }
 
 export const getToolsGroupedByCategory = (): Record<string, Tool[]> => {
-  return TOOLS.reduce(
+  const grouped = TOOLS.reduce(
     (acc, tool) => {
       if (!acc[tool.category]) {
         acc[tool.category] = []
@@ -427,6 +413,12 @@ export const getToolsGroupedByCategory = (): Record<string, Tool[]> => {
     },
     {} as Record<string, Tool[]>
   )
+
+  Object.keys(grouped).forEach((category) => {
+    grouped[category].sort((a, b) => a.title.localeCompare(b.title))
+  })
+
+  return grouped
 }
 
 export const searchTools = (query: string): Tool[] => {
@@ -439,7 +431,6 @@ export const searchTools = (query: string): Tool[] => {
   )
 }
 
-// Tool component mapping for dynamic rendering
 export const getToolComponent = (
   toolId: string
 ): React.ComponentType | null => {
@@ -447,7 +438,6 @@ export const getToolComponent = (
   return tool?.component || null
 }
 
-// Statistics
 export const getToolStats = () => ({
   totalTools: TOOLS.length,
   totalCategories: TOOL_CATEGORIES.length,

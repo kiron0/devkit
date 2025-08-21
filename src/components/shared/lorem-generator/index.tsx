@@ -12,7 +12,6 @@ import { Textarea } from "@/components/ui/textarea"
 import {
   CopyButton,
   FeatureGrid,
-  StatsDisplay,
   ToolControls,
   ToolLayout,
 } from "@/components/common"
@@ -58,24 +57,6 @@ export function LoremGenerator() {
     setWords(randomConfig.words)
   }
 
-  const stats = [
-    {
-      label: "Paragraphs",
-      value: paragraphs.toString(),
-      icon: "📄",
-    },
-    {
-      label: "Words",
-      value: words.toString(),
-      icon: "📝",
-    },
-    {
-      label: "Characters",
-      value: output.length.toString(),
-      icon: "🔤",
-    },
-  ]
-
   const features = getCommonFeatures([
     "REAL_TIME",
     "CUSTOMIZABLE",
@@ -92,13 +73,13 @@ export function LoremGenerator() {
         </Button>
       </ToolControls>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-lg">Options</CardTitle>
           </CardHeader>
-          <CardContent className="grid gap-4 pt-0">
-            <div className="grid gap-2">
+          <CardContent className="space-y-4 pt-0">
+            <div className="space-y-2">
               <Label>Paragraphs</Label>
               <Input
                 type="number"
@@ -108,7 +89,7 @@ export function LoremGenerator() {
                 onChange={(e) => setParagraphs(parseInt(e.target.value || "1"))}
               />
             </div>
-            <div className="grid gap-2">
+            <div className="space-y-2">
               <Label>Words per paragraph</Label>
               <Input
                 type="number"
@@ -132,13 +113,11 @@ export function LoremGenerator() {
             <Textarea
               value={output}
               readOnly
-              className="max-h-[400px] min-h-[400px] resize-none font-mono text-sm"
+              className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>
       </div>
-
-      <StatsDisplay stats={stats} className="my-6" />
       <FeatureGrid features={features} />
     </ToolLayout>
   )

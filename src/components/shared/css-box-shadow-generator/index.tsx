@@ -427,7 +427,7 @@ export function CSSBoxShadowGenerator() {
           </TabsList>
 
           <TabsContent value="builder" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Shadow Controls */}
               <Card>
                 <CardHeader>
@@ -444,7 +444,7 @@ export function CSSBoxShadowGenerator() {
                     </Button>
                   </div>
                 </CardHeader>
-                <CardContent className="max-h-[300px] space-y-4 overflow-y-auto">
+                <CardContent className="max-h-[300px] min-h-[300px] space-y-4 overflow-y-auto">
                   {shadows.map((shadow, index) => (
                     <div
                       key={shadow.id}
@@ -633,7 +633,7 @@ export function CSSBoxShadowGenerator() {
           </TabsContent>
 
           <TabsContent value="presets" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {SHADOW_PRESETS.map((preset, index) => (
                 <Card
                   key={index}

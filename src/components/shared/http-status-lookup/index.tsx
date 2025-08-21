@@ -73,6 +73,11 @@ export function HTTPStatusLookup() {
         "Get practical examples and troubleshooting tips for each status code.",
       icon: "💡",
     },
+    {
+      title: "Quick Reference",
+      description: "Common HTTP status code ranges to quickly reference.",
+      icon: "🔍",
+    },
   ]
 
   return (
@@ -230,7 +235,7 @@ export function HTTPStatusLookup() {
             <CardDescription>Common HTTP status code ranges</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
               <div className="rounded-lg border p-3 text-center">
                 <div className="text-2xl font-bold text-blue-600">1xx</div>
                 <div className="text-muted-foreground text-sm">

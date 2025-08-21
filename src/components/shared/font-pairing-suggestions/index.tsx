@@ -461,7 +461,7 @@ module.exports = {
             </Card>
 
             {/* Font Pairings Grid */}
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {filteredPairings.map((pairing) => (
                 <Card
                   key={pairing.name}
@@ -526,7 +526,7 @@ module.exports = {
           </TabsContent>
 
           <TabsContent value="custom" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Custom Pairing Builder */}
               <Card>
                 <CardHeader>
@@ -705,7 +705,7 @@ module.exports = {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {GOOGLE_FONTS.map((font) => (
                     <div
                       key={font.family}
@@ -779,7 +779,7 @@ module.exports = {
               </div>
 
               {/* Font Details */}
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <h4 className="font-semibold">Heading Font</h4>
                   <div className="rounded-lg border p-3">

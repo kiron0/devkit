@@ -196,7 +196,7 @@ export function TimestampConverter() {
         </CardHeader>
         <CardContent>
           {currentTime && (
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               <div className="bg-muted/50 rounded border p-3">
                 <div className="text-muted-foreground mb-1 text-sm">
                   Unix Timestamp

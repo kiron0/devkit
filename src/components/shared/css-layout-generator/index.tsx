@@ -275,7 +275,7 @@ ${items
           </TabsList>
 
           <TabsContent value="grid" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Grid Controls */}
               <Card>
                 <CardHeader>
@@ -480,7 +480,7 @@ ${items
               </Button>
             </div>
 
-            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
               {items.map((item) => (
                 <div
                   key={item.id}
@@ -546,7 +546,7 @@ ${items
             </div>
             <CodeHighlighter
               language="css"
-              className="max-h-[400px] overflow-y-auto"
+              className="max-h-[300px] overflow-y-auto"
             >
               {generateCSS()}
             </CodeHighlighter>

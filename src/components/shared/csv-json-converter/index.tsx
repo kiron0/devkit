@@ -10,7 +10,6 @@ import { Textarea } from "@/components/ui/textarea"
 import {
   CopyButton,
   FeatureGrid,
-  StatsDisplay,
   ToolControls,
   ToolLayout,
 } from "@/components/common"
@@ -141,32 +140,6 @@ Eve,31,Seattle,Product Manager`
     setError(null)
   }
 
-  const stats = [
-    {
-      label: "CSV Lines",
-      value: csv ? csv.split(/\r?\n/).filter(Boolean).length.toString() : "0",
-      icon: "📊",
-    },
-    {
-      label: "JSON Objects",
-      value: (() => {
-        if (!json) return "0"
-        try {
-          const parsed = JSON.parse(json)
-          return (Array.isArray(parsed) ? parsed.length : 0).toString()
-        } catch {
-          return "0"
-        }
-      })(),
-      icon: "📄",
-    },
-    {
-      label: "Error",
-      value: error ? "Yes" : "No",
-      icon: error ? "❌" : "✅",
-    },
-  ]
-
   const features = getCommonFeatures([
     "REAL_TIME",
     "VALIDATION",
@@ -196,7 +169,7 @@ Eve,31,Seattle,Product Manager`
         </Button>
       </ToolControls>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -209,7 +182,7 @@ Eve,31,Seattle,Product Manager`
               placeholder="name,age\nAlice,32\nBob,28"
               value={csv}
               onChange={(e) => setCsv(e.target.value)}
-              className="max-h-[400px] min-h-[400px] resize-none font-mono text-sm"
+              className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
             />
             {error && errorLocation === "csv" && (
               <div className="text-destructive mt-2 text-sm">{error}</div>
@@ -229,7 +202,7 @@ Eve,31,Seattle,Product Manager`
               placeholder='[{"name":"Alice","age":"32"}]'
               value={json}
               onChange={(e) => setJson(e.target.value)}
-              className="max-h-[400px] min-h-[400px] resize-none font-mono text-sm"
+              className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
             />
             {error && errorLocation === "json" && (
               <div className="text-destructive mt-2 text-sm">{error}</div>
@@ -237,8 +210,6 @@ Eve,31,Seattle,Product Manager`
           </CardContent>
         </Card>
       </div>
-
-      <StatsDisplay stats={stats} className="my-6" />
       <FeatureGrid features={features} />
     </ToolLayout>
   )

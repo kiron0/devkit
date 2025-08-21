@@ -11,4 +11,3 @@ export { QuickExamples } from "./quick-examples"
 
 // Complete Tester Components
 export { RegexTesterCompact } from "./regex-tester-compact"
-export { RegexTesterFull } from "./regex-tester-full"

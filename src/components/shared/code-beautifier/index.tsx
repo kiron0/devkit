@@ -26,7 +26,7 @@ import { Textarea } from "@/components/ui/textarea"
 import {
   CopyButton,
   FeatureGrid,
-  StatsDisplay,
+  FileInfoCard,
   ToolControls,
   ToolLayout,
   ValidationBadge,
@@ -41,6 +41,11 @@ export function CodeBeautifier() {
   const [isValid, setIsValid] = useState<boolean | null>(null)
   const [error, setError] = useState<{ message: string } | null>(null)
   const [indentSize, setIndentSize] = useState(2)
+  const [fileInfo, setFileInfo] = useState<{
+    name: string
+    size: number
+    type: string
+  } | null>(null)
 
   const processCode = useCallback(
     (code: string, lang: Language, actionType: CodeAction, indent: number) => {
@@ -271,6 +276,7 @@ export function CodeBeautifier() {
     setOutput("")
     setIsValid(null)
     setError(null)
+    setFileInfo(null)
   }
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -280,6 +286,11 @@ export function CodeBeautifier() {
       reader.onload = (e) => {
         const content = e.target?.result as string
         setInput(content)
+        setFileInfo({
+          name: file.name,
+          size: file.size,
+          type: file.type,
+        })
         processCode(content, language, action, indentSize)
       }
       reader.readAsText(file)
@@ -313,24 +324,6 @@ export function CodeBeautifier() {
     setInput(code)
     processCode(code, language, action, indentSize)
   }
-
-  const stats = [
-    {
-      label: "Characters",
-      value: input.length.toLocaleString(),
-      icon: "📝",
-    },
-    {
-      label: "Lines",
-      value: input.split("\n").length.toLocaleString(),
-      icon: "📄",
-    },
-    {
-      label: "Size",
-      value: `${(new Blob([input]).size / 1024).toFixed(1)} KB`,
-      icon: "💾",
-    },
-  ]
 
   const features = getCommonFeatures([
     "REAL_TIME",
@@ -421,11 +414,12 @@ export function CodeBeautifier() {
         )}
       </ToolControls>
 
-      {/* Stats */}
-      {input && (
-        <div className="mb-6">
-          <StatsDisplay stats={stats} />
-        </div>
+      {fileInfo && (
+        <FileInfoCard
+          fileInfo={fileInfo}
+          onRemove={() => setFileInfo(null)}
+          className="mb-4"
+        />
       )}
 
       {/* Status Badge */}
@@ -460,7 +454,7 @@ export function CodeBeautifier() {
       )}
 
       {/* Main Content */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Input */}
         <Card>
           <CardHeader className="pb-3">
@@ -474,7 +468,7 @@ export function CodeBeautifier() {
               placeholder={`Paste your ${language.toUpperCase()} code here...`}
               value={input}
               onChange={(e) => handleInputChange(e.target.value)}
-              className="max-h-[400px] min-h-[400px] resize-none font-mono text-sm"
+              className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -493,12 +487,12 @@ export function CodeBeautifier() {
             {output ? (
               <CodeHighlighter
                 language={language}
-                className="max-h-[400px] min-h-[400px] overflow-y-auto"
+                className="max-h-[300px] min-h-[300px] overflow-y-auto"
               >
                 {output}
               </CodeHighlighter>
             ) : (
-              <div className="dark:bg-input/30 text-muted-foreground border-border flex max-h-[400px] min-h-[400px] items-center justify-center rounded-md border bg-transparent text-sm">
+              <div className="dark:bg-input/30 text-muted-foreground border-border flex max-h-[300px] min-h-[300px] items-center justify-center rounded-md border bg-transparent text-sm">
                 Beautified code will appear here...
               </div>
             )}

@@ -10,7 +10,6 @@ import { Textarea } from "@/components/ui/textarea"
 import {
   CopyButton,
   FeatureGrid,
-  StatsDisplay,
   ToolControls,
   ToolLayout,
   ValidationBadge,
@@ -59,29 +58,10 @@ export function JwtDecoder() {
   const clear = () => setToken("")
 
   const handleSampleData = () => {
-    // Sample JWT token (this is a demo token, not a real one)
     const sampleToken =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyNDI2MjIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0EQpEd9A"
     setToken(sampleToken)
   }
-
-  const stats = [
-    {
-      label: "Token Length",
-      value: token.length.toString(),
-      icon: "🔑",
-    },
-    {
-      label: "Valid",
-      value: valid === null ? "N/A" : valid ? "Yes" : "No",
-      icon: valid === null ? "❓" : valid ? "✅" : "❌",
-    },
-    {
-      label: "Parts",
-      value: token ? token.split(".").length.toString() : "0",
-      icon: "📊",
-    },
-  ]
 
   const features = getCommonFeatures([
     "REAL_TIME",
@@ -102,7 +82,7 @@ export function JwtDecoder() {
           Sample
         </Button>
       </ToolControls>
-      <div className="mb-6 grid gap-6 lg:grid-cols-2">
+      <div className="mb-6 space-y-6">
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -115,7 +95,7 @@ export function JwtDecoder() {
               placeholder="eyJhbGciOi..."
               value={token}
               onChange={(e) => setToken(e.target.value)}
-              className="min-h-[140px] font-mono text-sm"
+              className="max-h-[140px] min-h-[140px] resize-none font-mono text-sm"
             />
             <div className="mt-2">
               <ValidationBadge
@@ -127,7 +107,7 @@ export function JwtDecoder() {
           </CardContent>
         </Card>
 
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Card>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
@@ -139,7 +119,7 @@ export function JwtDecoder() {
               <Textarea
                 value={header}
                 readOnly
-                className="bg-muted/50 min-h-[160px] font-mono text-sm"
+                className="bg-muted/50 min-h-[200px] resize-none font-mono text-sm"
               />
             </CardContent>
           </Card>
@@ -155,14 +135,12 @@ export function JwtDecoder() {
               <Textarea
                 value={payload}
                 readOnly
-                className="bg-muted/50 min-h-[200px] font-mono text-sm"
+                className="bg-muted/50 min-h-[200px] resize-none font-mono text-sm"
               />
             </CardContent>
           </Card>
         </div>
       </div>
-
-      <StatsDisplay stats={stats} />
       <FeatureGrid features={features} />
     </ToolLayout>
   )

@@ -35,7 +35,6 @@ export function ResponsiveTestingTool() {
   const [customHeight, setCustomHeight] = useState(667)
   const [isPortrait, setIsPortrait] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [currentUrl, setCurrentUrl] = useState("")
   const [isCustom, setIsCustom] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -78,8 +77,16 @@ export function ResponsiveTestingTool() {
   }
 
   const handleRefresh = () => {
+    if (!currentUrl) {
+      toast({
+        title: "No URL to Refresh",
+        description: "Please load a URL first before refreshing",
+        variant: "destructive",
+      })
+      return
+    }
+
     setIsLoading(true)
-    setError(null)
 
     // Trigger iframe reload
     const iframe = document.getElementById(
@@ -89,36 +96,55 @@ export function ResponsiveTestingTool() {
       iframe.src = iframe.src
     }
 
+    toast({
+      title: "Refreshing Preview",
+      description: "Reloading website preview",
+    })
+
     setTimeout(() => setIsLoading(false), 1000)
   }
 
   const handleLoadUrl = () => {
-    if (!url) {
-      setError("Please enter a valid URL")
+    if (!url.trim()) {
+      const errorMessage = "Please enter a valid URL"
+      toast({
+        title: "Invalid URL",
+        description: errorMessage,
+        variant: "destructive",
+      })
       return
     }
 
     // Ensure URL has protocol
-    let fullUrl = url
-    if (!url.startsWith("http://") && !url.startsWith("https://")) {
-      fullUrl = "https://" + url
+    let fullUrl = url.trim()
+    if (!fullUrl.startsWith("http://") && !fullUrl.startsWith("https://")) {
+      fullUrl = "https://" + fullUrl
+    }
+
+    // Validate URL format
+    try {
+      new URL(fullUrl)
+    } catch {
+      const errorMessage = "Please enter a valid URL format"
+      toast({
+        title: "Invalid URL Format",
+        description: errorMessage,
+        variant: "destructive",
+      })
+      return
     }
 
     setCurrentUrl(fullUrl)
-    setError(null)
     setIsLoading(true)
 
     toast({
       title: "Loading Website",
-      description: `Loading ${fullUrl} in ${getCurrentDimensions().width}×${getCurrentDimensions().height}`,
+      description: `Loading ${fullUrl} in ${getCurrentDimensions().width}x${getCurrentDimensions().height}`,
     })
-
-    setTimeout(() => setIsLoading(false), 2000)
   }
 
   const handleToggleOrientation = () => {
     setIsPortrait(!isPortrait)
-
     toast({
       title: "Orientation Changed",
       description: `Switched to ${!isPortrait ? "Portrait" : "Landscape"} mode`,
@@ -126,9 +152,20 @@ export function ResponsiveTestingTool() {
   }
 
   const handleOpenInNewTab = () => {
-    if (currentUrl) {
-      window.open(currentUrl, "_blank")
+    if (!currentUrl) {
+      toast({
+        title: "No URL to Open",
+        description: "Please load a URL first",
+        variant: "destructive",
+      })
+      return
     }
+
+    window.open(currentUrl, "_blank")
+    toast({
+      title: "Opened in New Tab",
+      description: "Website opened in a new browser tab",
+    })
   }
 
   const dimensions = getCurrentDimensions()
@@ -138,6 +175,39 @@ export function ResponsiveTestingTool() {
     { label: "Height", value: `${dimensions.height}px` },
     { label: "Orientation", value: isPortrait ? "Portrait" : "Landscape" },
     { label: "Device", value: isCustom ? "Custom" : selectedDevice.name },
+  ]
+
+  const features = [
+    {
+      icon: "📱",
+      title: "Mobile Testing",
+      description: "Test on various mobile device sizes",
+    },
+    {
+      icon: "📟",
+      title: "Tablet Support",
+      description: "Preview on tablet devices and orientations",
+    },
+    {
+      icon: "🖥️",
+      title: "Desktop Sizes",
+      description: "Test desktop and large screen layouts",
+    },
+    {
+      icon: "🔄",
+      title: "Orientation Toggle",
+      description: "Switch between portrait and landscape",
+    },
+    {
+      icon: "📐",
+      title: "Custom Dimensions",
+      description: "Set custom width and height values",
+    },
+    {
+      icon: "🔗",
+      title: "External Links",
+      description: "Open in new tab for full testing",
+    },
   ]
 
   // Show mobile restriction message
@@ -231,11 +301,15 @@ export function ResponsiveTestingTool() {
                 </Button>
               </div>
             </div>
+            <p className="text-muted-foreground text-xs">
+              💡 Tip: Some websites block iframe embedding for security reasons.
+              If loading fails, try using &quot;Open in New Tab&quot; instead.
+            </p>
           </CardContent>
         </Card>
 
         {/* Device Selection and Dimensions */}
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <Card className="lg:col-span-1">
             <CardHeader>
               <CardTitle>Device & Dimensions</CardTitle>
@@ -262,7 +336,7 @@ export function ResponsiveTestingTool() {
                       .filter((d) => d.category === "mobile")
                       .map((device) => (
                         <SelectItem key={device.name} value={device.name}>
-                          {device.icon} {device.name} ({device.width}×
+                          {device.icon} {device.name} ({device.width}x
                           {device.height})
                         </SelectItem>
                       ))}
@@ -275,7 +349,7 @@ export function ResponsiveTestingTool() {
                       .filter((d) => d.category === "tablet")
                       .map((device) => (
                         <SelectItem key={device.name} value={device.name}>
-                          {device.icon} {device.name} ({device.width}×
+                          {device.icon} {device.name} ({device.width}x
                           {device.height})
                         </SelectItem>
                       ))}
@@ -288,7 +362,7 @@ export function ResponsiveTestingTool() {
                       .filter((d) => d.category === "desktop")
                       .map((device) => (
                         <SelectItem key={device.name} value={device.name}>
-                          {device.icon} {device.name} ({device.width}×
+                          {device.icon} {device.name} ({device.width}x
                           {device.height})
                         </SelectItem>
                       ))}
@@ -342,7 +416,7 @@ export function ResponsiveTestingTool() {
               <div className="bg-muted/50 rounded-lg border p-3">
                 <div className="text-center">
                   <div className="text-2xl font-bold">
-                    {dimensions.width} × {dimensions.height}
+                    {dimensions.width} x {dimensions.height}
                   </div>
                   <div className="text-muted-foreground text-sm">
                     Width: {dimensions.width}px • Height: {dimensions.height}px
@@ -376,99 +450,68 @@ export function ResponsiveTestingTool() {
                 )}
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="flex justify-center">
-                <div
-                  className="overflow-hidden rounded-lg border bg-white shadow-lg"
-                  style={{
-                    width: Math.min(dimensions.width, 800),
-                    height: Math.min(dimensions.height, 600),
-                  }}
-                >
-                  {currentUrl ? (
-                    <iframe
-                      id="preview-iframe"
-                      src={currentUrl}
-                      width="100%"
-                      height="100%"
-                      className="border-0"
-                      title="Website Preview"
-                      loading="lazy"
-                      onLoad={() => setIsLoading(false)}
-                      onError={() => {
-                        setError(
-                          "This site cannot be previewed because it blocks embedding in an iframe (X-Frame-Options or Content-Security-Policy). Try another site."
-                        )
-                        setIsLoading(false)
-                      }}
-                    />
-                  ) : (
-                    <div className="text-muted-foreground flex h-full items-center justify-center">
-                      <div className="space-y-2 text-center">
-                        <Monitor className="mx-auto h-12 w-12 opacity-50" />
-                        <p>Enter a URL above to preview</p>
-                      </div>
+            <CardContent className="flex items-center justify-center">
+              <div
+                className="relative overflow-hidden rounded-lg border shadow-lg"
+                style={{
+                  width: Math.min(dimensions.width, 800),
+                  height: Math.min(dimensions.height, 600),
+                }}
+              >
+                {currentUrl ? (
+                  <iframe
+                    id="preview-iframe"
+                    src={currentUrl}
+                    width="100%"
+                    height="100%"
+                    className="border-0"
+                    title="Website Preview"
+                    loading="lazy"
+                    onLoad={() => {
+                      setIsLoading(false)
+                      toast({
+                        title: "Website Loaded",
+                        description: "Website preview is now available",
+                      })
+                    }}
+                    onError={() => {
+                      const errorMessage =
+                        "This site cannot be previewed because it blocks embedding in an iframe. Try another site or use 'Open in New Tab'."
+                      setIsLoading(false)
+                      toast({
+                        title: "Loading Failed",
+                        description: errorMessage,
+                        variant: "destructive",
+                      })
+                    }}
+                  />
+                ) : (
+                  <div className="text-muted-foreground flex h-full items-center justify-center">
+                    <div className="space-y-2 text-center">
+                      <Monitor className="mx-auto h-12 w-12 opacity-50" />
+                      <p>Enter a URL above to preview</p>
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  {isLoading && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-white/80">
-                      <div className="space-y-2 text-center">
-                        <div className="border-primary mx-auto h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
-                        <p className="text-muted-foreground text-sm">
-                          Loading website...
-                        </p>
-                      </div>
+                {isLoading && (
+                  <div className="bg-background/80 absolute inset-0 flex items-center justify-center">
+                    <div className="space-y-2 text-center">
+                      <div className="border-primary mx-auto h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
+                      <p className="text-muted-foreground text-sm">
+                        Loading website...
+                      </p>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
-
-              {error && (
-                <div className="bg-destructive/10 border-destructive/20 mt-4 rounded-lg border p-3">
-                  <p className="text-destructive text-sm">{error}</p>
-                </div>
-              )}
             </CardContent>
           </Card>
         </div>
-
-        {/* Stats and Features */}
-        <FeatureGrid
-          features={[
-            {
-              icon: "📱",
-              title: "Mobile Testing",
-              description: "Test on various mobile device sizes",
-            },
-            {
-              icon: "📟",
-              title: "Tablet Support",
-              description: "Preview on tablet devices and orientations",
-            },
-            {
-              icon: "🖥️",
-              title: "Desktop Sizes",
-              description: "Test desktop and large screen layouts",
-            },
-            {
-              icon: "🔄",
-              title: "Orientation Toggle",
-              description: "Switch between portrait and landscape",
-            },
-            {
-              icon: "📐",
-              title: "Custom Dimensions",
-              description: "Set custom width and height values",
-            },
-            {
-              icon: "🔗",
-              title: "External Links",
-              description: "Open in new tab for full testing",
-            },
-          ]}
-        />
       </div>
+
+      {/* Stats and Features */}
+      <FeatureGrid features={features} />
     </ToolLayout>
   )
 }

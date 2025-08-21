@@ -10,7 +10,6 @@ import { Textarea } from "@/components/ui/textarea"
 import {
   CopyButton,
   FeatureGrid,
-  StatsDisplay,
   ToolControls,
   ToolLayout,
 } from "@/components/common"
@@ -74,26 +73,6 @@ export function SqlFormatterTool() {
     setInput(randomQuery)
   }
 
-  const stats = [
-    {
-      label: "Input Length",
-      value: input.length.toString(),
-      icon: "📝",
-    },
-    {
-      label: "Output Length",
-      value: output.length.toString(),
-      icon: "📄",
-    },
-    {
-      label: "Keywords",
-      value: KEYWORDS.filter((kw) =>
-        input.toLowerCase().includes(kw.toLowerCase())
-      ).length.toString(),
-      icon: "🔑",
-    },
-  ]
-
   const features = getCommonFeatures(["REAL_TIME", "COPY_READY", "PRIVACY"])
 
   return (
@@ -109,7 +88,7 @@ export function SqlFormatterTool() {
         </Button>
       </ToolControls>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -122,7 +101,7 @@ export function SqlFormatterTool() {
               placeholder="select * from users where active = true order by created_at desc"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="max-h-[400px] min-h-[400px] resize-none font-mono text-sm"
+              className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -138,20 +117,18 @@ export function SqlFormatterTool() {
             {output ? (
               <CodeHighlighter
                 language="sql"
-                className="max-h-[400px] min-h-[400px] overflow-y-auto"
+                className="max-h-[300px] min-h-[300px] overflow-y-auto"
               >
                 {output}
               </CodeHighlighter>
             ) : (
-              <div className="dark:bg-input/30 text-muted-foreground border-border flex max-h-[400px] min-h-[400px] items-center justify-center rounded-md border bg-transparent text-sm">
+              <div className="dark:bg-input/30 text-muted-foreground border-border flex max-h-[300px] min-h-[300px] items-center justify-center rounded-md border bg-transparent text-sm">
                 Formatted SQL will appear here
               </div>
             )}
           </CardContent>
         </Card>
       </div>
-
-      <StatsDisplay stats={stats} className="my-6" />
       <FeatureGrid features={features} />
     </ToolLayout>
   )

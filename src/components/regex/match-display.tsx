@@ -9,7 +9,6 @@ interface MatchDisplayProps {
   result: RegexTestResult
   isProcessing?: boolean
   className?: string
-  minHeight?: string
   showEmptyIcon?: boolean
 }
 
@@ -17,14 +16,12 @@ export function MatchDisplay({
   result,
   isProcessing = false,
   className,
-  minHeight = "min-h-[140px]",
   showEmptyIcon = true,
 }: MatchDisplayProps) {
   return (
     <div
       className={cn(
         "bg-muted/30 overflow-auto rounded-md border p-3 font-mono text-xs sm:text-sm",
-        minHeight,
         className
       )}
     >
@@ -40,6 +37,7 @@ export function MatchDisplay({
         <EmptyState
           icon={showEmptyIcon ? "❌" : undefined}
           title="No matches found"
+          className={className}
         />
       ) : (
         <div

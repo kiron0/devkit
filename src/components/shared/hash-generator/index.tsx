@@ -15,7 +15,6 @@ import {
   CopyButton,
   FeatureGrid,
   FileInfoCard,
-  StatsDisplay,
   ToolControls,
   ToolLayout,
 } from "@/components/common"
@@ -232,24 +231,6 @@ export function HashGenerator() {
     },
   ]
 
-  const stats = [
-    {
-      label: "Input Size",
-      value: `${inputText.length} chars`,
-      icon: "📝",
-    },
-    {
-      label: "Algorithms",
-      value: selectedAlgorithms.length.toString(),
-      icon: "🔐",
-    },
-    {
-      label: "Total Hashes",
-      value: Object.keys(hashes).length.toString(),
-      icon: "🔢",
-    },
-  ]
-
   const features = [
     {
       icon: "🔐",
@@ -303,7 +284,6 @@ export function HashGenerator() {
         </Button>
       </ToolControls>
 
-      {/* File Info */}
       {fileInfo && (
         <FileInfoCard
           fileInfo={fileInfo}
@@ -312,17 +292,8 @@ export function HashGenerator() {
         />
       )}
 
-      {/* Stats */}
-      {inputText && (
-        <div className="mb-6">
-          <StatsDisplay stats={stats} />
-        </div>
-      )}
-
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Input and Settings */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          {/* Text Input */}
           <Card>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">

@@ -188,7 +188,7 @@ export function PasswordGenerator() {
 
   return (
     <ToolLayout>
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Main Generator */}
         <div className="space-y-6 lg:col-span-2">
           {/* Generated Password */}
@@ -458,8 +458,8 @@ export function PasswordGenerator() {
           <Card>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">
-                  <History className="inline h-4 w-4" />
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <History className="h-4 w-4" />
                   Recent Passwords
                 </CardTitle>
                 {history.length > 0 && (

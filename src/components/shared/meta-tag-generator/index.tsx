@@ -420,7 +420,7 @@ export function MetaTagGenerator() {
           </TabsList>
 
           <TabsContent value="basic" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Basic SEO Fields */}
               <Card>
                 <CardHeader>
@@ -589,7 +589,7 @@ export function MetaTagGenerator() {
           </TabsContent>
 
           <TabsContent value="opengraph" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Open Graph Fields */}
               <Card>
                 <CardHeader>
@@ -734,7 +734,7 @@ export function MetaTagGenerator() {
           </TabsContent>
 
           <TabsContent value="twitter" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Twitter Card Fields */}
               <Card>
                 <CardHeader>
@@ -872,7 +872,7 @@ export function MetaTagGenerator() {
           </TabsContent>
 
           <TabsContent value="preview" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Generated Code */}
               <Card>
                 <CardHeader>

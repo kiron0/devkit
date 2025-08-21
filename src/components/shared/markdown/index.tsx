@@ -11,7 +11,6 @@ import { Textarea } from "@/components/ui/textarea"
 import {
   CopyButton,
   FeatureGrid,
-  StatsDisplay,
   ToolControls,
   ToolLayout,
 } from "@/components/common"
@@ -68,24 +67,6 @@ console.log(greet('World'));
     setInput("")
   }
 
-  const stats = [
-    {
-      label: "Characters",
-      value: input.length.toString(),
-      icon: "📝",
-    },
-    {
-      label: "Lines",
-      value: input.split("\n").length.toString(),
-      icon: "📄",
-    },
-    {
-      label: "Words",
-      value: input.split(/\s+/).filter(Boolean).length.toString(),
-      icon: "🔤",
-    },
-  ]
-
   const features = getCommonFeatures(["REAL_TIME", "COPY_READY", "PRIVACY"])
 
   return (
@@ -101,7 +82,7 @@ console.log(greet('World'));
         </Button>
       </ToolControls>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -127,8 +108,6 @@ console.log(greet('World'));
           </CardContent>
         </Card>
       </div>
-
-      <StatsDisplay stats={stats} className="my-6" />
       <FeatureGrid features={features} />
     </ToolLayout>
   )

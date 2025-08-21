@@ -1,7 +1,14 @@
 import { FileText, ImageIcon, X } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
 interface FileInfo {
   name: string
@@ -36,12 +43,18 @@ export function FileInfoCard({
   }
 
   return (
-    <Card className={className}>
-      <CardContent className="pt-6">
+    <Card className={cn("w-full", className)}>
+      <CardHeader>
+        <CardTitle>File Info</CardTitle>
+        <CardDescription>{fileInfo.name}</CardDescription>
+      </CardHeader>
+      <CardContent>
         <div className="flex items-center gap-4">
           {getFileIcon()}
-          <div className="flex-1">
-            <p className="font-medium">{fileInfo.name}</p>
+          <div className="max-w-full overflow-hidden">
+            <p className="overflow-hidden font-medium text-ellipsis whitespace-nowrap">
+              {fileInfo.name}
+            </p>
             <p className="text-muted-foreground text-sm">
               {formatFileSize(fileInfo.size)}
               {fileInfo.type && ` • ${fileInfo.type}`}

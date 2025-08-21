@@ -18,7 +18,6 @@ import { Textarea } from "@/components/ui/textarea"
 import {
   CopyButton,
   FeatureGrid,
-  StatsDisplay,
   ToolControls,
   ToolLayout,
 } from "@/components/common"
@@ -75,24 +74,6 @@ export function NumberBaseConverter() {
     setInput(randomNumber)
   }
 
-  const stats = [
-    {
-      label: "Input Length",
-      value: input.length.toString(),
-      icon: "📝",
-    },
-    {
-      label: "Base",
-      value: BASES.find((b) => b.value === base)?.label.split(" ")[0] || "N/A",
-      icon: "🔢",
-    },
-    {
-      label: "Valid",
-      value: parsed !== null ? "Yes" : "No",
-      icon: parsed !== null ? "✅" : "❌",
-    },
-  ]
-
   const features = getCommonFeatures([
     "REAL_TIME",
     "VALIDATION",
@@ -111,13 +92,13 @@ export function NumberBaseConverter() {
         </Button>
       </ToolControls>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-lg">Input</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 pt-0">
-            <div className="grid gap-2">
+            <div className="space-y-2">
               <Label>Number</Label>
               <Input
                 placeholder="Enter a number (supports 0b, 0o, 0x)"
@@ -125,7 +106,7 @@ export function NumberBaseConverter() {
                 onChange={(e) => setInput(e.target.value)}
               />
             </div>
-            <div className="grid gap-2">
+            <div className="space-y-2">
               <Label>Base</Label>
               <Select
                 value={base.toString()}
@@ -168,8 +149,6 @@ export function NumberBaseConverter() {
           </CardContent>
         </Card>
       </div>
-
-      <StatsDisplay stats={stats} className="my-6" />
       <FeatureGrid features={features} />
     </ToolLayout>
   )

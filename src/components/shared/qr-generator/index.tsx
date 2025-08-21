@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import Image from "next/image"
 import { Config } from "@/config"
 import {
@@ -41,7 +41,7 @@ export function QRGenerator() {
   const [qrOptions, setQrOptions] = useState<QROptions>({
     size: 256,
     errorCorrection: "M",
-    margin: 4,
+    margin: 1.5,
     darkColor: "#000000",
     lightColor: "#FFFFFF",
   })
@@ -109,6 +109,10 @@ export function QRGenerator() {
         return `WIFI:T:${wifiData.security};S:${wifiData.ssid};P:${wifiData.password};H:${wifiData.hidden ? "true" : "false"};;`
       case "contact":
         return `MECARD:N:${contactData.name};TEL:${contactData.phone};EMAIL:${contactData.email};ORG:${contactData.organization};URL:${contactData.website};;`
+      case "event":
+        return inputText
+      case "geo":
+        return inputText
       default:
         return inputText
     }
@@ -126,24 +130,6 @@ export function QRGenerator() {
     const updatedOptions = { ...qrOptions, ...newOptions }
     setQrOptions(updatedOptions)
   }
-
-  // Effect to regenerate QR code when any relevant data changes
-  useEffect(() => {
-    const formattedText = getFormattedText()
-    if (formattedText.trim()) {
-      generateQRCode(formattedText, qrOptions)
-    } else {
-      setQrDataURL("")
-    }
-  }, [
-    inputText,
-    qrType,
-    wifiData,
-    contactData,
-    qrOptions,
-    generateQRCode,
-    getFormattedText,
-  ])
 
   const handleDownload = () => {
     if (!qrDataURL) return
@@ -166,6 +152,8 @@ export function QRGenerator() {
       email: `hello@${Config.title.toLowerCase()}.com`,
       phone: "+1234567890",
       sms: "+1234567890",
+      event: `BEGIN:VEVENT\nSUMMARY:Sample Event\nLOCATION:123 Sample St\nDTSTART:20250821T120000\nDTEND:20250821T130000\nEND:VEVENT`,
+      geo: `geo:37.7749,-122.4194`,
     }
 
     const sampleText = samples[qrType as keyof typeof samples] || samples.text
@@ -185,6 +173,15 @@ export function QRGenerator() {
     })
   }
 
+  const handleGenerateClick = () => {
+    const formattedText = getFormattedText()
+    if (formattedText.trim()) {
+      generateQRCode(formattedText, qrOptions)
+    } else {
+      setQrDataURL("")
+    }
+  }
+
   const qrTypes = [
     { id: "text", name: "Text", icon: "📝", description: "Plain text" },
     { id: "url", name: "URL", icon: "🔗", description: "Website link" },
@@ -193,6 +190,13 @@ export function QRGenerator() {
     { id: "sms", name: "SMS", icon: "💬", description: "Text message" },
     { id: "wifi", name: "WiFi", icon: "📶", description: "WiFi credentials" },
     { id: "contact", name: "Contact", icon: "👤", description: "Contact card" },
+    { id: "event", name: "Event", icon: "📅", description: "Event details" },
+    {
+      id: "geo",
+      name: "Geo",
+      icon: "📍",
+      description: "Geographical location",
+    },
   ]
 
   const features = getCommonFeatures([
@@ -220,6 +224,10 @@ export function QRGenerator() {
           Clear
         </Button>
 
+        <Button onClick={handleGenerateClick} variant="default">
+          Generate QR Code
+        </Button>
+
         {qrDataURL && (
           <Button onClick={handleDownload} variant="outline">
             <Download className="h-4 w-4" />
@@ -228,7 +236,7 @@ export function QRGenerator() {
         )}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Configuration */}
         <div className="space-y-6 lg:col-span-2">
           {/* QR Type Selector */}
@@ -316,8 +324,8 @@ export function QRGenerator() {
           ) : qrType === "contact" ? (
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">
-                  <Smartphone className="inline h-4 w-4" />
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Smartphone className="h-4 w-4" />
                   Contact Information
                 </CardTitle>
               </CardHeader>
@@ -504,7 +512,7 @@ export function QRGenerator() {
                       width={qrOptions.size}
                       height={qrOptions.size}
                       alt="Generated QR Code"
-                      className="h-auto max-w-full rounded-lg"
+                      className="border-primary h-auto max-w-full rounded-lg border-2"
                       style={{
                         width: Math.min(qrOptions.size, 256),
                         height: Math.min(qrOptions.size, 256),

@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Config } from "@/config"
@@ -50,7 +51,6 @@ export function ToolsSidebar({
     }
   }
 
-  // Get tools grouped by category from centralized utils
   const toolsByCategory = getToolsGroupedByCategory()
 
   return (
@@ -61,16 +61,16 @@ export function ToolsSidebar({
           onClick={() => handleToolClick(null)}
           className="flex flex-col items-center gap-2 px-2 py-6 text-center"
         >
-          <div className="from-primary/90 to-primary/50 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r">
-            <span
-              role="img"
-              aria-label="dev"
-              className="text-primary-foreground text-sm font-bold"
-            >
-              💻
-            </span>
-          </div>
-          <span className="text-base font-bold md:text-xl">{Config.title}</span>
+          <Image
+            src={Config.logo}
+            alt="Logo"
+            width={1024}
+            height={1024}
+            className="w-14 rounded-full object-cover transition-transform duration-300 group-hover:scale-110 md:w-16"
+          />
+          <span className="text-primary -mt-2 text-xl font-bold md:text-2xl">
+            {Config.title}
+          </span>
           <span className="text-muted-foreground text-xs md:text-sm">
             {Config.shortDescription}
           </span>

@@ -1,16 +1,18 @@
 "use client"
 
 import { useCallback, useState } from "react"
-import { Code, RotateCcw, Zap } from "lucide-react"
+import { Code, RotateCcw, Upload, Zap } from "lucide-react"
 
 import { getCommonFeatures } from "@/lib/tool-patterns"
+import { useToolControls } from "@/hooks/use-tool-controls"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import {
   CopyButton,
   FeatureGrid,
-  StatsDisplay,
+  FileInfoCard,
   ToolControls,
   ToolLayout,
   ValidationBadge,
@@ -83,6 +85,31 @@ export function JsonToTypescript() {
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")
   const [isValid, setIsValid] = useState<boolean | null>(null)
+  const [fileInfo, setFileInfo] = useState<{
+    name: string
+    size: number
+    type: string
+  } | null>(null)
+
+  const { handleFileUpload: handleFileUploadBase } = useToolControls({
+    hasData: !!input || !!output,
+  })
+
+  const handleFileUpload = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      handleFileUploadBase(event, (content: string, filename: string) => {
+        setInput(content)
+        setFileInfo({
+          name: filename,
+          size: event.target.files?.[0]?.size || 0,
+          type: event.target.files?.[0]?.type || "text/plain",
+        })
+        setIsValid(null)
+        setOutput("")
+      })
+    },
+    [handleFileUploadBase]
+  )
 
   const convert = useCallback(() => {
     if (!input.trim()) {
@@ -127,6 +154,7 @@ export function JsonToTypescript() {
     setInput("")
     setOutput("")
     setIsValid(null)
+    setFileInfo(null)
   }
 
   const formatJSON = useCallback(() => {
@@ -178,29 +206,12 @@ export function JsonToTypescript() {
     setIsValid(null)
   }
 
-  const stats = [
-    {
-      label: "Input Length",
-      value: input.length.toString(),
-      icon: "📝",
-    },
-    {
-      label: "Output Length",
-      value: output.length.toString(),
-      icon: "📄",
-    },
-    {
-      label: "Valid",
-      value: isValid === null ? "N/A" : isValid ? "Yes" : "No",
-      icon: isValid === null ? "❓" : isValid ? "✅" : "❌",
-    },
-  ]
-
   const features = getCommonFeatures([
     "REAL_TIME",
     "VALIDATION",
     "COPY_READY",
     "PRIVACY",
+    "FILE_SUPPORT",
   ])
 
   return (
@@ -225,7 +236,30 @@ export function JsonToTypescript() {
           <Code className="h-4 w-4" />
           Sample
         </Button>
+        <Label className="inline-flex">
+          <Button variant="outline" asChild>
+            <span>
+              <Upload className="h-4 w-4" />
+              Upload JSON
+            </span>
+          </Button>
+          <input
+            type="file"
+            accept=".json,.txt"
+            onChange={handleFileUpload}
+            className="hidden"
+          />
+        </Label>
       </ToolControls>
+
+      {/* File Info */}
+      {fileInfo && (
+        <FileInfoCard
+          fileInfo={fileInfo}
+          onRemove={() => setFileInfo(null)}
+          className="mb-4"
+        />
+      )}
 
       {isValid !== null && (
         <div className="mb-4">
@@ -237,7 +271,7 @@ export function JsonToTypescript() {
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -250,7 +284,7 @@ export function JsonToTypescript() {
               placeholder='{"name": "Alice", "age": 30}'
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="max-h-[400px] min-h-[400px] resize-none font-mono text-sm"
+              className="max-h-[300px] min-h-[300px] resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -266,20 +300,18 @@ export function JsonToTypescript() {
             {output ? (
               <CodeHighlighter
                 language="typescript"
-                className="max-h-[400px] min-h-[400px] overflow-y-auto"
+                className="max-h-[300px] min-h-[300px] overflow-y-auto"
               >
                 {output}
               </CodeHighlighter>
             ) : (
-              <div className="dark:bg-input/30 text-muted-foreground border-border flex max-h-[400px] min-h-[400px] items-center justify-center rounded-md border bg-transparent text-sm">
+              <div className="dark:bg-input/30 text-muted-foreground border-border flex max-h-[300px] min-h-[300px] items-center justify-center rounded-md border bg-transparent text-sm">
                 Converted TypeScript will appear here
               </div>
             )}
           </CardContent>
         </Card>
       </div>
-
-      <StatsDisplay stats={stats} className="my-6" />
       <FeatureGrid features={features} />
     </ToolLayout>
   )

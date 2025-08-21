@@ -2,10 +2,11 @@
 
 import { useMemo, useState } from "react"
 import { Route } from "next"
+import Image from "next/image"
 import Link from "next/link"
 import { Config } from "@/config"
 import { TOOL_CATEGORIES, TOOLS } from "@/utils"
-import { ArrowRight, Grid3X3, Search, Sparkles, X } from "lucide-react"
+import { ArrowRight, Code, Search, Sparkles, X } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -57,6 +58,11 @@ export default function ToolsDashboard() {
       grouped[tool.category].push(tool)
     })
 
+    // Sort tools alphabetically by title within each category
+    Object.keys(grouped).forEach((category) => {
+      grouped[category].sort((a, b) => a.title.localeCompare(b.title))
+    })
+
     return grouped
   }, [filteredTools])
 
@@ -74,9 +80,15 @@ export default function ToolsDashboard() {
     <div className="flex flex-1 flex-col gap-10 p-6">
       {/* Header Section */}
       <div className="space-y-4 text-center">
-        <div className="flex items-center justify-center gap-2">
-          <Sparkles className="text-primary h-6 w-6" />
-          <h1 className="text-3xl font-bold">{Config.title}</h1>
+        <div className="group flex flex-col items-center justify-center gap-2">
+          <Image
+            src={Config.logo}
+            alt="Logo"
+            width={1024}
+            height={1024}
+            className="w-20 rounded-full object-cover transition-transform duration-300 group-hover:scale-110 md:w-24"
+          />
+          <h1 className="text-primary text-3xl font-bold">{Config.title}</h1>
         </div>
         <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
           Professional-grade development tools designed to streamline your
@@ -213,7 +225,7 @@ export default function ToolsDashboard() {
           {/* Show tools grouped by category or as a flat list for search results */}
           {searchQuery ? (
             // Flat list for search results
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {filteredTools.map((tool) => (
                 <Link key={tool.id} href={tool.path as Route}>
                   <Card className="group from-background to-muted/30 border-0 bg-gradient-to-br transition-all duration-200 hover:scale-105 hover:shadow-lg">
@@ -269,7 +281,7 @@ export default function ToolsDashboard() {
                     </Badge>
                   </div>
 
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {categoryTools.map((tool) => (
                       <Link key={tool.id} href={tool.path as Route}>
                         <Card className="group from-background to-muted/30 border-0 bg-gradient-to-br transition-all duration-200 hover:scale-105 hover:shadow-lg">
@@ -343,7 +355,7 @@ export default function ToolsDashboard() {
           </Link>
           <Link href="/tools/json-formatter">
             <Button variant="outline">
-              <Grid3X3 className="h-4 w-4" />
+              <Code className="h-4 w-4" />
               Format JSON
             </Button>
           </Link>
