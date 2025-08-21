@@ -1,4 +1,4 @@
-import { ToolsLayout } from "@/components/shared/tools-layout"
+import { ToolsLayout } from "@/components/tools-layout"
 
 export default function ToolsLayoutPage({
   children,

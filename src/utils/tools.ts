@@ -1,35 +1,36 @@
 import * as React from "react"
 
-import { Base64Tool } from "@/components/shared/base64"
-import { CodeBeautifier } from "@/components/shared/code-beautifier"
-import { ColorConverter } from "@/components/shared/color-converter"
-import { CronCalculator } from "@/components/shared/cron-calculator"
-import { CSSAnimationGenerator } from "@/components/shared/css-animation-generator"
-import { CSSBoxShadowGenerator } from "@/components/shared/css-box-shadow-generator"
-import { CSSLayoutGenerator } from "@/components/shared/css-layout-generator"
-import { CsvJsonConverter } from "@/components/shared/csv-json-converter"
-import { FontPairingSuggestions } from "@/components/shared/font-pairing-suggestions"
-import { GitCommandGenerator } from "@/components/shared/git-command-generator"
-import { HashGenerator } from "@/components/shared/hash-generator"
-import { HTTPStatusLookup } from "@/components/shared/http-status-lookup"
-import { ImageConverter } from "@/components/shared/image-converter"
-import { JsonFormatter } from "@/components/shared/json-formatter"
-import { JsonToTypescript } from "@/components/shared/json-to-typescript"
-import { JwtDecoder } from "@/components/shared/jwt-decoder"
-import { LoremGenerator } from "@/components/shared/lorem-generator"
-import { MarkdownTool } from "@/components/shared/markdown"
-import { MetaTagGenerator } from "@/components/shared/meta-tag-generator"
-import { NumberBaseConverter } from "@/components/shared/number-base-converter"
-import { PasswordGenerator } from "@/components/shared/password-generator"
-import { Playground } from "@/components/shared/playground"
-import { QRGenerator } from "@/components/shared/qr-generator"
-import { RegexTesterAdvanced } from "@/components/shared/regex-tester"
-import { ResponsiveTestingTool } from "@/components/shared/responsive-testing"
-import { SqlFormatterTool } from "@/components/shared/sql-formatter"
-import { TextUtilities } from "@/components/shared/text-utilities"
-import { TimestampConverter } from "@/components/shared/timestamp-converter"
-import { URLEncoder } from "@/components/shared/url-encoder"
-import { UUIDGenerator } from "@/components/shared/uuid-generator"
+import { Base64Tool } from "@/components/tools/base64"
+import { CodeBeautifier } from "@/components/tools/code-beautifier"
+import { ColorConverter } from "@/components/tools/color-converter"
+import { CronCalculator } from "@/components/tools/cron-calculator"
+import { CSSAnimationGenerator } from "@/components/tools/css-animation-generator"
+import { CSSBoxShadowGenerator } from "@/components/tools/css-box-shadow-generator"
+import { CSSLayoutGenerator } from "@/components/tools/css-layout-generator"
+import { CsvJsonConverter } from "@/components/tools/csv-json-converter"
+import { FontPairingSuggestions } from "@/components/tools/font-pairing-suggestions"
+import { GitCommandGenerator } from "@/components/tools/git-command-generator"
+import { HashGenerator } from "@/components/tools/hash-generator"
+import { HTTPStatusLookup } from "@/components/tools/http-status-lookup"
+import { ImageConverter } from "@/components/tools/image-converter"
+import { JsonFormatter } from "@/components/tools/json-formatter"
+import { JsonToTypescript } from "@/components/tools/json-to-typescript"
+import { JwtDecoder } from "@/components/tools/jwt-decoder"
+import { LoremGenerator } from "@/components/tools/lorem-generator"
+import { MarkdownTool } from "@/components/tools/markdown"
+import { MetaTagGenerator } from "@/components/tools/meta-tag-generator"
+import { NumberBaseConverter } from "@/components/tools/number-base-converter"
+import { PasswordGenerator } from "@/components/tools/password-generator"
+import { Playground } from "@/components/tools/playground"
+import { QRGenerator } from "@/components/tools/qr-generator"
+import { RegexTesterAdvanced } from "@/components/tools/regex-tester"
+import { ResponsiveTestingTool } from "@/components/tools/responsive-testing"
+import { SEOChecker } from "@/components/tools/seo-checker"
+import { SqlFormatterTool } from "@/components/tools/sql-formatter"
+import { TextUtilities } from "@/components/tools/text-utilities"
+import { TimestampConverter } from "@/components/tools/timestamp-converter"
+import { URLEncoder } from "@/components/tools/url-encoder"
+import { UUIDGenerator } from "@/components/tools/uuid-generator"
 
 export interface Tool {
   id: string
@@ -196,6 +197,17 @@ export const TOOLS: Tool[] = [
     path: "/tools/qr-generator",
     featured: true,
     component: QRGenerator,
+  },
+  {
+    id: "seo-checker",
+    title: "SEO Checker",
+    description:
+      "Analyze your website's on-page SEO factors and get detailed recommendations for improvement.",
+    icon: "🔍",
+    category: "Development Tools",
+    path: "/tools/seo-checker",
+    featured: true,
+    component: SEOChecker,
   },
   {
     id: "lorem-generator",

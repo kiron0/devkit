@@ -1,46 +1,31 @@
-import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { getToolById, getToolComponent, Tool } from "@/utils"
+import { TOOLS } from "@/utils"
 
 interface ToolPageProps {
-  params: Promise<{
-    tool: string
-  }>
+  params: Promise<{ tool: string }>
 }
 
-export async function generateMetadata({
-  params,
-}: ToolPageProps): Promise<Metadata> {
-  const { tool } = await params
-  const toolId = getToolById(tool) as Tool
+export const generateMetadata = async ({ params }: ToolPageProps) => {
+  const { tool: toolId } = await params
 
-  if (!toolId) {
-    return {
-      title: "Tool Not Found",
-      description: "The requested tool does not exist.",
-    }
-  }
+  const tool = TOOLS.find((t) => t.id === toolId)
 
   return {
-    title: toolId.title,
-    description: toolId.description,
+    title: tool?.title,
+    description: tool?.description,
   }
 }
 
 export default async function ToolPage({ params }: ToolPageProps) {
-  const { tool } = await params
+  const { tool: toolId } = await params
 
-  const toolId = getToolById(tool) as Tool
+  const tool = TOOLS.find((t) => t.id === toolId)
 
-  if (!toolId) {
+  if (!tool) {
     notFound()
   }
 
-  const ToolComponent = getToolComponent(tool)
-
-  if (!ToolComponent) {
-    notFound()
-  }
+  const ToolComponent = tool.component
 
   return <ToolComponent />
 }
