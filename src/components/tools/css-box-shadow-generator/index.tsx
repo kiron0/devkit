@@ -415,13 +415,6 @@ export function CSSBoxShadowGenerator() {
       description="Create beautiful box shadows with visual builder and multiple layers"
     >
       <div className="space-y-6">
-        <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold">CSS Box Shadow Generator</h1>
-          <p className="text-muted-foreground">
-            Create beautiful box shadows with visual builder and multiple layers
-          </p>
-        </div>
-
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="builder">Shadow Builder</TabsTrigger>

@@ -406,14 +406,6 @@ export function MetaTagGenerator() {
       description="Generate SEO meta tags, Open Graph, and Twitter Card tags for your website"
     >
       <div className="space-y-6">
-        <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold">Meta Tag Generator</h1>
-          <p className="text-muted-foreground">
-            Generate SEO meta tags, Open Graph, and Twitter Card tags for your
-            website
-          </p>
-        </div>
-
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="basic">Basic SEO</TabsTrigger>

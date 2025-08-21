@@ -417,14 +417,6 @@ ${keyframesCSS}
       description="Create custom CSS animations with keyframes, presets, and live preview"
     >
       <div className="space-y-6">
-        <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold">CSS Animation Generator</h1>
-          <p className="text-muted-foreground">
-            Create custom CSS animations with keyframes, presets, and live
-            preview
-          </p>
-        </div>
-
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="builder">Animation Builder</TabsTrigger>

@@ -398,14 +398,6 @@ module.exports = {
       description="Discover beautiful typography combinations with Google Fonts integration"
     >
       <div className="space-y-6">
-        <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold">Font Pairing Suggestions</h1>
-          <p className="text-muted-foreground">
-            Discover beautiful typography combinations with Google Fonts
-            integration
-          </p>
-        </div>
-
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="suggestions">Suggestions</TabsTrigger>

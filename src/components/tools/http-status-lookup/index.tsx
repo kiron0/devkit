@@ -86,15 +86,6 @@ export function HTTPStatusLookup() {
       description="Search and understand HTTP status codes with common use cases and troubleshooting tips"
     >
       <div className="space-y-6">
-        <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold">HTTP Status Code Lookup</h1>
-          <p className="text-muted-foreground">
-            Search and understand HTTP status codes with common use cases and
-            troubleshooting tips
-          </p>
-        </div>
-
-        {/* Search and Filter */}
         <Card>
           <CardContent className="pt-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center">

@@ -254,14 +254,6 @@ ${items
       description="Visual CSS Grid and Flexbox builder with live preview and code generation"
     >
       <div className="space-y-6">
-        <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold">CSS Layout Generator</h1>
-          <p className="text-muted-foreground">
-            Visual CSS Grid and Flexbox builder with live preview and code
-            generation
-          </p>
-        </div>
-
         <Tabs
           value={layoutType}
           onValueChange={(value) => setLayoutType(value as "grid" | "flexbox")}

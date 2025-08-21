@@ -201,14 +201,6 @@ export function ImageConverter() {
       description="Convert images between different formats with quality control and basic editing"
     >
       <div className="space-y-6">
-        <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold">Image Format Converter</h1>
-          <p className="text-muted-foreground">
-            Convert images between different formats with quality control and
-            basic editing
-          </p>
-        </div>
-
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* Input Section */}
           <Card>

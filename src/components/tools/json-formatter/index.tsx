@@ -546,13 +546,6 @@ export function JsonFormatter() {
       description="Format, validate, and convert JSON/XML with syntax highlighting"
     >
       <div className="space-y-6">
-        <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold">JSON Formatter</h1>
-          <p className="text-muted-foreground">
-            Format, validate, and convert JSON/XML with syntax highlighting
-          </p>
-        </div>
-
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="formatter">Formatter</TabsTrigger>
