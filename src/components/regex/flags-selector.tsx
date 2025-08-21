@@ -1,6 +1,7 @@
 "use client"
 
-import type { RegexFlags } from "@/types/regex"
+import type { RegexFlags } from "@/types"
+
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"

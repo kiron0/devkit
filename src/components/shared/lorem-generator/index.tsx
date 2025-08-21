@@ -1,13 +1,21 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { FileText } from "lucide-react"
+import { FileText, RefreshCw } from "lucide-react"
 
 import { getCommonFeatures } from "@/lib/tool-patterns"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Slider } from "@/components/ui/slider"
+import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import {
   CopyButton,
@@ -17,31 +25,62 @@ import {
 } from "@/components/common"
 
 const WORDS =
-  "lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua".split(
+  "lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum".split(
     " "
   )
 
-function generateLorem(paragraphs: number, wordsPerParagraph: number) {
+function generateLorem(
+  paragraphs: number,
+  wordsPerParagraph: number,
+  startWithLorem: boolean,
+  format: string,
+  seed: number
+) {
   const paras: string[] = []
+
   for (let p = 0; p < paragraphs; p++) {
     const words: string[] = []
+
     for (let i = 0; i < wordsPerParagraph; i++) {
-      words.push(WORDS[(p * wordsPerParagraph + i) % WORDS.length])
+      const wordIndex = (seed + p * wordsPerParagraph + i) % WORDS.length
+      words.push(WORDS[wordIndex])
     }
-    const sentence =
-      words.join(" ").charAt(0).toUpperCase() + words.join(" ").slice(1) + "."
-    paras.push(sentence)
+
+    words[0] = words[0].charAt(0).toUpperCase() + words[0].slice(1)
+
+    const sentence = words.join(" ") + "."
+
+    if (format === "html") {
+      paras.push(`<p>${sentence}</p>\n`)
+    } else {
+      paras.push(sentence)
+    }
   }
-  return paras.join("\n\n")
+
+  if (startWithLorem) {
+    if (format === "html") {
+      paras[0] = paras[0].replace(
+        /<p>([^<]+)<\/p>/,
+        "<p>Lorem ipsum dolor sit amet, $1</p>"
+      )
+    } else {
+      paras[0] = "Lorem ipsum dolor sit amet, " + paras[0]
+    }
+  }
+
+  return paras.join(format === "html" ? "\n" : "\n\n")
 }
 
 export function LoremGenerator() {
   const [paragraphs, setParagraphs] = useState(3)
-  const [words, setWords] = useState(20)
+  const [words, setWords] = useState(50)
+  const [startWithLorem, setStartWithLorem] = useState(true)
+  const [format, setFormat] = useState("plain")
+  const [seed, setSeed] = useState(0)
 
   const output = useMemo(
-    () => generateLorem(paragraphs, words),
-    [paragraphs, words]
+    () => generateLorem(paragraphs, words, startWithLorem, format, seed),
+    [paragraphs, words, startWithLorem, format, seed]
   )
 
   const handleSampleData = () => {
@@ -55,6 +94,10 @@ export function LoremGenerator() {
       sampleConfigs[Math.floor(Math.random() * sampleConfigs.length)]
     setParagraphs(randomConfig.paragraphs)
     setWords(randomConfig.words)
+  }
+
+  const handleRegenerate = () => {
+    setSeed((prev) => prev + 1)
   }
 
   const features = getCommonFeatures([
@@ -71,6 +114,10 @@ export function LoremGenerator() {
           <FileText className="h-4 w-4" />
           Sample Config
         </Button>
+        <Button onClick={handleRegenerate} variant="outline">
+          <RefreshCw className="h-4 w-4" />
+          Regenerate
+        </Button>
       </ToolControls>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -78,26 +125,55 @@ export function LoremGenerator() {
           <CardHeader className="pb-3">
             <CardTitle className="text-lg">Options</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4 pt-0">
-            <div className="space-y-2">
-              <Label>Paragraphs</Label>
-              <Input
-                type="number"
+          <CardContent className="space-y-6 pt-0">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label>Paragraphs: {paragraphs}</Label>
+              </div>
+              <Slider
+                value={[paragraphs]}
+                onValueChange={(value) => setParagraphs(value[0])}
                 min={1}
                 max={20}
-                value={paragraphs}
-                onChange={(e) => setParagraphs(parseInt(e.target.value || "1"))}
+                step={1}
+                className="w-full"
               />
             </div>
-            <div className="space-y-2">
-              <Label>Words per paragraph</Label>
-              <Input
-                type="number"
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label>Words per paragraph: {words}</Label>
+              </div>
+              <Slider
+                value={[words]}
+                onValueChange={(value) => setWords(value[0])}
                 min={5}
                 max={200}
-                value={words}
-                onChange={(e) => setWords(parseInt(e.target.value || "10"))}
+                step={5}
+                className="w-full"
               />
+            </div>
+
+            <div className="flex flex-col justify-between gap-4 md:flex-row md:gap-2">
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="start-with-lorem"
+                  checked={startWithLorem}
+                  onCheckedChange={setStartWithLorem}
+                />
+                <Label htmlFor="start-with-lorem">
+                  Start with &quot;Lorem ipsum&quot;
+                </Label>
+              </div>
+              <Select value={format} onValueChange={setFormat}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select format" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="plain">Plain Text</SelectItem>
+                  <SelectItem value="html">HTML</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </CardContent>
         </Card>

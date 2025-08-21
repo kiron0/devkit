@@ -1,9 +1,9 @@
 "use client"
 
-import type { RegexTestResult } from "@/types/regex"
+import type { RegexTestResult } from "@/types"
+
 import { cn } from "@/lib/utils"
-import { EmptyState } from "@/components/common/empty-state"
-import { LoadingSpinner } from "@/components/common/loading-spinner"
+import { EmptyState, LoadingSpinner } from "@/components/common"
 
 interface MatchDisplayProps {
   result: RegexTestResult

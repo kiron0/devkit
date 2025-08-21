@@ -1,9 +1,9 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useState } from "react"
+import type { RegexExample } from "@/types"
 import { Download, RefreshCw, RotateCcw, Share2 } from "lucide-react"
 
-import type { RegexExample } from "@/types/regex"
 import { analyzeRegex } from "@/lib/regex-engine"
 import { getCommonFeatures } from "@/lib/tool-patterns"
 import { useRegex } from "@/hooks/use-regex"

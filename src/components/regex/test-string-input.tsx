@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { CopyButton } from "@/components/common/copy-button"
+import { CopyButton } from "@/components/common"
 
 interface TestStringInputProps {
   value: string

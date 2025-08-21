@@ -1,7 +1,8 @@
 "use client"
 
-import type { RegexTestResult } from "@/types/regex"
-import { StatsDisplay } from "@/components/common/stats-display"
+import type { RegexTestResult } from "@/types"
+
+import { StatsDisplay } from "@/components/common"
 
 interface MatchStatsProps {
   result: RegexTestResult

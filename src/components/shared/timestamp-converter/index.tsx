@@ -1,13 +1,20 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
-import { Calendar, Clock, RefreshCw } from "lucide-react"
+import { format } from "date-fns"
+import { Calendar, CalendarDays, Clock, RefreshCw } from "lucide-react"
 
 import { getCommonFeatures } from "@/lib/tool-patterns"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Calendar as CalendarComponent } from "@/components/ui/calendar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { CopyButton, FeatureGrid, ToolLayout } from "@/components/common"
 
 interface TimestampData {
@@ -22,11 +29,13 @@ interface TimestampData {
 export function TimestampConverter() {
   const [currentTime, setCurrentTime] = useState<TimestampData | null>(null)
   const [inputTimestamp, setInputTimestamp] = useState("")
-  const [inputType, setInputType] = useState<"unix" | "iso" | "milliseconds">(
-    "unix"
-  )
+  const [inputType, setInputType] = useState<
+    "unix" | "iso" | "milliseconds" | "date"
+  >("unix")
   const [convertedTime, setConvertedTime] = useState<TimestampData | null>(null)
   const [isValid, setIsValid] = useState<boolean | null>(null)
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
 
   const formatTimestamp = useCallback((timestamp: number): TimestampData => {
     const date = new Date(timestamp)
@@ -94,6 +103,12 @@ export function TimestampConverter() {
             if (isNaN(date.getTime())) return null
             return date.getTime()
 
+          case "date":
+            if (selectedDate) {
+              return selectedDate.getTime()
+            }
+            return null
+
           default:
             return null
         }
@@ -101,13 +116,13 @@ export function TimestampConverter() {
         return null
       }
     },
-    []
+    [selectedDate]
   )
 
   const handleInputChange = (value: string) => {
     setInputTimestamp(value)
 
-    if (!value.trim()) {
+    if (!value.trim() && inputType !== "date") {
       setConvertedTime(null)
       setIsValid(null)
       return
@@ -124,11 +139,27 @@ export function TimestampConverter() {
     }
   }
 
-  const handleTypeChange = (type: "unix" | "iso" | "milliseconds") => {
+  const handleTypeChange = (type: "unix" | "iso" | "milliseconds" | "date") => {
     setInputType(type)
-    if (inputTimestamp.trim()) {
+
+    if (type === "date" && selectedDate) {
+      setInputTimestamp("")
+      const timestamp = selectedDate.getTime()
+      setConvertedTime(formatTimestamp(timestamp))
+      setIsValid(true)
+    } else if (inputTimestamp.trim()) {
       handleInputChange(inputTimestamp)
     }
+  }
+
+  const handleDateSelect = (date: Date | undefined) => {
+    setSelectedDate(date)
+    if (date && inputType === "date") {
+      const timestamp = date.getTime()
+      setConvertedTime(formatTimestamp(timestamp))
+      setIsValid(true)
+    }
+    setIsDatePickerOpen(false)
   }
 
   const handleCurrentTime = () => {
@@ -141,10 +172,18 @@ export function TimestampConverter() {
       unix: "1704067200", // 2024-01-01 00:00:00 UTC
       milliseconds: "1704067200000",
       iso: "2024-01-01T00:00:00.000Z",
+      date: new Date("2024-01-01T00:00:00.000Z"),
     }
 
-    setInputTimestamp(samples[inputType])
-    handleInputChange(samples[inputType])
+    if (inputType === "date") {
+      setSelectedDate(samples.date)
+      const timestamp = samples.date.getTime()
+      setConvertedTime(formatTimestamp(timestamp))
+      setIsValid(true)
+    } else {
+      setInputTimestamp(samples[inputType])
+      handleInputChange(samples[inputType])
+    }
   }
 
   const presetTimestamps = [
@@ -294,38 +333,85 @@ export function TimestampConverter() {
                 >
                   ISO 8601
                 </Button>
+                <Button
+                  variant={inputType === "date" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => handleTypeChange("date")}
+                >
+                  <CalendarDays className="mr-2 h-4 w-4" />
+                  Date Picker
+                </Button>
                 <Button onClick={handleSampleData} variant="outline" size="sm">
                   Sample Data
                 </Button>
               </div>
 
-              {/* Input Field */}
-              <div className="space-y-2">
-                <Input
-                  placeholder={
-                    inputType === "unix"
-                      ? "1704067200"
-                      : inputType === "milliseconds"
-                        ? "1704067200000"
-                        : "2024-01-01T00:00:00.000Z"
-                  }
-                  value={inputTimestamp}
-                  onChange={(e) => handleInputChange(e.target.value)}
-                  className="font-mono"
-                />
+              {/* Input Field or Date Picker */}
+              {inputType === "date" ? (
+                <div className="space-y-2">
+                  <Popover
+                    open={isDatePickerOpen}
+                    onOpenChange={setIsDatePickerOpen}
+                  >
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start text-left font-normal"
+                      >
+                        <Calendar className="mr-2 h-4 w-4" />
+                        {selectedDate ? (
+                          format(selectedDate, "PPP")
+                        ) : (
+                          <span className="text-muted-foreground">
+                            Pick a date
+                          </span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <CalendarComponent
+                        mode="single"
+                        selected={selectedDate}
+                        onSelect={handleDateSelect}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
 
-                {/* Validation Badge */}
-                {isValid !== null && (
-                  <div className="flex items-center gap-2">
-                    <Badge
-                      variant={isValid ? "default" : "destructive"}
-                      className="text-xs"
-                    >
-                      {isValid ? "✓ Valid" : "✗ Invalid"}
-                    </Badge>
-                  </div>
-                )}
-              </div>
+                  {selectedDate && (
+                    <div className="text-muted-foreground text-sm">
+                      Selected: {format(selectedDate, "PPP 'at' HH:mm:ss")}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Input
+                    placeholder={
+                      inputType === "unix"
+                        ? "1704067200"
+                        : inputType === "milliseconds"
+                          ? "1704067200000"
+                          : "2024-01-01T00:00:00.000Z"
+                    }
+                    value={inputTimestamp}
+                    onChange={(e) => handleInputChange(e.target.value)}
+                    className="font-mono"
+                  />
+
+                  {/* Validation Badge */}
+                  {isValid !== null && (
+                    <div className="flex items-center gap-2">
+                      <Badge
+                        variant={isValid ? "default" : "destructive"}
+                        className="text-xs"
+                      >
+                        {isValid ? "✓ Valid" : "✗ Invalid"}
+                      </Badge>
+                    </div>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -464,6 +550,13 @@ export function TimestampConverter() {
                   International standard format
                 </p>
                 <code className="text-xs">2024-01-01T00:00:00.000Z</code>
+              </div>
+              <div>
+                <h4 className="font-semibold">Date Picker</h4>
+                <p className="text-muted-foreground">
+                  Interactive calendar selection
+                </p>
+                <code className="text-xs">Click to select date</code>
               </div>
             </CardContent>
           </Card>

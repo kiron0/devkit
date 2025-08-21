@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { CopyButton } from "@/components/common/copy-button"
+import { CopyButton } from "@/components/common"
 
 interface PatternInputProps {
   value: string

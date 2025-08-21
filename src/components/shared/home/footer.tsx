@@ -1,21 +1,16 @@
 import { Route } from "next"
-import Image from "next/image"
 import Link from "next/link"
 import { Config } from "@/config"
 import { ArrowRight, Github } from "lucide-react"
+
+import { Logo } from "@/components/common"
 
 export function Footer() {
   return (
     <footer className="bg-muted/50 border-t py-12">
       <div className="container mx-auto px-4 text-center">
         <div className="group mb-4 flex items-center justify-center">
-          <Image
-            src={Config.logo}
-            alt="Logo"
-            width={1024}
-            height={1024}
-            className="w-10 rounded-full object-cover transition-transform duration-300 group-hover:scale-110 md:w-12"
-          />
+          <Logo className="w-10 object-cover transition-transform duration-300 group-hover:scale-110 md:w-12" />
           <span className="text-primary text-xl font-bold md:text-2xl">
             {Config.title}
           </span>

@@ -1,8 +1,8 @@
 "use client"
 
+import type { RegexExample } from "@/types"
 import { Zap } from "lucide-react"
 
-import type { RegexExample } from "@/types/regex"
 import { REGEX_EXAMPLES } from "@/lib/regex-engine"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"

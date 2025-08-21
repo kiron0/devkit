@@ -108,7 +108,11 @@ export function TextUtilities() {
         case "remove-duplicates":
           return [...new Set(text.split(/\s+/))].join(" ")
         case "sort-lines":
-          return text.split("\n").sort().join("\n")
+          return text
+            .split("\n")
+            .filter((line) => line.trim() !== "")
+            .sort()
+            .join("\n")
         case "sort-words":
           return text.split(/\s+/).sort().join(" ")
         case "word-wrap":
@@ -364,9 +368,8 @@ Join thousands of developers who trust ${Config.title} for their daily developme
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Input */}
-        <Card>
+      <div className="flex flex-col gap-6 lg:flex-row">
+        <Card className="w-full">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg">Input Text</CardTitle>
@@ -383,8 +386,7 @@ Join thousands of developers who trust ${Config.title} for their daily developme
           </CardContent>
         </Card>
 
-        {/* Output/Analysis */}
-        <div className="space-y-6">
+        <div className="w-full space-y-6">
           {selectedOperation === "analyze" && analysis && (
             <Card>
               <CardHeader className="pb-3">
@@ -475,39 +477,6 @@ Join thousands of developers who trust ${Config.title} for their daily developme
                   />
                 </CardContent>
               </Card>
-
-              {differences.length > 0 && (
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg">
-                      Differences ({differences.length})
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="max-h-64 space-y-2 overflow-y-auto">
-                      {differences.map((diff, index) => (
-                        <div
-                          key={index}
-                          className="bg-muted/50 rounded border p-2"
-                        >
-                          <div className="text-muted-foreground mb-1 text-xs">
-                            Position {diff.position + 1}
-                          </div>
-                          <div className="flex items-center gap-2 text-sm">
-                            <span className="rounded bg-red-100 px-1 font-mono dark:bg-red-900/30">
-                              {diff.original || "(empty)"}
-                            </span>
-                            <span>→</span>
-                            <span className="rounded bg-green-100 px-1 font-mono dark:bg-green-900/30">
-                              {diff.comparison || "(empty)"}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
             </div>
           )}
 
@@ -538,6 +507,36 @@ Join thousands of developers who trust ${Config.title} for their daily developme
             )}
         </div>
       </div>
+
+      {differences.length > 0 && (
+        <Card className="mt-6">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">
+              Differences ({differences.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="max-h-64 space-y-2 overflow-y-auto">
+              {differences.map((diff, index) => (
+                <div key={index} className="bg-muted/50 rounded border p-2">
+                  <div className="text-muted-foreground mb-1 text-xs">
+                    Position {diff.position + 1}
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="rounded bg-red-100 px-1 font-mono dark:bg-red-900/30">
+                      {diff.original || "(empty)"}
+                    </span>
+                    <span>→</span>
+                    <span className="rounded bg-green-100 px-1 font-mono dark:bg-green-900/30">
+                      {diff.comparison || "(empty)"}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <FeatureGrid features={features} />
     </ToolLayout>

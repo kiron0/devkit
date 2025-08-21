@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react"
 import { Route } from "next"
-import Image from "next/image"
 import Link from "next/link"
 import { Config } from "@/config"
 import { TOOL_CATEGORIES, TOOLS } from "@/utils"
@@ -18,6 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { Logo } from "@/components/common"
 
 export default function ToolsDashboard() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -81,13 +81,7 @@ export default function ToolsDashboard() {
       {/* Header Section */}
       <div className="space-y-4 text-center">
         <div className="group flex flex-col items-center justify-center gap-2">
-          <Image
-            src={Config.logo}
-            alt="Logo"
-            width={1024}
-            height={1024}
-            className="w-20 rounded-full object-cover transition-transform duration-300 group-hover:scale-110 md:w-24"
-          />
+          <Logo className="w-20 object-cover transition-transform duration-300 group-hover:scale-110 md:w-24" />
           <h1 className="text-primary text-3xl font-bold">{Config.title}</h1>
         </div>
         <p className="text-muted-foreground mx-auto max-w-2xl text-lg">

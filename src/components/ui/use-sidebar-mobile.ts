@@ -1,9 +1,9 @@
 import * as React from "react"
 
 // Treat tablet widths as mobile so the Sheet/drawer is used on tablets
-const MOBILE_BREAKPOINT = 768
+const MOBILE_BREAKPOINT = 1440
 
-export function useIsMobile() {
+export function useSidebarMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
 
   React.useEffect(() => {

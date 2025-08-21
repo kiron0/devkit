@@ -9,7 +9,7 @@ import { useRegex } from "@/hooks/use-regex"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { EmptyState } from "@/components/common/empty-state"
+import { EmptyState } from "@/components/common"
 
 import { MatchDisplay } from "./match-display"
 import { MatchStats } from "./match-stats"

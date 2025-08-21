@@ -16,7 +16,7 @@ export function FeatureGrid({ features, className = "" }: FeatureGridProps) {
   return (
     <div className={cn("mt-12", className)}>
       <h2 className="mb-6 text-xl font-bold">Features</h2>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {features.map((feature, index) => (
           <Card key={index} className="text-center">
             <CardContent className="pt-6">

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-
-import type { RegexFlags, RegexMatch, RegexTestResult } from "@/types/regex"
+import type { RegexFlags, RegexMatch, RegexTestResult } from "@/types"
 
 import { useDebounce } from "./use-debounce"
 

@@ -1,29 +1,21 @@
 import { Route } from "next"
-import Image from "next/image"
 import Link from "next/link"
 import { Config } from "@/config"
 import { Github } from "lucide-react"
 
 import { buttonVariants } from "@/components/ui/button"
-import { ThemeSwitcher } from "@/components/theme-switcher"
+import { Logo, ThemeSwitcher } from "@/components/common"
 
 export function Header() {
   return (
     <header className="bg-background/80 fixed top-0 z-50 w-full border-b backdrop-blur-sm">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link href="/" className="group flex items-center">
-          <Image
-            src={Config.logo}
-            alt="Logo"
-            width={1024}
-            height={1024}
-            className="w-10 rounded-full object-cover transition-transform duration-300 group-hover:scale-110 md:w-12"
-          />
+        <Link href="/" className="group flex items-center gap-2">
+          <Logo className="w-9 object-cover transition-transform duration-300 group-hover:scale-110 md:w-10" />
           <span className="text-primary text-xl font-bold md:text-2xl">
             {Config.title}
           </span>
         </Link>
-
         <nav className="hidden items-center space-x-6 text-sm font-medium md:flex">
           <button
             onClick={() =>

@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Config } from "@/config"
@@ -22,6 +21,7 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { Logo } from "@/components/common"
 
 interface ToolsSidebarProps {
   selectedTool?: string | null
@@ -61,14 +61,8 @@ export function ToolsSidebar({
           onClick={() => handleToolClick(null)}
           className="flex flex-col items-center gap-2 px-2 py-6 text-center"
         >
-          <Image
-            src={Config.logo}
-            alt="Logo"
-            width={1024}
-            height={1024}
-            className="w-14 rounded-full object-cover transition-transform duration-300 group-hover:scale-110 md:w-16"
-          />
-          <span className="text-primary -mt-2 text-xl font-bold md:text-2xl">
+          <Logo className="w-14 object-cover md:w-16" />
+          <span className="text-primary text-xl font-bold md:text-2xl">
             {Config.title}
           </span>
           <span className="text-muted-foreground text-xs md:text-sm">

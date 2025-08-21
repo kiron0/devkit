@@ -3,7 +3,7 @@ import type {
   RegexExample,
   RegexExplanation,
   RegexPerformanceMetrics,
-} from "@/types/regex"
+} from "@/types"
 
 /**
  * Advanced regex explanation patterns with enhanced metadata

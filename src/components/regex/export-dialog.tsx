@@ -1,8 +1,8 @@
 "use client"
 
+import type { RegexAnalysis, RegexFlags, RegexTestResult } from "@/types"
 import { Download, ExternalLink, FileText } from "lucide-react"
 
-import type { RegexAnalysis, RegexFlags, RegexTestResult } from "@/types/regex"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { CopyButton } from "@/components/common/copy-button"
+import { CopyButton } from "@/components/common"
 
 interface ExportDialogProps {
   isOpen: boolean
