@@ -21,6 +21,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import {
   Select,
   SelectContent,
@@ -547,10 +548,13 @@ export function JsonFormatter() {
     >
       <div className="space-y-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="formatter">Formatter</TabsTrigger>
-            <TabsTrigger value="validation">Validation</TabsTrigger>
-          </TabsList>
+          <ScrollArea>
+            <TabsList>
+              <TabsTrigger value="formatter">Formatter</TabsTrigger>
+              <TabsTrigger value="validation">Validation</TabsTrigger>
+            </TabsList>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
 
           <TabsContent value="formatter" className="space-y-6">
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

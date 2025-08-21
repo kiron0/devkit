@@ -148,25 +148,100 @@ interface SEOCheckResult {
     valid: boolean
     message: string
   }
+  schemaMarkup: {
+    valid: boolean
+    count: number
+    message: string
+  }
+  breadcrumbNavigation: {
+    valid: boolean
+    message: string
+  }
+  sitemapReference: {
+    valid: boolean
+    message: string
+  }
+  rssFeeds: {
+    valid: boolean
+    count: number
+    message: string
+  }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const { url } = await request.json()
+    const body = await request.json()
+
+    const { url } = body
 
     if (!url) {
       return NextResponse.json({ error: "URL is required" }, { status: 400 })
     }
 
+    // Validate URL
+    try {
+      const urlObj = new URL(url)
+      if (!urlObj.hostname) {
+        return NextResponse.json({ error: "Invalid URL" }, { status: 400 })
+      }
+    } catch (urlError) {
+      return NextResponse.json(
+        {
+          error: `Invalid URL format: ${urlError instanceof Error ? urlError.message : "Unknown error"}`,
+        },
+        { status: 400 }
+      )
+    }
+
     const startTime = Date.now()
 
     // Fetch the URL
-    const response = await fetch(url, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (compatible; DevKit-SEO-Checker/1.0)",
-      },
-      redirect: "follow",
-    })
+    let response
+    try {
+      // Add timeout and better error handling
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
+
+      response = await fetch(url, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (compatible; DevKit-SEO-Checker/1.0)",
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+          "Accept-Language": "en-US,en;q=0.5",
+          "Accept-Encoding": "gzip, deflate",
+          Connection: "keep-alive",
+        },
+        redirect: "follow",
+        signal: controller.signal,
+      })
+
+      clearTimeout(timeoutId)
+    } catch (fetchError) {
+      if (fetchError instanceof Error) {
+        if (fetchError.name === "AbortError") {
+          return NextResponse.json(
+            { error: "Request timeout - URL took too long to respond" },
+            { status: 408 }
+          )
+        }
+        if (fetchError.message.includes("fetch failed")) {
+          return NextResponse.json(
+            {
+              error:
+                "Network error - Unable to reach the URL. Please check if the URL is accessible and try again.",
+            },
+            { status: 500 }
+          )
+        }
+      }
+
+      return NextResponse.json(
+        {
+          error: `Failed to fetch URL: ${fetchError instanceof Error ? fetchError.message : "Unknown error"}`,
+        },
+        { status: 500 }
+      )
+    }
 
     const responseTime = Date.now() - startTime
     const finalUrl = response.url
@@ -175,31 +250,41 @@ export async function POST(request: NextRequest) {
     const fileSize = new Blob([html]).size
 
     // Parse HTML
-    const dom = new JSDOM(html)
-    const document = dom.window.document
+    let dom, document
+    try {
+      dom = new JSDOM(html)
+      document = dom.window.document
+    } catch (parseError) {
+      return NextResponse.json(
+        {
+          error: `Failed to parse HTML content: ${parseError instanceof Error ? parseError.message : "Unknown error"}`,
+        },
+        { status: 500 }
+      )
+    }
 
     // Check doctype
     const doctype = document.doctype
     const doctypeValid = doctype && doctype.name === "html"
     const doctypeMessage = doctypeValid
-      ? "HTML5 Doctype present"
-      : "Missing or invalid doctype"
+      ? "HTML5 Doctype present - Excellent for SEO"
+      : "Missing or invalid doctype - Search engines may have difficulty parsing the page"
 
     // Check charset
     const charsetMeta = document.querySelector("meta[charset]")
     const charsetValid = charsetMeta !== null
     const charsetText = charsetMeta?.getAttribute("charset") || "not found"
     const charsetMessage = charsetValid
-      ? `UTF-8 charset declared`
-      : "Missing charset declaration"
+      ? `UTF-8 charset declared - Proper encoding ensures correct text rendering`
+      : "Missing charset declaration - May cause text encoding issues"
 
     // Check HTML lang attribute
     const htmlLang = document.documentElement.getAttribute("lang")
     const htmlLangValid = htmlLang !== null && htmlLang !== ""
     const htmlLangText = htmlLang || "not found"
     const htmlLangMessage = htmlLangValid
-      ? `HTML lang attribute set to "${htmlLang}"`
-      : "Missing HTML lang attribute"
+      ? `HTML lang attribute set to "${htmlLang}" - Helps search engines understand language`
+      : "Missing HTML lang attribute - Important for international SEO and accessibility"
 
     // Check title
     const title = document.querySelector("title")
@@ -208,8 +293,10 @@ export async function POST(request: NextRequest) {
     const titleText = title?.textContent?.trim() || ""
     const titleLength = titleText.length
     const titleMessage = titleValid
-      ? "Title tag found"
-      : "Missing title tag or empty title"
+      ? titleLength <= 60
+        ? `Title tag found (${titleLength} chars) - Optimal length for search results`
+        : `Title tag found (${titleLength} chars) - Consider shortening to 50-60 characters`
+      : "Missing title tag or empty title - Critical for SEO and click-through rates"
 
     // Check description
     const descriptionMeta = document.querySelector('meta[name="description"]')
@@ -218,30 +305,32 @@ export async function POST(request: NextRequest) {
     const descriptionLength = descriptionText.length
     const descriptionMessage =
       descriptionLength > 0 && descriptionLength <= 160
-        ? "Description length is optimal"
+        ? descriptionLength >= 120
+          ? `Description length is optimal (${descriptionLength} chars) - Perfect for search snippets`
+          : `Description length is good (${descriptionLength} chars) - Consider expanding to 120-160 chars`
         : descriptionLength === 0
-          ? "Missing description meta tag"
-          : "Description too long (160 chars). Recommended: 50-160."
+          ? "Missing description meta tag - Important for search result snippets"
+          : "Description too long (160 chars). Recommended: 120-160 characters for optimal display."
 
     // Check robots tag
     const robotsMeta = document.querySelector('meta[name="robots"]')
     const robotsValid = true // Default behavior is index,follow
     const robotsMessage = robotsMeta
-      ? "Robots meta tag found"
-      : "No robots meta tag found (defaults to index,follow)"
+      ? `Robots meta tag found: "${robotsMeta.getAttribute("content")}" - Explicit crawling instructions set`
+      : "No robots meta tag found (defaults to index,follow) - Consider adding for better control"
 
     // Check viewport tag
     const viewportMeta = document.querySelector('meta[name="viewport"]')
     const viewportValid = viewportMeta !== null
     const viewportText = viewportMeta?.getAttribute("content") || ""
     const viewportMessage = viewportValid
-      ? "Responsive viewport meta tag found"
-      : "Missing viewport meta tag"
+      ? `Responsive viewport meta tag found: "${viewportText}" - Essential for mobile SEO`
+      : "Missing viewport meta tag - Critical for mobile responsiveness and SEO"
 
     // Check Open Graph tags
     const ogTags = document.querySelectorAll('meta[property^="og:"]')
     const ogCount = ogTags.length
-    const essentialOgTags = ["og:type", "og:url"]
+    const essentialOgTags = ["og:title", "og:description", "og:image", "og:url"]
     const missingOgTags = essentialOgTags.filter(
       (tag) =>
         !Array.from(ogTags).some((og) => og.getAttribute("property") === tag)
@@ -249,8 +338,8 @@ export async function POST(request: NextRequest) {
     const ogValid = missingOgTags.length === 0
     const ogMessage =
       missingOgTags.length > 0
-        ? `Missing essential Open Graph tags: ${missingOgTags.join(", ")}. Found ${ogCount} total.`
-        : `Found ${ogCount} Open Graph tags (all essential tags present).`
+        ? `Missing essential Open Graph tags: ${missingOgTags.join(", ")}. Found ${ogCount} total. Essential for social sharing.`
+        : `Found ${ogCount} Open Graph tags (all essential tags present). Excellent for social media optimization.`
     const ogText = Array.from(ogTags)
       .map(
         (tag) =>
@@ -274,8 +363,8 @@ export async function POST(request: NextRequest) {
     const twitterValid = missingTwitterTags.length === 0
     const twitterMessage =
       missingTwitterTags.length > 0
-        ? `Missing essential Twitter Card tags: ${missingTwitterTags.join(", ")}. Found ${twitterCount} total.`
-        : `Found ${twitterCount} Twitter Card tags (4/4 essential tags for 'summary_large_image' card).`
+        ? `Missing essential Twitter Card tags: ${missingTwitterTags.join(", ")}. Found ${twitterCount} total. Important for Twitter sharing appearance.`
+        : `Found ${twitterCount} Twitter Card tags (4/4 essential tags for 'summary_large_image' card). Perfect for Twitter optimization.`
     const twitterText = Array.from(twitterTags)
       .map(
         (tag) =>
@@ -309,10 +398,10 @@ export async function POST(request: NextRequest) {
       .filter((text) => text)
     const h1Message =
       h1Count === 1
-        ? "One H1 tag found"
+        ? "One H1 tag found - Perfect for SEO hierarchy"
         : h1Count === 0
-          ? "No H1 tag found"
-          : "Multiple H1 tags found (should be only one)"
+          ? "No H1 tag found - Critical for SEO, add a main heading"
+          : "Multiple H1 tags found (should be only one) - Can confuse search engines"
 
     const headingTags = document.querySelectorAll("h2, h3, h4, h5, h6")
     const headingCount = headingTags.length
@@ -341,7 +430,10 @@ export async function POST(request: NextRequest) {
     })
 
     const headingValid = headingCount > 0
-    const headingMessage = `Found ${headingCount} heading tags (H2-H6).`
+    const headingMessage =
+      headingCount > 0
+        ? `Found ${headingCount} heading tags (H2-H6). Good content structure for SEO.`
+        : "No heading tags found - Consider adding H2-H6 tags for better content organization and SEO."
     const headingText = Array.from(headingTags)
       .map((tag) => tag.outerHTML)
       .join("\n")
@@ -353,14 +445,22 @@ export async function POST(request: NextRequest) {
       .split(/\s+/)
       .filter((word) => word.length > 0)
     const wordCount = words.length
-    const wordCountValid = wordCount > 100
-    const wordCountMessage = `Content has ${wordCount} words`
+    const wordCountValid = wordCount > 300
+    const wordCountMessage =
+      wordCount > 300
+        ? `Content has ${wordCount} words - Excellent for SEO (300+ words recommended)`
+        : wordCount > 100
+          ? `Content has ${wordCount} words - Good length, consider adding more content`
+          : `Content has ${wordCount} words - Too short for SEO, aim for 300+ words`
 
     // Check paragraph count
     const paragraphs = document.querySelectorAll("p")
     const paragraphCount = paragraphs.length
     const paragraphValid = paragraphCount > 0
-    const paragraphMessage = `Page has ${paragraphCount} paragraphs`
+    const paragraphMessage =
+      paragraphCount > 0
+        ? `Page has ${paragraphCount} paragraphs - Good content structure`
+        : "No paragraphs found - Consider adding paragraph content for better readability and SEO"
 
     // Check image alt tags
     const imagesAlt = document.querySelectorAll("img")
@@ -369,7 +469,12 @@ export async function POST(request: NextRequest) {
     )
     const imageAltValid =
       imagesAlt.length === 0 || imagesWithAlt.length === imagesAlt.length
-    const imageAltMessage = `All ${imagesAlt.length} images have alt text`
+    const imageAltMessage =
+      imagesAlt.length === 0
+        ? "No images found on the page"
+        : imagesWithAlt.length === imagesAlt.length
+          ? `All ${imagesAlt.length} images have alt text - Excellent for accessibility and SEO`
+          : `${imagesWithAlt.length}/${imagesAlt.length} images have alt text - Missing alt text can hurt SEO and accessibility`
 
     // Check links
     const links = document.querySelectorAll("a[href]")
@@ -386,15 +491,18 @@ export async function POST(request: NextRequest) {
     const nofollowExternalLinks = Array.from(externalLinks).filter((link) =>
       link.getAttribute("rel")?.includes("nofollow")
     )
-    const linkCountsValid = true
-    const linkCountsMessage = `Found ${links.length} links (${internalLinks.length} internal, ${externalLinks.length} external)`
+    const linkCountsValid = links.length > 0
+    const linkCountsMessage =
+      links.length > 0
+        ? `Found ${links.length} links (${internalLinks.length} internal, ${externalLinks.length} external) - Good for site navigation and SEO`
+        : "No links found - Consider adding internal links for better site structure and SEO"
 
     // Check canonical link
     const canonicalLink = document.querySelector('link[rel="canonical"]')
     const canonicalValid = canonicalLink !== null
     const canonicalMessage = canonicalValid
-      ? "Canonical link found"
-      : "Missing canonical link"
+      ? `Canonical link found: "${canonicalLink.getAttribute("href")}" - Prevents duplicate content issues`
+      : "Missing canonical link - Important for preventing duplicate content and SEO conflicts"
 
     // Check favicon
     const faviconLink = document.querySelector(
@@ -449,14 +557,14 @@ export async function POST(request: NextRequest) {
     )
     const structuredDataValid = structuredData.length > 0
     const structuredDataMessage = structuredDataValid
-      ? `${structuredData.length} structured data blocks found`
-      : "No structured data (JSON-LD) found"
+      ? `${structuredData.length} structured data blocks found - Excellent for rich snippets and SEO`
+      : "No structured data (JSON-LD) found - Consider adding structured data for better search result appearance"
 
     // Check HTTPS
     const httpsValid = finalUrl.startsWith("https://")
     const httpsMessage = httpsValid
-      ? "HTTPS is enabled"
-      : "HTTPS is not enabled"
+      ? "HTTPS is enabled - Essential for security and SEO ranking"
+      : "HTTPS is not enabled - Critical for security and can negatively impact SEO rankings"
 
     // Check mixed content
     const mixedContent: string[] = []
@@ -477,8 +585,8 @@ export async function POST(request: NextRequest) {
     const resourceHttpsValid = mixedContent.length === 0
     const resourceHttpsMessage =
       mixedContent.length === 0
-        ? "No mixed content detected"
-        : `${mixedContent.length} mixed content items found`
+        ? "No mixed content detected - All resources use HTTPS, excellent for security"
+        : `${mixedContent.length} mixed content items found - Security risk and can trigger browser warnings`
 
     // Check response headers
     const headers = response.headers
@@ -501,13 +609,45 @@ export async function POST(request: NextRequest) {
     const headerValid = missingHeaders.length === 0
     const headerMessage =
       missingHeaders.length > 0
-        ? `Missing recommended security/caching header: ${missingHeaders.join("\n")}\nFound: ${Object.keys(headerMap).join(", ")}`
-        : "All recommended security headers found"
+        ? `Missing ${missingHeaders.length} recommended security headers: ${missingHeaders.join(", ")}. These help with security and can improve SEO rankings.`
+        : "All recommended security headers found - Excellent for security and SEO"
 
     // WWW redirect check
     const wwwValid = true
     const wwwMessage =
       "WWW redirect check requires implementation of navigation check"
+
+    // Check for schema.org markup
+    const schemaMarkup = document.querySelectorAll('[itemtype*="schema.org"]')
+    const schemaValid = schemaMarkup.length > 0
+    const schemaMessage = schemaValid
+      ? `${schemaMarkup.length} schema.org markup elements found - Great for structured data`
+      : "No schema.org markup found - Consider adding for better search understanding"
+
+    // Check for breadcrumb navigation
+    const breadcrumbs = document.querySelectorAll(
+      '[class*="breadcrumb"], nav[aria-label*="breadcrumb"]'
+    )
+    const breadcrumbValid = breadcrumbs.length > 0
+    const breadcrumbMessage = breadcrumbValid
+      ? "Breadcrumb navigation found - Excellent for user experience and SEO"
+      : "No breadcrumb navigation found - Consider adding for better site structure"
+
+    // Check for sitemap reference
+    const sitemapLink = document.querySelector('link[rel="sitemap"]')
+    const sitemapValid = sitemapLink !== null
+    const sitemapMessage = sitemapValid
+      ? "Sitemap link found in robots.txt or HTML - Good for search engine discovery"
+      : "No sitemap link found - Consider adding for better search engine crawling"
+
+    // Check for RSS feeds
+    const rssFeeds = document.querySelectorAll(
+      'link[type="application/rss+xml"], link[type="application/atom+xml"]'
+    )
+    const rssValid = rssFeeds.length > 0
+    const rssMessage = rssValid
+      ? `${rssFeeds.length} RSS/Atom feeds found - Good for content distribution`
+      : "No RSS/Atom feeds found - Consider adding for better content syndication"
 
     const result: SEOCheckResult = {
       url,
@@ -629,6 +769,24 @@ export async function POST(request: NextRequest) {
         headers: headerMap,
       },
       wwwRedirect: { valid: wwwValid, message: wwwMessage },
+      schemaMarkup: {
+        valid: schemaValid,
+        count: schemaMarkup.length,
+        message: schemaMessage,
+      },
+      breadcrumbNavigation: {
+        valid: breadcrumbValid,
+        message: breadcrumbMessage,
+      },
+      sitemapReference: {
+        valid: sitemapValid,
+        message: sitemapMessage,
+      },
+      rssFeeds: {
+        valid: rssValid,
+        count: rssFeeds.length,
+        message: rssMessage,
+      },
     }
 
     return NextResponse.json(result)

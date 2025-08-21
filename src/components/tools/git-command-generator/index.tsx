@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import {
   Select,
   SelectContent,
@@ -150,11 +151,14 @@ export function GitCommandGenerator() {
     >
       <div className="space-y-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="builder">Command Builder</TabsTrigger>
-            <TabsTrigger value="workflows">Common Workflows</TabsTrigger>
-            <TabsTrigger value="reference">Quick Reference</TabsTrigger>
-          </TabsList>
+          <ScrollArea>
+            <TabsList>
+              <TabsTrigger value="builder">Command Builder</TabsTrigger>
+              <TabsTrigger value="workflows">Common Workflows</TabsTrigger>
+              <TabsTrigger value="reference">Quick Reference</TabsTrigger>
+            </TabsList>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
 
           <TabsContent value="builder" className="space-y-6">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

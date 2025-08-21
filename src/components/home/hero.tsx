@@ -46,7 +46,7 @@ export function Hero() {
           <div className="mt-16 grid grid-cols-2 gap-8 sm:grid-cols-4 lg:grid-cols-4">
             <div className="group text-center">
               <div className="text-primary text-3xl font-bold transition-transform duration-200 group-hover:scale-110 sm:text-4xl">
-                {TOOLS.length}+
+                {TOOLS.length - 1}+
               </div>
               <div className="text-muted-foreground text-sm">
                 Developer Tools

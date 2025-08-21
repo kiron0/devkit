@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import {
   Select,
   SelectContent,
@@ -258,16 +259,19 @@ ${items
           value={layoutType}
           onValueChange={(value) => setLayoutType(value as "grid" | "flexbox")}
         >
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="grid" className="flex items-center gap-2">
-              <Grid3X3 className="h-4 w-4" />
-              CSS Grid
-            </TabsTrigger>
-            <TabsTrigger value="flexbox" className="flex items-center gap-2">
-              <Rows className="h-4 w-4" />
-              Flexbox
-            </TabsTrigger>
-          </TabsList>
+          <ScrollArea>
+            <TabsList>
+              <TabsTrigger value="grid" className="flex items-center gap-2">
+                <Grid3X3 className="h-4 w-4" />
+                CSS Grid
+              </TabsTrigger>
+              <TabsTrigger value="flexbox" className="flex items-center gap-2">
+                <Rows className="h-4 w-4" />
+                Flexbox
+              </TabsTrigger>
+            </TabsList>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
 
           <TabsContent value="grid" className="space-y-6">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

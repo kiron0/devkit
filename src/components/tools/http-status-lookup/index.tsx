@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import {
   Select,
   SelectContent,
@@ -161,15 +162,18 @@ export function HTTPStatusLookup() {
                 </CardHeader>
                 <CardContent>
                   <Tabs defaultValue="use-cases" className="w-full">
-                    <TabsList className="grid w-full grid-cols-3">
-                      <TabsTrigger value="use-cases">
-                        Common Use Cases
-                      </TabsTrigger>
-                      <TabsTrigger value="troubleshooting">
-                        Troubleshooting
-                      </TabsTrigger>
-                      <TabsTrigger value="details">Details</TabsTrigger>
-                    </TabsList>
+                    <ScrollArea>
+                      <TabsList>
+                        <TabsTrigger value="use-cases">
+                          Common Use Cases
+                        </TabsTrigger>
+                        <TabsTrigger value="troubleshooting">
+                          Troubleshooting
+                        </TabsTrigger>
+                        <TabsTrigger value="details">Details</TabsTrigger>
+                      </TabsList>
+                      <ScrollBar orientation="horizontal" />
+                    </ScrollArea>
 
                     <TabsContent value="use-cases" className="space-y-2">
                       <ul className="list-inside list-disc space-y-1 text-sm">

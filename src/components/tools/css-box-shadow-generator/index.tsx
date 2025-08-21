@@ -16,6 +16,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Slider } from "@/components/ui/slider"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -416,11 +417,14 @@ export function CSSBoxShadowGenerator() {
     >
       <div className="space-y-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="builder">Shadow Builder</TabsTrigger>
-            <TabsTrigger value="presets">Presets</TabsTrigger>
-            <TabsTrigger value="preview">Live Preview</TabsTrigger>
-          </TabsList>
+          <ScrollArea>
+            <TabsList>
+              <TabsTrigger value="builder">Shadow Builder</TabsTrigger>
+              <TabsTrigger value="presets">Presets</TabsTrigger>
+              <TabsTrigger value="preview">Live Preview</TabsTrigger>
+            </TabsList>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
 
           <TabsContent value="builder" className="space-y-6">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

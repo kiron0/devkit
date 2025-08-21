@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import {
   Select,
   SelectContent,
@@ -407,12 +408,15 @@ export function MetaTagGenerator() {
     >
       <div className="space-y-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="basic">Basic SEO</TabsTrigger>
-            <TabsTrigger value="opengraph">Open Graph</TabsTrigger>
-            <TabsTrigger value="twitter">Twitter Cards</TabsTrigger>
-            <TabsTrigger value="preview">Preview</TabsTrigger>
-          </TabsList>
+          <ScrollArea>
+            <TabsList>
+              <TabsTrigger value="basic">Basic SEO</TabsTrigger>
+              <TabsTrigger value="opengraph">Open Graph</TabsTrigger>
+              <TabsTrigger value="twitter">Twitter Cards</TabsTrigger>
+              <TabsTrigger value="preview">Preview</TabsTrigger>
+            </TabsList>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
 
           <TabsContent value="basic" className="space-y-6">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

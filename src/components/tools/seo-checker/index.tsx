@@ -1,14 +1,36 @@
 "use client"
 
 import { useState } from "react"
+import axios from "axios"
 import {
   AlertCircle,
+  AlertTriangle,
+  BarChart3,
   CheckCircle,
+  ChevronDown,
+  ChevronRight,
+  Clock,
+  Code,
+  Download,
+  Download as DownloadIcon,
   ExternalLink,
+  Eye,
+  FileText,
+  Globe,
   Info,
+  Link,
   Loader2,
   Search,
+  Settings,
+  Share2,
+  Shield,
+  Smartphone,
+  Star,
+  Target,
+  TrendingUp,
+  Users,
   XCircle,
+  Zap,
 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -21,7 +43,11 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { ToolLayout } from "@/components/common"
+import { Progress } from "@/components/ui/progress"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { FeatureGrid, ToolLayout } from "@/components/common"
 
 interface SEOCheckResult {
   url: string
@@ -170,6 +196,33 @@ interface SEOCheckResult {
     valid: boolean
     message: string
   }
+  schemaMarkup: {
+    valid: boolean
+    count: number
+    message: string
+  }
+  breadcrumbNavigation: {
+    valid: boolean
+    message: string
+  }
+  sitemapReference: {
+    valid: boolean
+    message: string
+  }
+  rssFeeds: {
+    valid: boolean
+    count: number
+    message: string
+  }
+}
+
+interface SEOScore {
+  overall: number
+  technical: number
+  content: number
+  social: number
+  performance: number
+  security: number
 }
 
 export function SEOChecker() {
@@ -177,6 +230,77 @@ export function SEOChecker() {
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<SEOCheckResult | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [seoScore, setSeoScore] = useState<SEOScore | null>(null)
+  const [activeTab, setActiveTab] = useState("overview")
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(
+    new Set()
+  )
+  const [progress, setProgress] = useState(0)
+
+  const toggleSection = (section: string) => {
+    const newExpanded = new Set(expandedSections)
+    if (newExpanded.has(section)) {
+      newExpanded.delete(section)
+    } else {
+      newExpanded.add(section)
+    }
+    setExpandedSections(newExpanded)
+  }
+
+  const calculateSEOScore = (result: SEOCheckResult): SEOScore => {
+    let technicalScore = 0
+    let contentScore = 0
+    let socialScore = 0
+    let performanceScore = 0
+    let securityScore = 0
+
+    // Technical SEO (30 points)
+    if (result.doctype.valid) technicalScore += 5
+    if (result.charset.valid) technicalScore += 5
+    if (result.htmlLang.valid) technicalScore += 5
+    if (result.viewportTag.valid) technicalScore += 5
+    if (result.robotsTag.valid) technicalScore += 5
+    if (result.schemaMarkup.valid) technicalScore += 5
+
+    // Content SEO (35 points)
+    if (result.title.valid) contentScore += 10
+    if (result.description.valid) contentScore += 10
+    if (result.h1Count.valid) contentScore += 5
+    if (result.headingCounts.valid) contentScore += 5
+    if (result.breadcrumbNavigation.valid) contentScore += 5
+
+    // Social Media (20 points)
+    if (result.ogTags.valid) socialScore += 10
+    if (result.twitterCardTags.valid) socialScore += 10
+
+    // Performance (15 points)
+    if (result.responseTime < 1000) performanceScore += 15
+    else if (result.responseTime < 2000) performanceScore += 10
+    else if (result.responseTime < 3000) performanceScore += 5
+
+    // Security (10 points)
+    if (result.httpsCheck.valid) securityScore += 5
+    if (result.resourceHttpsCheck.valid) securityScore += 5
+
+    const maxScore = 30 + 35 + 20 + 15 + 10 // 110
+    const totalScore =
+      technicalScore +
+      contentScore +
+      socialScore +
+      performanceScore +
+      securityScore
+
+    const overall = Math.round((totalScore / maxScore) * 100)
+
+    return {
+      overall,
+      technical: Math.round((technicalScore / 30) * 100),
+      content: Math.round((contentScore / 35) * 100),
+      social: Math.round((socialScore / 20) * 100),
+      performance: Math.round((performanceScore / 15) * 100),
+      security: Math.round((securityScore / 10) * 100),
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -185,23 +309,32 @@ export function SEOChecker() {
     setIsLoading(true)
     setError(null)
     setResult(null)
+    setSeoScore(null)
+    setProgress(0)
 
     try {
-      const response = await fetch("/api/seo-checker", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ url: url.trim() }),
-      })
+      setProgress(10)
+      const timer = setInterval(() => {
+        setProgress((prev) => (prev < 90 ? prev + 5 : prev))
+      }, 300)
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to analyze URL")
+      const response = await axios.post("/api/seo-checker", { url })
+
+      clearInterval(timer)
+      setProgress(100)
+
+      if (response.status < 200 || response.status >= 300) {
+        const errorData = response.data || {
+          error: "Failed to parse error response",
+        }
+        throw new Error(
+          errorData.error || `HTTP ${response.status}: ${response.statusText}`
+        )
       }
 
-      const data = await response.json()
+      const data = response.data
       setResult(data)
+      setSeoScore(calculateSEOScore(data))
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unexpected error occurred"
@@ -211,32 +344,31 @@ export function SEOChecker() {
     }
   }
 
-  const getStatusIcon = (valid: boolean) => {
-    if (valid) {
-      return <CheckCircle className="h-5 w-5 text-green-500" />
-    }
-    return <XCircle className="h-5 w-5 text-red-500" />
-  }
-
   const getStatusBadge = (valid: boolean) => {
     if (valid) {
       return (
-        <Badge
-          variant="secondary"
-          className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-        >
+        <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+          <CheckCircle className="mr-1 h-3 w-3" />
           Pass
         </Badge>
       )
     }
     return (
-      <Badge
-        variant="secondary"
-        className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-      >
+      <Badge className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+        <XCircle className="mr-1 h-3 w-3" />
         Fail
       </Badge>
     )
+  }
+
+  const getScoreBadgeColor = (score: number) => {
+    if (score >= 90)
+      return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+    if (score >= 70)
+      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+    if (score >= 50)
+      return "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200"
+    return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
   }
 
   const formatFileSize = (bytes: number) => {
@@ -247,498 +379,1066 @@ export function SEOChecker() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
   }
 
+  const exportResults = () => {
+    if (!result || !seoScore) return
+
+    const report = `
+SEO Analysis Report for ${result.finalUrl}
+Generated on: ${new Date().toLocaleString()}
+
+OVERALL SCORE: ${seoScore.overall}/100
+
+DETAILED SCORES:
+- Technical SEO: ${seoScore.technical}/100
+- Content SEO: ${seoScore.content}/100
+- Social Media: ${seoScore.social}/100
+- Performance: ${seoScore.performance}/100
+- Security: ${seoScore.security}/100
+
+TECHNICAL ANALYSIS:
+${result.doctype.message}
+${result.charset.message}
+${result.htmlLang.message}
+${result.viewportTag.message}
+${result.robotsTag.message}
+
+CONTENT ANALYSIS:
+${result.title.message}
+${result.description.message}
+${result.h1Count.message}
+${result.headingCounts.message}
+Word Count: ${result.wordCount.count}
+Paragraph Count: ${result.paragraphCount.count}
+
+PERFORMANCE:
+Response Time: ${result.responseTime}ms
+File Size: ${formatFileSize(result.fileSize)}
+
+SECURITY:
+${result.httpsCheck.message}
+${result.resourceHttpsCheck.message}
+    `
+
+    const blob = new Blob([report], { type: "text/plain" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `seo-report-${new URL(result.finalUrl).hostname}.txt`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const features = [
+    {
+      title: "SEO Score",
+      description:
+        "Comprehensive website SEO analysis with detailed insights, scoring, and actionable recommendations.",
+      icon: "🔍",
+    },
+    {
+      title: "Quick Overview",
+      description:
+        "Quick overview of the website's SEO score, response time, file size, word count, and heading count.",
+      icon: "📈",
+    },
+    {
+      title: "Detailed Analysis",
+      description:
+        "Detailed analysis of the website's SEO score, response time, file size, word count, and heading count.",
+      icon: "📊",
+    },
+    {
+      title: "Actionable Insights",
+      description:
+        "Actionable insights and recommendations to improve your website's SEO performance.",
+      icon: "💡",
+    },
+    {
+      title: "Export Results",
+      description:
+        "Export the SEO analysis results as a text file for easy sharing and reporting.",
+      icon: "📄",
+    },
+    {
+      title: "User-Friendly Interface",
+      description:
+        "Intuitive and user-friendly interface for easy navigation and understanding of SEO metrics.",
+      icon: "🖥️",
+    },
+    {
+      title: "Real-Time Analysis",
+      description:
+        "Real-time analysis of your website's SEO performance with instant feedback.",
+      icon: "⏱️",
+    },
+    {
+      title: "Multi-Tab View",
+      description:
+        "Multi-tab view for detailed insights into technical SEO, content, social media, performance, and security.",
+      icon: "📑",
+    },
+  ]
+
   return (
     <ToolLayout
       title="SEO Checker"
-      description="Analyze your website's on-page SEO factors and get detailed recommendations for improvement."
+      description="Comprehensive website SEO analysis with detailed insights, scoring, and actionable recommendations."
     >
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Website Analysis</CardTitle>
-            <CardDescription>
-              Enter a URL to analyze its on-page technical SEO factors
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="flex gap-2">
-              <Input
-                type="url"
-                placeholder="https://example.com"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                className="flex-1"
-                required
-              />
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Checking...
-                  </>
-                ) : (
-                  <>
-                    <Search className="h-4 w-4" />
-                    Check
-                  </>
-                )}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+      <TooltipProvider>
+        <div className="space-y-6">
+          <Card>
+            <CardContent>
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-col gap-3 md:flex-row"
+              >
+                <div className="relative flex-1">
+                  <Globe
+                    className="text-muted-foreground absolute top-2.5 left-3 h-4 w-4"
+                    strokeWidth={1.5}
+                  />
+                  <Input
+                    type="url"
+                    placeholder="https://example.com"
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    className="pl-10 text-base"
+                    required
+                  />
+                  <div className="text-muted-foreground mt-3 text-center text-xs md:mt-6">
+                    💡 Try: https://httpbin.org/html, https://github.com, or any
+                    public website
+                  </div>
+                </div>
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Analyzing...
+                    </>
+                  ) : (
+                    <>
+                      <Search className="h-4 w-4" />
+                      Analyze SEO
+                    </>
+                  )}
+                </Button>
+              </form>
 
-        {/* Error Display */}
-        {error && (
-          <Card className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950/50">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-2 text-red-700 dark:text-red-300">
-                <XCircle className="h-5 w-5" />
-                <span>{error}</span>
-              </div>
+              {/* Loading Progress */}
+              {isLoading && (
+                <div className="mt-4 space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span>Analyzing website...</span>
+                    <span className="text-primary">Please wait</span>
+                  </div>
+                  <Progress value={progress} className="h-2" />
+                  <div className="text-muted-foreground text-center text-xs">
+                    Checking technical SEO, content, social media, performance,
+                    and security...
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
-        )}
 
-        {/* Results */}
-        {result && (
-          <div className="space-y-6">
-            {/* Summary Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <ExternalLink className="h-5 w-5" />
-                  Analysis Results
-                </CardTitle>
-                <CardDescription>
-                  <a
-                    href={result.finalUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline dark:text-blue-400"
-                  >
-                    {result.finalUrl}
-                  </a>
-                  {result.redirected && (
-                    <span className="ml-2 text-orange-600 dark:text-orange-400">
-                      (redirected from {result.url})
-                    </span>
-                  )}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600">
-                      {result.responseTime}ms
-                    </div>
-                    <div className="text-muted-foreground text-sm">
-                      Response Time
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600">
-                      {formatFileSize(result.fileSize)}
-                    </div>
-                    <div className="text-muted-foreground text-sm">
-                      File Size
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-purple-600">
-                      {result.wordCount.count}
-                    </div>
-                    <div className="text-muted-foreground text-sm">
-                      Word Count
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-orange-600">
-                      {result.headingCounts.count}
-                    </div>
-                    <div className="text-muted-foreground text-sm">
-                      Headings
+          {/* Error Display */}
+          {error && (
+            <Card className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950/50">
+              <CardContent className="pt-6">
+                <div className="flex flex-col items-center gap-3 text-red-700 md:flex-row dark:text-red-300">
+                  <AlertCircle className="h-6 w-6" />
+                  <div className="flex-1">
+                    <div className="font-semibold">Analysis Failed</div>
+                    <div className="mb-3 text-sm">{error}</div>
+                    <div className="rounded-md bg-red-100 p-3 text-xs text-red-600 dark:bg-red-900/50 dark:text-red-400">
+                      <div className="mb-2 font-medium">
+                        💡 Common Solutions:
+                      </div>
+                      <ul className="list-inside list-disc space-y-1">
+                        <li>Check if the URL is accessible in your browser</li>
+                        <li>Ensure the URL starts with http:// or https://</li>
+                        <li>
+                          Try a different website (some sites block automated
+                          requests)
+                        </li>
+                        <li>
+                          Check if the website is down or has restricted access
+                        </li>
+                      </ul>
                     </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
+          )}
 
-            {/* Technical SEO */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Technical SEO</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Doctype</span>
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(result.doctype.valid)}
-                      {getStatusBadge(result.doctype.valid)}
+          {/* Results */}
+          {result && seoScore && (
+            <div className="space-y-6">
+              {/* Overall Score Card */}
+              <Card className="border-primary/20 from-primary/5 to-primary/10 border-2 bg-gradient-to-r">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-3xl font-bold">
+                    SEO Score
+                  </CardTitle>
+                  <div className="flex items-center justify-center gap-4">
+                    <div className="text-primary text-6xl font-bold">
+                      {seoScore.overall}
+                    </div>
+                    <div className="text-muted-foreground text-2xl">/ 100</div>
+                  </div>
+                  <div className="flex justify-center">
+                    <Badge
+                      className={`px-4 py-2 text-lg ${getScoreBadgeColor(seoScore.overall)}`}
+                    >
+                      {seoScore.overall >= 90
+                        ? "Excellent"
+                        : seoScore.overall >= 70
+                          ? "Good"
+                          : seoScore.overall >= 50
+                            ? "Fair"
+                            : "Poor"}
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-sky-600">
+                        {seoScore.technical}%
+                      </div>
+                      <div className="text-muted-foreground text-sm">
+                        Technical
+                      </div>
+                      <Progress value={seoScore.technical} className="mt-2" />
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-600">
+                        {seoScore.content}%
+                      </div>
+                      <div className="text-muted-foreground text-sm">
+                        Content
+                      </div>
+                      <Progress value={seoScore.content} className="mt-2" />
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-purple-600">
+                        {seoScore.social}%
+                      </div>
+                      <div className="text-muted-foreground text-sm">
+                        Social
+                      </div>
+                      <Progress value={seoScore.social} className="mt-2" />
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-orange-600">
+                        {seoScore.performance}%
+                      </div>
+                      <div className="text-muted-foreground text-sm">
+                        Performance
+                      </div>
+                      <Progress value={seoScore.performance} className="mt-2" />
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-red-600">
+                        {seoScore.security}%
+                      </div>
+                      <div className="text-muted-foreground text-sm">
+                        Security
+                      </div>
+                      <Progress value={seoScore.security} className="mt-2" />
                     </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Charset</span>
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(result.charset.valid)}
-                      {getStatusBadge(result.charset.valid)}
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">HTML Lang</span>
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(result.htmlLang.valid)}
-                      {getStatusBadge(result.htmlLang.valid)}
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">HTTPS</span>
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(result.httpsCheck.valid)}
-                      {getStatusBadge(result.httpsCheck.valid)}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            {/* Content SEO */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Content & Meta Tags</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Title Tag</span>
-                      <div className="flex items-center gap-2">
-                        {getStatusIcon(result.title.valid)}
-                        {getStatusBadge(result.title.valid)}
+              {/* Quick Stats */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5" />
+                    Quick Overview
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                    <div className="rounded-lg bg-sky-50 p-4 text-center dark:bg-sky-950/50">
+                      <Clock className="mx-auto mb-2 h-8 w-8 text-sky-600" />
+                      <div className="text-2xl font-bold text-sky-600">
+                        {result.responseTime}ms
+                      </div>
+                      <div className="text-muted-foreground text-sm">
+                        Response Time
                       </div>
                     </div>
-                    {result.title.text && (
-                      <div className="text-muted-foreground text-xs">
-                        &quot;{result.title.text}&quot; ({result.title.length}{" "}
-                        chars)
+                    <div className="rounded-lg bg-green-50 p-4 text-center dark:bg-green-950/50">
+                      <Download className="mx-auto mb-2 h-8 w-8 text-green-600" />
+                      <div className="text-2xl font-bold text-green-600">
+                        {formatFileSize(result.fileSize)}
+                      </div>
+                      <div className="text-muted-foreground text-sm">
+                        File Size
+                      </div>
+                    </div>
+                    <div className="rounded-lg bg-purple-50 p-4 text-center dark:bg-purple-950/50">
+                      <FileText className="mx-auto mb-2 h-8 w-8 text-purple-600" />
+                      <div className="text-2xl font-bold text-purple-600">
+                        {result.wordCount.count}
+                      </div>
+                      <div className="text-muted-foreground text-sm">
+                        Word Count
+                      </div>
+                    </div>
+                    <div className="rounded-lg bg-orange-50 p-4 text-center dark:bg-orange-950/50">
+                      <Link className="mx-auto mb-2 h-8 w-8 text-orange-600" />
+                      <div className="text-2xl font-bold text-orange-600">
+                        {result.headingCounts.count}
+                      </div>
+                      <div className="text-muted-foreground text-sm">
+                        Headings
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-end">
+                    <Button onClick={exportResults} variant="outline">
+                      <DownloadIcon className="h-4 w-4" />
+                      Export Report
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Detailed Analysis Tabs */}
+              <Tabs
+                value={activeTab}
+                onValueChange={setActiveTab}
+                className="w-full"
+              >
+                <ScrollArea>
+                  <TabsList>
+                    <TabsTrigger
+                      value="overview"
+                      className="flex items-center gap-2"
+                    >
+                      <Eye className="h-4 w-4" />
+                      Overview
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="technical"
+                      className="flex items-center gap-2"
+                    >
+                      <Settings className="h-4 w-4" />
+                      Technical
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="content"
+                      className="flex items-center gap-2"
+                    >
+                      <FileText className="h-4 w-4" />
+                      Content
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="social"
+                      className="flex items-center gap-2"
+                    >
+                      <Users className="h-4 w-4" />
+                      Social
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="performance"
+                      className="flex items-center gap-2"
+                    >
+                      <Zap className="h-4 w-4" />
+                      Performance
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="advanced"
+                      className="flex items-center gap-2"
+                    >
+                      <Star className="h-4 w-4" />
+                      Advanced
+                    </TabsTrigger>
+                  </TabsList>
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
+
+                {/* Overview Tab */}
+                <TabsContent value="overview" className="space-y-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-lg">
+                          <Target className="h-5 w-5 text-sky-600" />
+                          URL Information
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">
+                            Final URL:
+                          </span>
+                          <a
+                            href={result.finalUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-sm text-sky-600 hover:underline"
+                          >
+                            {result.finalUrl}
+                            <ExternalLink className="h-3 w-3" />
+                          </a>
+                        </div>
+                        {result.redirected && (
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium">
+                              Redirected from:
+                            </span>
+                            <span className="text-sm text-orange-600">
+                              {result.url}
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">HTTPS:</span>
+                          {getStatusBadge(result.httpsCheck.valid)}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-lg">
+                          <TrendingUp className="h-5 w-5 text-green-600" />
+                          Key Metrics
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">
+                            SEO Score:
+                          </span>
+                          <Badge
+                            className={getScoreBadgeColor(seoScore.overall)}
+                          >
+                            {seoScore.overall}/100
+                          </Badge>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">
+                            Response Time:
+                          </span>
+                          <span
+                            className={`text-sm font-medium ${result.responseTime < 1000 ? "text-green-600" : result.responseTime < 2000 ? "text-yellow-600" : "text-red-600"}`}
+                          >
+                            {result.responseTime}ms
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">
+                            File Size:
+                          </span>
+                          <span className="text-sm">
+                            {formatFileSize(result.fileSize)}
+                          </span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* SEO Tips */}
+                  <Card className="border-sky-200 bg-sky-50 dark:border-sky-800 dark:bg-sky-950/50">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-sky-800 dark:text-sky-200">
+                        <Info className="h-5 w-5" />
+                        SEO Tips & Recommendations
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
+                        <div className="space-y-2">
+                          <div className="font-medium text-sky-800 dark:text-sky-200">
+                            Technical SEO
+                          </div>
+                          <ul className="list-inside list-disc space-y-1 text-sky-700 dark:text-sky-300">
+                            <li>Ensure proper HTML5 doctype</li>
+                            <li>Set UTF-8 charset encoding</li>
+                            <li>Add HTML lang attribute</li>
+                            <li>Include viewport meta tag</li>
+                          </ul>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="font-medium text-sky-800 dark:text-sky-200">
+                            Content SEO
+                          </div>
+                          <ul className="list-inside list-disc space-y-1 text-sky-700 dark:text-sky-300">
+                            <li>Write compelling titles (50-60 chars)</li>
+                            <li>Create descriptive meta descriptions</li>
+                            <li>Use proper heading hierarchy (H1-H6)</li>
+                            <li>Include 300+ words of quality content</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Technical Tab */}
+                <TabsContent value="technical" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Settings className="h-5 w-5" />
+                        Technical SEO Analysis
+                      </CardTitle>
+                      <CardDescription>
+                        Core technical elements that affect search engine
+                        crawling and indexing
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div className="space-y-3">
+                          <div className="bg-muted flex items-center justify-between rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <Code className="h-4 w-4 text-sky-600" />
+                              <span className="font-medium">Doctype</span>
+                            </div>
+                            {getStatusBadge(result.doctype.valid)}
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.doctype.message}
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="bg-muted flex items-center justify-between rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <Globe className="h-4 w-4 text-green-600" />
+                              <span className="font-medium">Charset</span>
+                            </div>
+                            {getStatusBadge(result.charset.valid)}
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.charset.text} - {result.charset.message}
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="bg-muted flex items-center justify-between rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <Globe className="h-4 w-4 text-purple-600" />
+                              <span className="font-medium">HTML Lang</span>
+                            </div>
+                            {getStatusBadge(result.htmlLang.valid)}
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.htmlLang.text} - {result.htmlLang.message}
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="bg-muted flex items-center justify-between rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <Smartphone className="h-4 w-4 text-orange-600" />
+                              <span className="font-medium">Viewport Tag</span>
+                            </div>
+                            {getStatusBadge(result.viewportTag.valid)}
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.viewportTag.message}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Content Tab */}
+                <TabsContent value="content" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <FileText className="h-5 w-5" />
+                        Content & Meta Analysis
+                      </CardTitle>
+                      <CardDescription>
+                        Content structure, meta tags, and readability factors
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div className="space-y-3">
+                          <div className="bg-muted flex items-center justify-between rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <Target className="h-4 w-4 text-sky-600" />
+                              <span className="font-medium">Title Tag</span>
+                            </div>
+                            {getStatusBadge(result.title.valid)}
+                          </div>
+                          {result.title.text && (
+                            <div className="text-muted-foreground ml-6 text-sm">
+                              &ldquo;{result.title.text}&rdquo; (
+                              {result.title.length} chars)
+                            </div>
+                          )}
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.title.message}
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="bg-muted flex items-center justify-between rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <FileText className="h-4 w-4 text-green-600" />
+                              <span className="font-medium">Description</span>
+                            </div>
+                            {getStatusBadge(result.description.valid)}
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.description.length} characters -{" "}
+                            {result.description.message}
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="bg-muted flex items-center justify-between rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <Target className="h-4 w-4 text-purple-600" />
+                              <span className="font-medium">H1 Tags</span>
+                            </div>
+                            {getStatusBadge(result.h1Count.valid)}
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.h1Count.count} H1 tag(s) -{" "}
+                            {result.h1Count.message}
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="bg-muted flex items-center justify-between rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <BarChart3 className="h-4 w-4 text-orange-600" />
+                              <span className="font-medium">
+                                Heading Structure
+                              </span>
+                            </div>
+                            {getStatusBadge(result.headingCounts.valid)}
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.headingCounts.count} headings total
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Social Tab */}
+                <TabsContent value="social" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Users className="h-5 w-5" />
+                        Social Media & Open Graph
+                      </CardTitle>
+                      <CardDescription>
+                        Social media optimization and sharing appearance
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div className="space-y-3">
+                          <div className="bg-muted flex items-center justify-between rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <Share2 className="h-4 w-4 text-sky-600" />
+                              <span className="font-medium">
+                                Open Graph Tags
+                              </span>
+                            </div>
+                            {getStatusBadge(result.ogTags.valid)}
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.ogTags.count} tags found
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.ogTags.message}
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="bg-muted flex items-center justify-between rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <Share2 className="h-4 w-4 text-green-600" />
+                              <span className="font-medium">Twitter Cards</span>
+                            </div>
+                            {getStatusBadge(result.twitterCardTags.valid)}
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.twitterCardTags.count} tags found
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.twitterCardTags.message}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Performance Tab */}
+                <TabsContent value="performance" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Zap className="h-5 w-5" />
+                        Performance & Security
+                      </CardTitle>
+                      <CardDescription>
+                        Page speed, security headers, and HTTPS implementation
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div className="space-y-3">
+                          <div className="bg-muted flex items-center justify-between rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <Clock className="h-4 w-4 text-sky-600" />
+                              <span className="font-medium">Response Time</span>
+                            </div>
+                            <Badge
+                              className={
+                                result.responseTime < 1000
+                                  ? "bg-green-100 text-green-800"
+                                  : result.responseTime < 2000
+                                    ? "bg-yellow-100 text-yellow-800"
+                                    : "bg-red-100 text-red-800"
+                              }
+                            >
+                              {result.responseTime}ms
+                            </Badge>
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.responseTime < 1000
+                              ? "Excellent"
+                              : result.responseTime < 2000
+                                ? "Good"
+                                : "Needs improvement"}
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="bg-muted flex items-center justify-between rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <Shield className="h-4 w-4 text-green-600" />
+                              <span className="font-medium">HTTPS</span>
+                            </div>
+                            {getStatusBadge(result.httpsCheck.valid)}
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.httpsCheck.message}
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="bg-muted flex items-center justify-between rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <AlertTriangle className="h-4 w-4 text-orange-600" />
+                              <span className="font-medium">Mixed Content</span>
+                            </div>
+                            {getStatusBadge(result.resourceHttpsCheck.valid)}
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.resourceHttpsCheck.message}
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="bg-muted flex items-center justify-between rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <Shield className="h-4 w-4 text-purple-600" />
+                              <span className="font-medium">
+                                Security Headers
+                              </span>
+                            </div>
+                            {getStatusBadge(result.responseHeaders.valid)}
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.responseHeaders.message}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Advanced Tab */}
+                <TabsContent value="advanced" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Star className="h-5 w-5" />
+                        Advanced SEO Features
+                      </CardTitle>
+                      <CardDescription>
+                        Advanced SEO elements and structured data analysis
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div className="space-y-3">
+                          <div className="bg-muted flex items-center justify-between rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <Code className="h-4 w-4 text-sky-600" />
+                              <span className="font-medium">
+                                Schema.org Markup
+                              </span>
+                            </div>
+                            {getStatusBadge(result.schemaMarkup.valid)}
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.schemaMarkup.count} markup elements found
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.schemaMarkup.message}
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="bg-muted flex items-center justify-between rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <Link className="h-4 w-4 text-green-600" />
+                              <span className="font-medium">
+                                Breadcrumb Navigation
+                              </span>
+                            </div>
+                            {getStatusBadge(result.breadcrumbNavigation.valid)}
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.breadcrumbNavigation.message}
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="bg-muted flex items-center justify-between rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <Globe className="h-4 w-4 text-purple-600" />
+                              <span className="font-medium">
+                                Sitemap Reference
+                              </span>
+                            </div>
+                            {getStatusBadge(result.sitemapReference.valid)}
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.sitemapReference.message}
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="bg-muted flex items-center justify-between rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <FileText className="h-4 w-4 text-orange-600" />
+                              <span className="font-medium">
+                                RSS/Atom Feeds
+                              </span>
+                            </div>
+                            {getStatusBadge(result.rssFeeds.valid)}
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.rssFeeds.count} feeds found
+                          </div>
+                          <div className="text-muted-foreground ml-6 text-sm">
+                            {result.rssFeeds.message}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+
+              {/* Detailed Results Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Info className="h-5 w-5" />
+                    Detailed Analysis
+                  </CardTitle>
+                  <CardDescription>
+                    Expand sections to view detailed information and
+                    recommendations
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Meta Tags Details */}
+                  <div className="rounded-lg border">
+                    <button
+                      onClick={() => toggleSection("meta")}
+                      className="hover:bg-muted/50 w-full p-4 text-left transition-colors"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <FileText className="h-4 w-4" />
+                          <span className="font-medium">Meta Tags Details</span>
+                        </div>
+                        {expandedSections.has("meta") ? (
+                          <ChevronDown className="h-4 w-4" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4" />
+                        )}
+                      </div>
+                    </button>
+                    {expandedSections.has("meta") && (
+                      <div className="bg-muted/30 border-t p-4">
+                        <div className="space-y-2 text-sm">
+                          <div className="mb-3 font-medium">
+                            Additional Meta Tags:
+                          </div>
+                          {Object.entries(result.metaTags.tags).length > 0 ? (
+                            Object.entries(result.metaTags.tags).map(
+                              ([key, value]) => (
+                                <div
+                                  key={key}
+                                  className="flex items-center gap-2"
+                                >
+                                  <code className="bg-background rounded px-2 py-1 font-mono text-xs">
+                                    {key}
+                                  </code>
+                                  <span className="text-muted-foreground">
+                                    :
+                                  </span>
+                                  <span className="text-sm">{value}</span>
+                                </div>
+                              )
+                            )
+                          ) : (
+                            <p className="text-muted-foreground">
+                              No additional meta tags found.
+                            </p>
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Description</span>
-                      <div className="flex items-center gap-2">
-                        {getStatusIcon(result.description.valid)}
-                        {getStatusBadge(result.description.valid)}
-                      </div>
-                    </div>
-                    <div className="text-muted-foreground text-xs">
-                      {result.description.length} characters
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Viewport Tag</span>
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(result.viewportTag.valid)}
-                      {getStatusBadge(result.viewportTag.valid)}
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Robots Tag</span>
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(result.robotsTag.valid)}
-                      {getStatusBadge(result.robotsTag.valid)}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
 
-            {/* Social Media */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Social Media & Open Graph</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">
-                        Open Graph Tags
-                      </span>
-                      <div className="flex items-center gap-2">
-                        {getStatusIcon(result.ogTags.valid)}
-                        {getStatusBadge(result.ogTags.valid)}
-                      </div>
-                    </div>
-                    <div className="text-muted-foreground text-xs">
-                      {result.ogTags.count} tags found
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Twitter Cards</span>
-                      <div className="flex items-center gap-2">
-                        {getStatusIcon(result.twitterCardTags.valid)}
-                        {getStatusBadge(result.twitterCardTags.valid)}
-                      </div>
-                    </div>
-                    <div className="text-muted-foreground text-xs">
-                      {result.twitterCardTags.count} tags found
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Content Structure */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Content Structure</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">H1 Tags</span>
-                      <div className="flex items-center gap-2">
-                        {getStatusIcon(result.h1Count.valid)}
-                        {getStatusBadge(result.h1Count.valid)}
-                      </div>
-                    </div>
-                    <div className="text-muted-foreground text-xs">
-                      {result.h1Count.count} H1 tag(s)
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">
-                        Heading Structure
-                      </span>
-                      <div className="flex items-center gap-2">
-                        {getStatusIcon(result.headingCounts.valid)}
-                        {getStatusBadge(result.headingCounts.valid)}
-                      </div>
-                    </div>
-                    <div className="text-muted-foreground text-xs">
-                      {result.headingCounts.count} headings total
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">
-                      Images with Alt Text
-                    </span>
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(result.imageAltTags.valid)}
-                      {getStatusBadge(result.imageAltTags.valid)}
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Canonical Link</span>
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(result.canonicalLink.valid)}
-                      {getStatusBadge(result.canonicalLink.valid)}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Links & Navigation */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Links & Navigation</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-4 md:grid-cols-3">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600">
-                      {result.linkCounts.counts.internal}
-                    </div>
-                    <div className="text-muted-foreground text-sm">
-                      Internal Links
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600">
-                      {result.linkCounts.counts.external}
-                    </div>
-                    <div className="text-muted-foreground text-sm">
-                      External Links
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-purple-600">
-                      {result.linkCounts.counts.nofollowExternal}
-                    </div>
-                    <div className="text-muted-foreground text-sm">
-                      Nofollow External
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Security & Performance */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Security & Performance</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Mixed Content</span>
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(result.resourceHttpsCheck.valid)}
-                      {getStatusBadge(result.resourceHttpsCheck.valid)}
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">
-                      Security Headers
-                    </span>
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(result.responseHeaders.valid)}
-                      {getStatusBadge(result.responseHeaders.valid)}
-                    </div>
-                  </div>
-                </div>
-                {result.resourceHttpsCheck.report.mixedContent.length > 0 && (
-                  <div className="rounded-md bg-yellow-50 p-3 dark:bg-yellow-950/50">
-                    <div className="flex items-start gap-2">
-                      <AlertCircle className="mt-0.5 h-4 w-4 text-yellow-600" />
-                      <div className="text-sm text-yellow-800 dark:text-yellow-200">
-                        <div className="font-medium">
-                          Mixed Content Detected:
+                  {/* Heading Structure */}
+                  <div className="rounded-lg border">
+                    <button
+                      onClick={() => toggleSection("headings")}
+                      className="hover:bg-muted/50 w-full p-4 text-left transition-colors"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <BarChart3 className="h-4 w-4" />
+                          <span className="font-medium">Heading Structure</span>
                         </div>
-                        <ul className="mt-1 list-inside list-disc">
-                          {result.resourceHttpsCheck.report.mixedContent
-                            .slice(0, 5)
-                            .map((item, index) => (
-                              <li key={index} className="text-xs">
-                                {item}
-                              </li>
-                            ))}
-                          {result.resourceHttpsCheck.report.mixedContent
-                            .length > 5 && (
-                            <li className="text-xs">
-                              ...and{" "}
-                              {result.resourceHttpsCheck.report.mixedContent
-                                .length - 5}{" "}
-                              more
-                            </li>
+                        {expandedSections.has("headings") ? (
+                          <ChevronDown className="h-4 w-4" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4" />
+                        )}
+                      </div>
+                    </button>
+                    {expandedSections.has("headings") && (
+                      <div className="bg-muted/30 border-t p-4">
+                        <div className="space-y-3 text-sm">
+                          {Object.values(result.headingCounts.counts).reduce(
+                            (sum, count) => sum + count,
+                            0
+                          ) > 0 ? (
+                            Object.entries(result.headingCounts.counts).map(
+                              ([tag, count]) =>
+                                count > 0 && (
+                                  <div key={tag}>
+                                    <div className="mb-2 font-medium">
+                                      {tag.toUpperCase()}: {count}
+                                    </div>
+                                    {result.headingCounts.titles[tag].length >
+                                      0 && (
+                                      <ul className="text-muted-foreground ml-4 list-disc space-y-1 text-xs">
+                                        {result.headingCounts.titles[tag]
+                                          .slice(0, 3)
+                                          .map((title, index) => (
+                                            <li key={index}>{title}</li>
+                                          ))}
+                                        {result.headingCounts.titles[tag]
+                                          .length > 3 && (
+                                          <li>
+                                            ...and{" "}
+                                            {result.headingCounts.titles[tag]
+                                              .length - 3}{" "}
+                                            more
+                                          </li>
+                                        )}
+                                      </ul>
+                                    )}
+                                  </div>
+                                )
+                            )
+                          ) : (
+                            <p className="text-muted-foreground">
+                              No headings found on this page.
+                            </p>
                           )}
-                        </ul>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
-                )}
-              </CardContent>
-            </Card>
 
-            {/* Detailed Results */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Detailed Analysis</CardTitle>
-                <CardDescription>
-                  Click to expand and view detailed information for each section
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <details className="group">
-                  <summary className="hover:text-primary cursor-pointer list-none font-medium">
-                    <div className="flex items-center gap-2">
-                      <Info className="h-4 w-4" />
-                      Meta Tags Details
-                    </div>
-                  </summary>
-                  <div className="bg-muted mt-3 rounded-md p-3">
-                    <div className="text-sm">
-                      <div className="mb-2 font-medium">
-                        Additional Meta Tags:
+                  {/* Response Headers */}
+                  <div className="rounded-lg border">
+                    <button
+                      onClick={() => toggleSection("headers")}
+                      className="hover:bg-muted/50 w-full p-4 text-left transition-colors"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Settings className="h-4 w-4" />
+                          <span className="font-medium">Response Headers</span>
+                        </div>
+                        {expandedSections.has("headers") ? (
+                          <ChevronDown className="h-4 w-4" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4" />
+                        )}
                       </div>
-                      {Object.entries(result.metaTags.tags).map(
-                        ([key, value]) => (
-                          <div key={key} className="mb-1">
-                            <span className="bg-background rounded px-1 py-0.5 font-mono text-xs">
-                              {key}
-                            </span>
-                            : {value}
-                          </div>
-                        )
-                      )}
-                    </div>
+                    </button>
+                    {expandedSections.has("headers") && (
+                      <div className="bg-muted/30 border-t p-4">
+                        <div className="space-y-2 overflow-auto text-sm">
+                          {Object.entries(result.responseHeaders.headers)
+                            .length > 0 ? (
+                            Object.entries(result.responseHeaders.headers).map(
+                              ([key, value]) => (
+                                <div
+                                  key={key}
+                                  className="flex items-center gap-2"
+                                >
+                                  <code className="bg-background rounded px-2 py-1 font-mono text-xs">
+                                    {key}
+                                  </code>
+                                  <span className="text-muted-foreground">
+                                    :
+                                  </span>
+                                  <span className="text-sm">{value}</span>
+                                </div>
+                              )
+                            )
+                          ) : (
+                            <p className="text-muted-foreground">
+                              No response headers found.
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </details>
-
-                <details className="group">
-                  <summary className="hover:text-primary cursor-pointer list-none font-medium">
-                    <div className="flex items-center gap-2">
-                      <Info className="h-4 w-4" />
-                      Heading Structure
-                    </div>
-                  </summary>
-                  <div className="bg-muted mt-3 rounded-md p-3">
-                    <div className="space-y-2 text-sm">
-                      {Object.entries(result.headingCounts.counts).map(
-                        ([tag, count]) =>
-                          count > 0 && (
-                            <div key={tag}>
-                              <div className="font-medium">
-                                {tag.toUpperCase()}: {count}
-                              </div>
-                              {result.headingCounts.titles[tag].length > 0 && (
-                                <ul className="text-muted-foreground ml-4 list-disc text-xs">
-                                  {result.headingCounts.titles[tag]
-                                    .slice(0, 3)
-                                    .map((title, index) => (
-                                      <li key={index}>{title}</li>
-                                    ))}
-                                  {result.headingCounts.titles[tag].length >
-                                    3 && (
-                                    <li>
-                                      ...and{" "}
-                                      {result.headingCounts.titles[tag].length -
-                                        3}{" "}
-                                      more
-                                    </li>
-                                  )}
-                                </ul>
-                              )}
-                            </div>
-                          )
-                      )}
-                    </div>
-                  </div>
-                </details>
-
-                <details className="group">
-                  <summary className="hover:text-primary cursor-pointer list-none font-medium">
-                    <div className="flex items-center gap-2">
-                      <Info className="h-4 w-4" />
-                      Response Headers
-                    </div>
-                  </summary>
-                  <div className="bg-muted mt-3 rounded-md p-3">
-                    <div className="text-sm">
-                      {Object.entries(result.responseHeaders.headers).map(
-                        ([key, value]) => (
-                          <div key={key} className="mb-1">
-                            <span className="bg-background rounded px-1 py-0.5 font-mono text-xs">
-                              {key}
-                            </span>
-                            : {value}
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </div>
-                </details>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-      </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </div>
+      </TooltipProvider>
+      <FeatureGrid features={features} />
     </ToolLayout>
   )
 }

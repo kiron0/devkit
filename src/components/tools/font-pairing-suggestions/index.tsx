@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import {
   Select,
   SelectContent,
@@ -399,11 +400,14 @@ module.exports = {
     >
       <div className="space-y-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="suggestions">Suggestions</TabsTrigger>
-            <TabsTrigger value="custom">Custom Pairing</TabsTrigger>
-            <TabsTrigger value="browse">Browse Fonts</TabsTrigger>
-          </TabsList>
+          <ScrollArea>
+            <TabsList>
+              <TabsTrigger value="suggestions">Suggestions</TabsTrigger>
+              <TabsTrigger value="custom">Custom Pairing</TabsTrigger>
+              <TabsTrigger value="browse">Browse Fonts</TabsTrigger>
+            </TabsList>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
 
           <TabsContent value="suggestions" className="space-y-6">
             {/* Filters */}
