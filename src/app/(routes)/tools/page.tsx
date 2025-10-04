@@ -78,7 +78,6 @@ export default function ToolsDashboard() {
 
   return (
     <div className="flex flex-1 flex-col gap-10 p-6">
-      {/* Header Section */}
       <div className="space-y-4 text-center">
         <div className="group flex flex-col items-center justify-center gap-2">
           <Logo className="w-20 object-cover transition-transform duration-300 group-hover:scale-110 md:w-24" />
@@ -90,7 +89,6 @@ export default function ToolsDashboard() {
         </p>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid auto-rows-min gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100 dark:border-blue-800 dark:from-blue-950/50 dark:to-blue-900/50">
           <CardContent className="p-6">
