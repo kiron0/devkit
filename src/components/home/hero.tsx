@@ -21,7 +21,7 @@ export function Hero() {
             className="bg-muted text-primary border-primary mx-auto w-fit border transition-colors"
           >
             <Sparkles className="h-3 w-3" />
-            Professional Developer Tools Suite
+            Professional Tools Suite
           </Badge>
           <h1 className="from-primary/90 to-primary/50 bg-gradient-to-r bg-clip-text text-5xl leading-tight font-bold text-transparent sm:text-6xl lg:text-7xl xl:text-8xl">
             {Config.title}
@@ -46,7 +46,7 @@ export function Hero() {
           <div className="mt-16 grid grid-cols-2 gap-8 sm:grid-cols-4 lg:grid-cols-4">
             <div className="group text-center">
               <div className="text-primary text-3xl font-bold transition-transform duration-200 group-hover:scale-110 sm:text-4xl">
-                {TOOLS.length - 1}+
+                {Math.floor(TOOLS.length / 5) * 5}+
               </div>
               <div className="text-muted-foreground text-sm">
                 Developer Tools

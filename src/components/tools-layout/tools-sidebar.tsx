@@ -89,7 +89,9 @@ export function ToolsSidebar({
         </SidebarGroup>
         {Object.entries(toolsByCategory).map(([category, tools]) => (
           <SidebarGroup key={category}>
-            <SidebarGroupLabel>{category}</SidebarGroupLabel>
+            <SidebarGroupLabel>
+              {category} ({tools.length})
+            </SidebarGroupLabel>
             <SidebarMenu>
               {tools.map((tool) => (
                 <SidebarMenuItem key={tool.id}>

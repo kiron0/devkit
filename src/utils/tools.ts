@@ -27,6 +27,7 @@ import { PromptFiller } from "@/components/tools/prompt-filler"
 import { QRGenerator } from "@/components/tools/qr-generator"
 import { RegexTesterAdvanced } from "@/components/tools/regex-tester"
 import { ResponsiveTestingTool } from "@/components/tools/responsive-testing"
+import { ScreenRecorder } from "@/components/tools/screen-recorder"
 import { SEOChecker } from "@/components/tools/seo-checker"
 import { SqlFormatterTool } from "@/components/tools/sql-formatter"
 import { TextUtilities } from "@/components/tools/text-utilities"
@@ -1471,7 +1472,7 @@ export const TOOLS: Tool[] = [
     category: "Video Tools",
     path: "/tools/screen-recorder",
     featured: false,
-    component: ComingSoon,
+    component: ScreenRecorder,
   },
   {
     id: "aspect-ratio-calculator",
