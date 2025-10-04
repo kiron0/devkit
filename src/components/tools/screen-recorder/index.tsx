@@ -23,13 +23,6 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { FeatureGrid, ToolLayout } from "@/components/common"
 
@@ -63,7 +56,6 @@ export function ScreenRecorder() {
   const pausedTimeRef = React.useRef<number>(0)
   const totalPausedTimeRef = React.useRef<number>(0)
   const videoRef = React.useRef<HTMLVideoElement>(null)
-  const audioContextRef = React.useRef<AudioContext | null>(null)
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
@@ -86,7 +78,6 @@ export function ScreenRecorder() {
       })
 
       let micStream: MediaStream | null = null
-
       if (micEnabled) {
         try {
           micStream = await navigator.mediaDevices.getUserMedia({
@@ -102,54 +93,45 @@ export function ScreenRecorder() {
         }
       }
 
-      // Combine video and audio tracks
-      const videoTracks = displayStream.getVideoTracks()
-      const systemAudioTracks = displayStream.getAudioTracks()
+      const tabAudioTracks = displayStream.getAudioTracks()
       const micAudioTracks = micStream ? micStream.getAudioTracks() : []
 
-      // Check if system audio is captured
-      if (systemAudioTracks.length === 0) {
+      if (tabAudioTracks.length === 0) {
         toast({
-          title: "No system audio detected",
+          title: "No tab audio detected",
           description:
-            'Make sure to select "Share audio" in the screen sharing dialog.',
+            'Make sure to check "Share tab audio" in the screen sharing dialog.',
           variant: "destructive",
         })
       }
 
-      // If we have both system audio and mic, we need to mix them
       let combinedStream: MediaStream
 
-      if (systemAudioTracks.length > 0 && micAudioTracks.length > 0) {
-        // Create audio context to mix system audio and microphone
+      if (tabAudioTracks.length > 0 && micAudioTracks.length > 0) {
         const audioContext = new AudioContext()
-        audioContextRef.current = audioContext
         const destination = audioContext.createMediaStreamDestination()
 
-        // Add system audio
-        const systemSource = audioContext.createMediaStreamSource(
-          new MediaStream(systemAudioTracks)
+        const tabSource = audioContext.createMediaStreamSource(
+          new MediaStream(tabAudioTracks)
         )
-        systemSource.connect(destination)
+        tabSource.connect(destination)
 
-        // Add microphone audio
         const micSource = audioContext.createMediaStreamSource(
           new MediaStream(micAudioTracks)
         )
         micSource.connect(destination)
 
-        // Combine video with mixed audio
         combinedStream = new MediaStream([
-          ...videoTracks,
+          ...displayStream.getVideoTracks(),
           ...destination.stream.getAudioTracks(),
         ])
-      } else {
-        // No mixing needed, just combine tracks
+      } else if (micAudioTracks.length > 0) {
         combinedStream = new MediaStream([
-          ...videoTracks,
-          ...systemAudioTracks,
+          ...displayStream.getVideoTracks(),
           ...micAudioTracks,
         ])
+      } else {
+        combinedStream = displayStream
       }
 
       const mediaRecorder = new MediaRecorder(combinedStream, {
@@ -216,21 +198,34 @@ export function ScreenRecorder() {
   const pauseRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
       if (isPaused) {
-        // Resume recording
         mediaRecorderRef.current.resume()
         const pauseDuration = Date.now() - pausedTimeRef.current
         totalPausedTimeRef.current += pauseDuration
         pausedTimeRef.current = 0
         setIsPaused(false)
+
+        timerRef.current = setInterval(() => {
+          const elapsed = Math.floor(
+            (Date.now() - startTimeRef.current - totalPausedTimeRef.current) /
+              1000
+          )
+          setDuration(elapsed)
+        }, 1000)
+
         toast({
           title: "Recording resumed",
           description: "Your recording is resumed. You can pause it anytime.",
         })
       } else {
-        // Pause recording
         mediaRecorderRef.current.pause()
         pausedTimeRef.current = Date.now()
         setIsPaused(true)
+
+        if (timerRef.current) {
+          clearInterval(timerRef.current)
+          timerRef.current = null
+        }
+
         toast({
           title: "Recording paused",
           description: "Your recording is paused. You can resume it anytime.",
@@ -302,10 +297,6 @@ export function ScreenRecorder() {
     if (recordingData?.url) {
       URL.revokeObjectURL(recordingData.url)
     }
-    if (audioContextRef.current) {
-      audioContextRef.current.close()
-      audioContextRef.current = null
-    }
     setRecordingData(null)
     setDuration(0)
     pausedTimeRef.current = 0
@@ -321,9 +312,6 @@ export function ScreenRecorder() {
       if (recordingData?.url) {
         URL.revokeObjectURL(recordingData.url)
       }
-      if (audioContextRef.current) {
-        audioContextRef.current.close()
-      }
     }
   }, [recordingData])
 
@@ -331,12 +319,12 @@ export function ScreenRecorder() {
     {
       icon: "🎥",
       title: "Screen Recording",
-      description: "Record full screen, window, or tab with system audio",
+      description: "Record full screen, window, or tab with tab audio",
     },
     {
       icon: "🎙️",
       title: "Microphone Support",
-      description: "Optional microphone narration mixed with system audio",
+      description: "Add voice narration mixed with tab audio",
     },
     {
       icon: "📼",
@@ -381,7 +369,7 @@ export function ScreenRecorder() {
               <div className="space-y-0.5">
                 <Label>Microphone</Label>
                 <p className="text-muted-foreground text-sm">
-                  Add microphone narration (system audio included by default)
+                  Add microphone narration (mixed with tab audio)
                 </p>
               </div>
               <Button
@@ -501,86 +489,77 @@ export function ScreenRecorder() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Download className="h-5 w-5" />
-              Preview & Export
-            </CardTitle>
-            <CardDescription>Preview and export your recording</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {recordingData ? (
-              <>
-                <div className="bg-muted overflow-hidden rounded-lg border">
-                  <video
-                    ref={videoRef}
-                    src={recordingData.url}
-                    controls
-                    className="w-full"
-                    style={{ maxHeight: "400px" }}
-                  />
-                </div>
-
-                <div className="bg-muted/50 grid grid-cols-2 gap-4 rounded-lg border p-4">
-                  <div>
-                    <p className="text-muted-foreground text-xs">Duration</p>
-                    <p className="font-mono font-medium">
-                      {formatTime(recordingData.duration)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground text-xs">Size</p>
-                    <p className="font-mono font-medium">
-                      {(recordingData.blob.size / 1024 / 1024).toFixed(2)} MB
-                    </p>
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="export-format">Export Format</Label>
-                    <Select
-                      value={exportFormat}
-                      onValueChange={setExportFormat}
-                    >
-                      <SelectTrigger id="export-format">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {EXPORT_FORMATS.map((format) => (
-                          <SelectItem key={format.value} value={format.value}>
-                            {format.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <Button
-                    onClick={downloadRecording}
-                    size="lg"
-                    className="w-full"
-                    disabled={isExporting}
-                  >
-                    <Download className="h-5 w-5" />
-                    {isExporting ? "Exporting..." : "Download Recording"}
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <div className="text-muted-foreground flex min-h-[400px] flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 text-center">
-                <Video className="mb-4 h-12 w-12 opacity-50" />
-                <p className="mb-2 font-medium">No recording yet</p>
-                <p className="text-xs">
-                  Start recording to see the preview here
-                </p>
+        {recordingData && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Download className="h-5 w-5" />
+                Preview & Export
+              </CardTitle>
+              <CardDescription>
+                Preview and export your recording
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="bg-muted overflow-hidden rounded-lg border">
+                <video
+                  ref={videoRef}
+                  src={recordingData.url}
+                  controls
+                  className="w-full"
+                  style={{ maxHeight: "400px" }}
+                />
               </div>
-            )}
-          </CardContent>
-        </Card>
+
+              <div className="bg-muted/50 grid grid-cols-2 gap-4 rounded-lg border p-4">
+                <div>
+                  <p className="text-muted-foreground text-xs">Duration</p>
+                  <p className="font-mono font-medium">
+                    {formatTime(recordingData.duration)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground text-xs">Size</p>
+                  <p className="font-mono font-medium">
+                    {(recordingData.blob.size / 1024 / 1024).toFixed(2)} MB
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="export-format">Export Format</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {EXPORT_FORMATS.map((format) => (
+                      <Button
+                        key={format.value}
+                        variant={
+                          exportFormat === format.value ? "default" : "outline"
+                        }
+                        onClick={() => setExportFormat(format.value)}
+                        size="sm"
+                      >
+                        {format.label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                <Button
+                  onClick={downloadRecording}
+                  size="lg"
+                  className="w-full"
+                  disabled={isExporting}
+                >
+                  <Download className="h-5 w-5" />
+                  {isExporting ? "Exporting..." : "Download Recording"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       <Card className="mt-6">
