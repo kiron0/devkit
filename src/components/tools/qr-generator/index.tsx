@@ -1,203 +1,416 @@
 "use client"
 
-import { useCallback, useState } from "react"
-import Image from "next/image"
-import { Config } from "@/config"
-import {
-  Download,
-  Link as LinkIcon,
-  Mail,
-  Phone,
-  QrCode,
-  RotateCcw,
-  Smartphone,
-  Wifi,
-} from "lucide-react"
-import QRCode from "qrcode"
+import { useCallback, useEffect, useRef, useState } from "react"
+import ImagePreview from "next/image"
+import { Download, RotateCcw, Upload, X } from "lucide-react"
+import QRCodeStyling, {
+  CornerDotType,
+  CornerSquareType,
+  DotType,
+  ErrorCorrectionLevel,
+  Gradient,
+} from "qr-code-styling"
+import type { Area, Point } from "react-easy-crop"
+import Cropper from "react-easy-crop"
 
 import { getCommonFeatures } from "@/lib/tool-patterns"
-import { cn } from "@/lib/utils"
 import { toast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Separator } from "@/components/ui/separator"
 import { Slider } from "@/components/ui/slider"
+import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { CopyButton, FeatureGrid, ToolLayout } from "@/components/common"
+import { FeatureGrid, ToolLayout } from "@/components/common"
+
+import { GradientControls } from "./gradient-controls"
 
 interface QROptions {
-  size: number
-  errorCorrection: "L" | "M" | "Q" | "H"
+  width: number
+  height: number
   margin: number
-  darkColor: string
-  lightColor: string
+  data: string
+  image?: string
+  dotsOptions: {
+    type: DotType
+    color: string
+    gradient?: Gradient
+  }
+  cornersSquareOptions: {
+    type: CornerSquareType
+    color: string
+    gradient?: Gradient
+  }
+  cornersDotOptions: {
+    type: CornerDotType
+    color: string
+    gradient?: Gradient
+  }
+  backgroundOptions: {
+    color: string
+    gradient?: Gradient
+  }
+  imageOptions?: {
+    hideBackgroundDots: boolean
+    imageSize: number
+    margin: number
+    crossOrigin?: string
+  }
+  qrOptions: {
+    errorCorrectionLevel: ErrorCorrectionLevel
+  }
+}
+
+const DEFAULT_OPTIONS: QROptions = {
+  width: 300,
+  height: 300,
+  margin: 0,
+  data: "https://kiron.dev",
+  dotsOptions: {
+    type: "dots",
+    color: "#000000",
+  },
+  cornersSquareOptions: {
+    type: "extra-rounded",
+    color: "#000000",
+  },
+  cornersDotOptions: {
+    type: "dot",
+    color: "#000000",
+  },
+  backgroundOptions: {
+    color: "#ffffff",
+  },
+  imageOptions: {
+    hideBackgroundDots: true,
+    imageSize: 0.4,
+    margin: 5,
+  },
+  qrOptions: {
+    errorCorrectionLevel: "H",
+  },
 }
 
 export function QRGenerator() {
-  const [inputText, setInputText] = useState("")
-  const [qrType, setQrType] = useState("text")
-  const [qrOptions, setQrOptions] = useState<QROptions>({
-    size: 256,
-    errorCorrection: "M",
-    margin: 1.5,
-    darkColor: "#000000",
-    lightColor: "#FFFFFF",
-  })
-  const [qrDataURL, setQrDataURL] = useState("")
-  const [wifiData, setWifiData] = useState({
-    ssid: "",
-    password: "",
-    security: "WPA",
-    hidden: false,
-  })
-  const [contactData, setContactData] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    organization: "",
-    website: "",
-  })
+  const [options, setOptions] = useState<QROptions>(DEFAULT_OPTIONS)
+  const [qrCode, setQrCode] = useState<QRCodeStyling | null>(null)
+  const [logoSrc, setLogoSrc] = useState<string>("")
+  const [croppedImage, setCroppedImage] = useState<string>("")
+  const [showCropDialog, setShowCropDialog] = useState(false)
+  const [crop, setCrop] = useState<Point>({ x: 0, y: 0 })
+  const [zoom, setZoom] = useState(1)
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
+  const [useGradientDots, setUseGradientDots] = useState(false)
+  const [useGradientCorners, setUseGradientCorners] = useState(false)
+  const [useGradientBackground, setUseGradientBackground] = useState(false)
+  const [useGradientCornerDots, setUseGradientCornerDots] = useState(false)
+  const [roundLogo, setRoundLogo] = useState(false)
+  const [logoRadiusPercent, setLogoRadiusPercent] = useState(30) // 0-50%
 
-  // Generate real QR code using qrcode library
-  const generateQRCode = useCallback(
-    async (text: string, options: QROptions) => {
-      if (!text.trim()) {
-        setQrDataURL("")
-        return
+  const qrRef = useRef<HTMLDivElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Render cropped logo with optional rounded-rectangle mask
+  const renderCroppedLogo = useCallback(
+    async (
+      source: string,
+      area: Area,
+      applyRounded: boolean,
+      radiusPercent: number
+    ): Promise<string> => {
+      const img = new Image()
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve()
+        img.onerror = () => reject(new Error("Logo load failed"))
+        img.src = source
+      })
+
+      const targetW = Math.max(1, Math.round(area.width))
+      const targetH = Math.max(1, Math.round(area.height))
+      const canvas = document.createElement("canvas")
+      const ctx = canvas.getContext("2d")
+      if (!ctx) throw new Error("Canvas context missing")
+      canvas.width = targetW
+      canvas.height = targetH
+
+      if (applyRounded) {
+        const minSide = Math.min(targetW, targetH)
+        const r = Math.min(minSide * (radiusPercent / 100), minSide / 2)
+        const roundedPath = (c: CanvasRenderingContext2D) => {
+          const rr = Math.max(0, Math.min(r, Math.min(targetW, targetH) / 2))
+          c.beginPath()
+          c.moveTo(rr, 0)
+          c.lineTo(targetW - rr, 0)
+          c.quadraticCurveTo(targetW, 0, targetW, rr)
+          c.lineTo(targetW, targetH - rr)
+          c.quadraticCurveTo(targetW, targetH, targetW - rr, targetH)
+          c.lineTo(rr, targetH)
+          c.quadraticCurveTo(0, targetH, 0, targetH - rr)
+          c.lineTo(0, rr)
+          c.quadraticCurveTo(0, 0, rr, 0)
+          c.closePath()
+        }
+        ctx.save()
+        roundedPath(ctx)
+        ctx.clip()
+        ctx.drawImage(
+          img,
+          area.x,
+          area.y,
+          area.width,
+          area.height,
+          0,
+          0,
+          targetW,
+          targetH
+        )
+        ctx.restore()
+      } else {
+        ctx.drawImage(
+          img,
+          area.x,
+          area.y,
+          area.width,
+          area.height,
+          0,
+          0,
+          targetW,
+          targetH
+        )
       }
 
-      try {
-        const qrDataURL = await QRCode.toDataURL(text, {
-          width: options.size,
-          margin: options.margin,
-          color: {
-            dark: options.darkColor,
-            light: options.lightColor,
-          },
-          errorCorrectionLevel: options.errorCorrection,
-        })
-        setQrDataURL(qrDataURL)
-      } catch (error) {
-        console.error("Error generating QR code:", error)
-        setQrDataURL("")
-        toast({
-          title: "Error",
-          description: "Failed to generate QR code. Please check your input.",
-          variant: "destructive",
-        })
-      }
+      return canvas.toDataURL("image/png")
     },
     []
   )
 
-  const getFormattedText = useCallback(() => {
-    switch (qrType) {
-      case "url":
-        const url = inputText.startsWith("http")
-          ? inputText
-          : `https://${inputText}`
-        return url
-      case "email":
-        return `mailto:${inputText}`
-      case "phone":
-        return `tel:${inputText}`
-      case "sms":
-        return `sms:${inputText}`
-      case "wifi":
-        return `WIFI:T:${wifiData.security};S:${wifiData.ssid};P:${wifiData.password};H:${wifiData.hidden ? "true" : "false"};;`
-      case "contact":
-        return `MECARD:N:${contactData.name};TEL:${contactData.phone};EMAIL:${contactData.email};ORG:${contactData.organization};URL:${contactData.website};;`
-      case "event":
-        return inputText
-      case "geo":
-        return inputText
-      default:
-        return inputText
+  useEffect(() => {
+    if (typeof window === "undefined") return
+
+    const qr = new QRCodeStyling(DEFAULT_OPTIONS)
+    setQrCode(qr)
+
+    if (qrRef.current) {
+      qrRef.current.innerHTML = ""
+      qr.append(qrRef.current)
     }
-  }, [qrType, inputText, wifiData, contactData])
+  }, [])
 
-  const handleTextChange = (value: string) => {
-    setInputText(value)
+  useEffect(() => {
+    if (!qrCode) return
+    qrCode.update(options)
+  }, [options, qrCode])
+
+  const handleDataChange = (value: string) => {
+    setOptions((prev) => ({ ...prev, data: value }))
   }
 
-  const handleTypeChange = (type: string) => {
-    setQrType(type)
+  const handleSizeChange = (value: number) => {
+    setOptions((prev) => ({
+      ...prev,
+      width: value,
+      height: value,
+    }))
   }
 
-  const handleOptionsChange = (newOptions: Partial<QROptions>) => {
-    const updatedOptions = { ...qrOptions, ...newOptions }
-    setQrOptions(updatedOptions)
+  const handleMarginChange = (value: number) => {
+    setOptions((prev) => ({ ...prev, margin: value }))
   }
 
-  const handleDownload = () => {
-    if (!qrDataURL) return
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
 
-    const link = document.createElement("a")
-    link.download = `qr-code-${Date.now()}.png`
-    link.href = qrDataURL
-    link.click()
-
-    toast({
-      title: "Downloaded",
-      description: "QR code image has been downloaded",
-    })
-  }
-
-  const handleSampleData = () => {
-    const samples = {
-      text: `Hello, ${Config.title}!`,
-      url: `https://${Config.title.replace(/\s+/g, "-").toLowerCase()}.com`,
-      email: `hello@${Config.title.toLowerCase()}.com`,
-      phone: "+1234567890",
-      sms: "+1234567890",
-      event: `BEGIN:VEVENT\nSUMMARY:Sample Event\nLOCATION:123 Sample St\nDTSTART:20250821T120000\nDTEND:20250821T130000\nEND:VEVENT`,
-      geo: `geo:37.7749,-122.4194`,
+    const reader = new FileReader()
+    reader.onload = () => {
+      setLogoSrc(reader.result as string)
+      setShowCropDialog(true)
     }
+    reader.readAsDataURL(file)
+  }
 
-    const sampleText = samples[qrType as keyof typeof samples] || samples.text
-    setInputText(sampleText)
+  const onCropComplete = useCallback(
+    (croppedArea: Area, croppedAreaPixels: Area) => {
+      setCroppedAreaPixels(croppedAreaPixels)
+    },
+    []
+  )
+
+  const createCroppedImage = async () => {
+    if (!logoSrc || !croppedAreaPixels) return
+
+    try {
+      const croppedImageUrl = await renderCroppedLogo(
+        logoSrc,
+        croppedAreaPixels,
+        roundLogo,
+        logoRadiusPercent
+      )
+      setCroppedImage(croppedImageUrl)
+      setOptions((prev) => ({ ...prev, image: croppedImageUrl }))
+      setShowCropDialog(false)
+
+      toast({
+        title: "Logo added",
+        description: "Logo has been cropped and added to QR code",
+      })
+    } catch (error) {
+      console.error("Error cropping image:", error)
+      toast({
+        title: "Error",
+        description: "Failed to crop image",
+        variant: "destructive",
+      })
+    }
+  }
+
+  // Regenerate masked logo when rounding toggles or radius changes after crop
+  useEffect(() => {
+    let cancelled = false
+    const update = async () => {
+      if (!logoSrc || !croppedAreaPixels || !croppedImage) return
+      try {
+        const url = await renderCroppedLogo(
+          logoSrc,
+          croppedAreaPixels,
+          roundLogo,
+          logoRadiusPercent
+        )
+        if (!cancelled) {
+          setCroppedImage(url)
+          setOptions((prev) => ({ ...prev, image: url }))
+        }
+      } catch {
+        // ignore
+      }
+    }
+    update()
+    return () => {
+      cancelled = true
+    }
+  }, [
+    roundLogo,
+    logoRadiusPercent,
+    logoSrc,
+    croppedAreaPixels,
+    croppedImage,
+    renderCroppedLogo,
+  ])
+
+  const removeLogo = () => {
+    setLogoSrc("")
+    setCroppedImage("")
+    // Update state so future renders know logo is removed
+    setOptions((prev) => ({
+      ...prev,
+      image: "",
+      imageOptions: prev.imageOptions
+        ? { ...prev.imageOptions, hideBackgroundDots: false }
+        : undefined,
+    }))
+    // Proactively clear image on the underlying instance to avoid stale logo
+    if (qrCode) {
+      try {
+        qrCode.update({ image: "" } as unknown as QROptions)
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  const handleDownload = async (format: "png" | "jpg") => {
+    if (!qrCode) return
+
+    try {
+      if (format === "png") {
+        await qrCode.download({
+          name: `qr-code-${Date.now()}`,
+          extension: "png",
+        })
+      } else {
+        await qrCode.download({
+          name: `qr-code-${Date.now()}`,
+          extension: "jpeg",
+        })
+      }
+
+      toast({
+        title: "Downloaded",
+        description: `QR code downloaded as ${format.toUpperCase()}`,
+      })
+    } catch (error) {
+      console.error("Download error:", error)
+      toast({
+        title: "Error",
+        description: "Failed to download QR code",
+        variant: "destructive",
+      })
+    }
   }
 
   const handleClear = () => {
-    setInputText("")
-    setQrDataURL("")
-    setWifiData({ ssid: "", password: "", security: "WPA", hidden: false })
-    setContactData({
-      name: "",
-      phone: "",
-      email: "",
-      organization: "",
-      website: "",
-    })
+    setOptions(DEFAULT_OPTIONS)
+    removeLogo()
+    setUseGradientDots(false)
+    setUseGradientCorners(false)
+    setUseGradientBackground(false)
   }
 
-  const handleGenerateClick = () => {
-    const formattedText = getFormattedText()
-    if (formattedText.trim()) {
-      generateQRCode(formattedText, qrOptions)
-    } else {
-      setQrDataURL("")
-    }
+  const updateDotsGradient = (
+    colorStops: Array<{ offset: number; color: string }>
+  ) => {
+    setOptions((prev) => ({
+      ...prev,
+      dotsOptions: {
+        ...prev.dotsOptions,
+        gradient: {
+          type: "linear",
+          rotation: 0,
+          colorStops,
+        },
+      },
+    }))
   }
 
-  const qrTypes = [
-    { id: "text", name: "Text", icon: "📝", description: "Plain text" },
-    { id: "url", name: "URL", icon: "🔗", description: "Website link" },
-    { id: "email", name: "Email", icon: "📧", description: "Email address" },
-    { id: "phone", name: "Phone", icon: "📞", description: "Phone number" },
-    { id: "sms", name: "SMS", icon: "💬", description: "Text message" },
-    { id: "wifi", name: "WiFi", icon: "📶", description: "WiFi credentials" },
-    { id: "contact", name: "Contact", icon: "👤", description: "Contact card" },
-    { id: "event", name: "Event", icon: "📅", description: "Event details" },
-    {
-      id: "geo",
-      name: "Geo",
-      icon: "📍",
-      description: "Geographical location",
-    },
-  ]
+  const updateCornersGradient = (
+    colorStops: Array<{ offset: number; color: string }>
+  ) => {
+    setOptions((prev) => ({
+      ...prev,
+      cornersSquareOptions: {
+        ...prev.cornersSquareOptions,
+        gradient: {
+          type: "linear",
+          rotation: 0,
+          colorStops,
+        },
+      },
+    }))
+  }
 
   const features = getCommonFeatures([
     "REAL_TIME",
@@ -208,409 +421,783 @@ export function QRGenerator() {
 
   return (
     <ToolLayout
-      title="QR Code Generator"
-      description="Generate QR codes for text, URLs, WiFi, contacts, and more"
+      title="QR Code Generator — Custom Logo, Styling & Export"
+      description="Build branded QR codes with dot styling, color control, background customization, image cropping, and logo support — all in your browser."
     >
       <div className="mb-6 flex flex-wrap gap-2">
-        <Button onClick={handleSampleData} variant="outline">
-          <QrCode className="h-4 w-4" />
-          Sample Data
-        </Button>
-
-        <Button
-          onClick={handleClear}
-          variant="outline"
-          disabled={!inputText && !qrDataURL}
-        >
+        <Button onClick={handleClear} variant="outline">
           <RotateCcw className="h-4 w-4" />
-          Clear
+          Clear All
         </Button>
 
-        <Button onClick={handleGenerateClick} variant="default">
-          Generate QR Code
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleLogoUpload}
+        />
+
+        <Button onClick={() => fileInputRef.current?.click()} variant="outline">
+          <Upload className="h-4 w-4" />
+          Upload Logo
         </Button>
 
-        {qrDataURL && (
-          <Button onClick={handleDownload} variant="outline">
-            <Download className="h-4 w-4" />
-            Download PNG
-          </Button>
-        )}
+        <Button onClick={() => handleDownload("png")} variant="default">
+          <Download className="h-4 w-4" />
+          PNG
+        </Button>
+
+        <Button onClick={() => handleDownload("jpg")} variant="outline">
+          <Download className="h-4 w-4" />
+          JPG
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Configuration */}
         <div className="space-y-6 lg:col-span-2">
-          {/* QR Type Selector */}
           <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">QR Code Type</CardTitle>
+            <CardHeader>
+              <CardTitle>Data</CardTitle>
+              <CardDescription>
+                Enter the content to encode in your QR code
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
-                {qrTypes.map((type) => (
-                  <button
-                    key={type.id}
-                    onClick={() => handleTypeChange(type.id)}
-                    className={cn(
-                      "rounded-lg border p-2 text-center transition-colors",
-                      qrType === type.id
-                        ? "border-primary bg-primary text-primary-foreground dark:bg-primary/50"
-                        : "border-border hover:bg-muted/50"
-                    )}
-                  >
-                    <div className="mb-1 text-lg">{type.icon}</div>
-                    <div className="text-xs font-medium">{type.name}</div>
-                  </button>
-                ))}
+              <Textarea
+                placeholder="https://kiron.dev"
+                value={options.data}
+                onChange={(e) => handleDataChange(e.target.value)}
+                className="min-h-[80px] font-mono text-sm"
+              />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Main Options</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-2">
+                <Label>Size (px): {options.width}</Label>
+                <Slider
+                  min={200}
+                  max={800}
+                  step={50}
+                  value={[options.width]}
+                  onValueChange={(v) => handleSizeChange(v[0])}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Margin: {options.margin}</Label>
+                <Slider
+                  min={0}
+                  max={50}
+                  step={5}
+                  value={[options.margin]}
+                  onValueChange={(v) => handleMarginChange(v[0])}
+                />
               </div>
             </CardContent>
           </Card>
 
-          {/* Content Input */}
-          {qrType === "wifi" ? (
+          {croppedImage && (
             <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">
-                  <Wifi className="inline h-4 w-4" />
-                  WiFi Configuration
-                </CardTitle>
+              <CardHeader>
+                <CardTitle>Logo Options</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div>
-                  <Label className="mb-2 block text-sm font-medium">
-                    Network Name (SSID)
-                  </Label>
-                  <Input
-                    placeholder="WiFi Network Name"
-                    value={wifiData.ssid}
-                    onChange={(e) =>
-                      setWifiData({ ...wifiData, ssid: e.target.value })
-                    }
+                <div className="flex items-center gap-4">
+                  <ImagePreview
+                    src={croppedImage}
+                    alt="Logo"
+                    className="h-16 w-16 rounded border object-cover"
+                    width={64}
+                    height={64}
                   />
+                  <Button variant="destructive" size="sm" onClick={removeLogo}>
+                    <X className="h-4 w-4" />
+                    Remove
+                  </Button>
                 </div>
-                <div>
-                  <Label className="mb-2 block text-sm font-medium">
-                    Password
-                  </Label>
-                  <Input
-                    type="password"
-                    placeholder="WiFi Password"
-                    value={wifiData.password}
-                    onChange={(e) =>
-                      setWifiData({ ...wifiData, password: e.target.value })
-                    }
-                  />
-                </div>
-                <div>
-                  <Label className="mb-2 block text-sm font-medium">
-                    Security Type
-                  </Label>
-                  <div className="flex gap-2">
-                    {["WPA", "WEP", "nopass"].map((security) => (
-                      <Button
-                        key={security}
-                        variant={
-                          wifiData.security === security ? "default" : "outline"
-                        }
-                        size="sm"
-                        onClick={() => setWifiData({ ...wifiData, security })}
-                      >
-                        {security === "nopass" ? "Open" : security}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ) : qrType === "contact" ? (
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Smartphone className="h-4 w-4" />
-                  Contact Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Input
-                  placeholder="Full Name"
-                  value={contactData.name}
-                  onChange={(e) =>
-                    setContactData({ ...contactData, name: e.target.value })
-                  }
-                />
-                <Input
-                  placeholder="Phone Number"
-                  value={contactData.phone}
-                  onChange={(e) =>
-                    setContactData({ ...contactData, phone: e.target.value })
-                  }
-                />
-                <Input
-                  placeholder="Email Address"
-                  value={contactData.email}
-                  onChange={(e) =>
-                    setContactData({ ...contactData, email: e.target.value })
-                  }
-                />
-                <Input
-                  placeholder="Organization"
-                  value={contactData.organization}
-                  onChange={(e) =>
-                    setContactData({
-                      ...contactData,
-                      organization: e.target.value,
-                    })
-                  }
-                />
-                <Input
-                  placeholder="Website"
-                  value={contactData.website}
-                  onChange={(e) =>
-                    setContactData({
-                      ...contactData,
-                      website: e.target.value,
-                    })
-                  }
-                />
-              </CardContent>
-            </Card>
-          ) : (
-            <Card>
-              <CardHeader className="pb-3">
+
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg">Content</CardTitle>
-                  <CopyButton text={inputText} />
+                  <Label>Round logo</Label>
+                  <Switch
+                    checked={roundLogo}
+                    onCheckedChange={(checked) => setRoundLogo(!!checked)}
+                  />
                 </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <Textarea
-                  placeholder={
-                    qrType === "url"
-                      ? "https://example.com"
-                      : qrType === "email"
-                        ? "user@example.com"
-                        : qrType === "phone"
-                          ? "+1234567890"
-                          : "Enter your text here..."
-                  }
-                  value={inputText}
-                  onChange={(e) => handleTextChange(e.target.value)}
-                  className="min-h-[120px] font-mono text-sm"
-                />
+
+                {roundLogo && (
+                  <div className="space-y-2">
+                    <Label>Logo Corner Radius: {logoRadiusPercent}%</Label>
+                    <Slider
+                      min={0}
+                      max={50}
+                      step={1}
+                      value={[logoRadiusPercent]}
+                      onValueChange={(v) => setLogoRadiusPercent(v[0])}
+                    />
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between space-y-2">
+                  <Label>Hide dots behind image</Label>
+                  <Switch
+                    checked={options.imageOptions?.hideBackgroundDots ?? true}
+                    onCheckedChange={(checked) =>
+                      setOptions((prev) => ({
+                        ...prev,
+                        imageOptions: {
+                          ...prev.imageOptions!,
+                          hideBackgroundDots: checked,
+                        },
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>
+                    Image Size:{" "}
+                    {((options.imageOptions?.imageSize ?? 0.4) * 100).toFixed(
+                      0
+                    )}
+                    %
+                  </Label>
+                  <Slider
+                    min={0.2}
+                    max={0.6}
+                    step={0.05}
+                    value={[options.imageOptions?.imageSize ?? 0.4]}
+                    onValueChange={(v) =>
+                      setOptions((prev) => ({
+                        ...prev,
+                        imageOptions: {
+                          ...prev.imageOptions!,
+                          imageSize: v[0],
+                        },
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>
+                    Image Padding: {options.imageOptions?.margin ?? 5}px
+                  </Label>
+                  <Slider
+                    min={0}
+                    max={20}
+                    step={1}
+                    value={[options.imageOptions?.margin ?? 5]}
+                    onValueChange={(v) =>
+                      setOptions((prev) => ({
+                        ...prev,
+                        imageOptions: {
+                          ...prev.imageOptions!,
+                          margin: v[0],
+                        },
+                      }))
+                    }
+                  />
+                </div>
               </CardContent>
             </Card>
           )}
 
-          {/* QR Code Options */}
           <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">QR Code Options</CardTitle>
+            <CardHeader>
+              <CardTitle>Dot Style</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
-                  <Label className="mb-2 block text-sm font-medium">
-                    Size: {qrOptions.size}px
-                  </Label>
-                  <Slider
-                    min={128}
-                    max={512}
-                    step={32}
-                    value={[qrOptions.size]}
-                    onValueChange={(values) =>
-                      handleOptionsChange({ size: values[0] })
+              <div className="space-y-2">
+                <Label>Shape</Label>
+                <Select
+                  value={options.dotsOptions.type}
+                  onValueChange={(value) =>
+                    setOptions((prev) => ({
+                      ...prev,
+                      dotsOptions: {
+                        ...prev.dotsOptions,
+                        type: value as DotType,
+                      },
+                    }))
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select dot shape" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="square">Square</SelectItem>
+                    <SelectItem value="dots">Dots</SelectItem>
+                    <SelectItem value="rounded">Rounded</SelectItem>
+                    <SelectItem value="classy">Classy</SelectItem>
+                    <SelectItem value="classy-rounded">
+                      Classy Rounded
+                    </SelectItem>
+                    <SelectItem value="extra-rounded">Extra Rounded</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center justify-between space-y-2">
+                <Label>Use Gradient</Label>
+                <Switch
+                  checked={useGradientDots}
+                  onCheckedChange={(checked) => {
+                    setUseGradientDots(checked)
+                    if (!checked) {
+                      setOptions((prev) => ({
+                        ...prev,
+                        dotsOptions: {
+                          ...prev.dotsOptions,
+                          gradient: undefined,
+                        },
+                      }))
+                    } else {
+                      updateDotsGradient([
+                        { offset: 0, color: "#000000" },
+                        { offset: 1, color: "#666666" },
+                      ])
                     }
-                    className="mt-2"
+                  }}
+                />
+              </div>
+
+              {useGradientDots ? (
+                <GradientControls
+                  gradient={options.dotsOptions.gradient}
+                  onChange={(g) =>
+                    setOptions((prev) => ({
+                      ...prev,
+                      dotsOptions: {
+                        ...prev.dotsOptions,
+                        gradient: g,
+                      },
+                    }))
+                  }
+                  defaultStart="#000000"
+                  defaultEnd="#666666"
+                />
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Label className="min-w-20">Color</Label>
+                  <input
+                    type="color"
+                    value={options.dotsOptions.color}
+                    onChange={(e) =>
+                      setOptions((prev) => ({
+                        ...prev,
+                        dotsOptions: {
+                          ...prev.dotsOptions,
+                          color: e.target.value,
+                        },
+                      }))
+                    }
+                    className="h-10 w-20 cursor-pointer rounded border"
+                  />
+                  <Input
+                    value={options.dotsOptions.color}
+                    onChange={(e) =>
+                      setOptions((prev) => ({
+                        ...prev,
+                        dotsOptions: {
+                          ...prev.dotsOptions,
+                          color: e.target.value,
+                        },
+                      }))
+                    }
+                    className="flex-1 font-mono text-sm"
                   />
                 </div>
+              )}
+            </CardContent>
+          </Card>
 
-                <div>
-                  <Label className="mb-2 block text-sm font-medium">
-                    Error Correction
-                  </Label>
-                  <div className="flex gap-1">
-                    {(["L", "M", "Q", "H"] as const).map((level) => (
+          <Card>
+            <CardHeader>
+              <CardTitle>Corner Style</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label>Square Shape</Label>
+                <Select
+                  value={options.cornersSquareOptions.type}
+                  onValueChange={(value) =>
+                    setOptions((prev) => ({
+                      ...prev,
+                      cornersSquareOptions: {
+                        ...prev.cornersSquareOptions,
+                        type: value as CornerSquareType,
+                      },
+                    }))
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select square shape" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="square">Square</SelectItem>
+                    <SelectItem value="dot">Dot</SelectItem>
+                    <SelectItem value="extra-rounded">Extra Rounded</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center justify-between space-y-2">
+                <Label>Use Gradient</Label>
+                <Switch
+                  checked={useGradientCorners}
+                  onCheckedChange={(checked) => {
+                    setUseGradientCorners(checked)
+                    if (!checked) {
+                      setOptions((prev) => ({
+                        ...prev,
+                        cornersSquareOptions: {
+                          ...prev.cornersSquareOptions,
+                          gradient: undefined,
+                        },
+                      }))
+                    } else {
+                      updateCornersGradient([
+                        { offset: 0, color: "#000000" },
+                        { offset: 1, color: "#666666" },
+                      ])
+                    }
+                  }}
+                />
+              </div>
+
+              {useGradientCorners ? (
+                <GradientControls
+                  gradient={options.cornersSquareOptions.gradient}
+                  onChange={(g) =>
+                    setOptions((prev) => ({
+                      ...prev,
+                      cornersSquareOptions: {
+                        ...prev.cornersSquareOptions,
+                        gradient: g,
+                      },
+                    }))
+                  }
+                  defaultStart="#000000"
+                  defaultEnd="#666666"
+                />
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Label className="min-w-20">Color</Label>
+                  <input
+                    type="color"
+                    value={options.cornersSquareOptions.color}
+                    onChange={(e) =>
+                      setOptions((prev) => ({
+                        ...prev,
+                        cornersSquareOptions: {
+                          ...prev.cornersSquareOptions,
+                          color: e.target.value,
+                        },
+                      }))
+                    }
+                    className="h-10 w-20 cursor-pointer rounded border"
+                  />
+                  <Input
+                    value={options.cornersSquareOptions.color}
+                    onChange={(e) =>
+                      setOptions((prev) => ({
+                        ...prev,
+                        cornersSquareOptions: {
+                          ...prev.cornersSquareOptions,
+                          color: e.target.value,
+                        },
+                      }))
+                    }
+                    className="flex-1 font-mono text-sm"
+                  />
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label>Dot Shape</Label>
+                <Select
+                  value={options.cornersDotOptions.type}
+                  onValueChange={(value) =>
+                    setOptions((prev) => ({
+                      ...prev,
+                      cornersDotOptions: {
+                        ...prev.cornersDotOptions,
+                        type: value as CornerDotType,
+                      },
+                    }))
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select dot shape" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="square">Square</SelectItem>
+                    <SelectItem value="dot">Dot</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center justify-between space-y-2">
+                <Label>Use Gradient</Label>
+                <Switch
+                  checked={useGradientCornerDots}
+                  onCheckedChange={(checked) => {
+                    setUseGradientCornerDots(checked)
+                    if (!checked) {
+                      setOptions((prev) => ({
+                        ...prev,
+                        cornersDotOptions: {
+                          ...prev.cornersDotOptions,
+                          gradient: undefined,
+                        },
+                      }))
+                    } else {
+                      setOptions((prev) => ({
+                        ...prev,
+                        cornersDotOptions: {
+                          ...prev.cornersDotOptions,
+                          gradient: {
+                            type: "linear",
+                            rotation: 0,
+                            colorStops: [
+                              { offset: 0, color: "#000000" },
+                              { offset: 1, color: "#666666" },
+                            ],
+                          },
+                        },
+                      }))
+                    }
+                  }}
+                />
+              </div>
+
+              {useGradientCornerDots ? (
+                <GradientControls
+                  label="Dot Gradient"
+                  gradient={options.cornersDotOptions.gradient}
+                  onChange={(g) =>
+                    setOptions((prev) => ({
+                      ...prev,
+                      cornersDotOptions: {
+                        ...prev.cornersDotOptions,
+                        gradient: g,
+                      },
+                    }))
+                  }
+                  defaultStart="#000000"
+                  defaultEnd="#666666"
+                />
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Label className="min-w-20">Color</Label>
+                  <input
+                    type="color"
+                    value={options.cornersDotOptions.color}
+                    onChange={(e) =>
+                      setOptions((prev) => ({
+                        ...prev,
+                        cornersDotOptions: {
+                          ...prev.cornersDotOptions,
+                          color: e.target.value,
+                        },
+                      }))
+                    }
+                    className="h-10 w-20 cursor-pointer rounded border"
+                  />
+                  <Input
+                    value={options.cornersDotOptions.color}
+                    onChange={(e) =>
+                      setOptions((prev) => ({
+                        ...prev,
+                        cornersDotOptions: {
+                          ...prev.cornersDotOptions,
+                          color: e.target.value,
+                        },
+                      }))
+                    }
+                    className="flex-1 font-mono text-sm"
+                  />
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Background</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between space-y-2">
+                <Label>Use Gradient</Label>
+                <Switch
+                  checked={useGradientBackground}
+                  onCheckedChange={(checked) => {
+                    setUseGradientBackground(checked)
+                    if (!checked) {
+                      setOptions((prev) => ({
+                        ...prev,
+                        backgroundOptions: {
+                          ...prev.backgroundOptions,
+                          gradient: undefined,
+                        },
+                      }))
+                    } else {
+                      setOptions((prev) => ({
+                        ...prev,
+                        backgroundOptions: {
+                          ...prev.backgroundOptions,
+                          gradient: {
+                            type: "linear",
+                            rotation: 0,
+                            colorStops: [
+                              { offset: 0, color: "#ffffff" },
+                              { offset: 1, color: "#f0f0f0" },
+                            ],
+                          },
+                        },
+                      }))
+                    }
+                  }}
+                />
+              </div>
+
+              {useGradientBackground ? (
+                <GradientControls
+                  gradient={options.backgroundOptions.gradient}
+                  onChange={(g) =>
+                    setOptions((prev) => ({
+                      ...prev,
+                      backgroundOptions: {
+                        ...prev.backgroundOptions,
+                        gradient: g,
+                      },
+                    }))
+                  }
+                  defaultStart="#ffffff"
+                  defaultEnd="#f0f0f0"
+                />
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Label className="min-w-20">Color</Label>
+                  <input
+                    type="color"
+                    value={options.backgroundOptions.color}
+                    onChange={(e) =>
+                      setOptions((prev) => ({
+                        ...prev,
+                        backgroundOptions: {
+                          ...prev.backgroundOptions,
+                          color: e.target.value,
+                        },
+                      }))
+                    }
+                    className="h-10 w-20 cursor-pointer rounded border"
+                  />
+                  <Input
+                    value={options.backgroundOptions.color}
+                    onChange={(e) =>
+                      setOptions((prev) => ({
+                        ...prev,
+                        backgroundOptions: {
+                          ...prev.backgroundOptions,
+                          color: e.target.value,
+                        },
+                      }))
+                    }
+                    className="flex-1 font-mono text-sm"
+                  />
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>QR Options</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label>Error Correction Level</Label>
+                <div className="grid grid-cols-4 gap-2">
+                  {(["L", "M", "Q", "H"] as ErrorCorrectionLevel[]).map(
+                    (level) => (
                       <Button
                         key={level}
                         variant={
-                          qrOptions.errorCorrection === level
+                          options.qrOptions.errorCorrectionLevel === level
                             ? "default"
                             : "outline"
                         }
                         size="sm"
                         onClick={() =>
-                          handleOptionsChange({ errorCorrection: level })
+                          setOptions((prev) => ({
+                            ...prev,
+                            qrOptions: {
+                              ...prev.qrOptions,
+                              errorCorrectionLevel: level,
+                            },
+                          }))
                         }
                       >
                         {level}
                       </Button>
-                    ))}
-                  </div>
+                    )
+                  )}
                 </div>
-
-                <div>
-                  <Label className="mb-2 block text-sm font-medium">
-                    Dark Color
-                  </Label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="color"
-                      value={qrOptions.darkColor}
-                      onChange={(e) =>
-                        handleOptionsChange({ darkColor: e.target.value })
-                      }
-                      className="h-8 w-16 cursor-pointer rounded border"
-                    />
-                    <Input
-                      value={qrOptions.darkColor}
-                      onChange={(e) =>
-                        handleOptionsChange({ darkColor: e.target.value })
-                      }
-                      className="font-mono text-sm"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <Label className="mb-2 block text-sm font-medium">
-                    Light Color
-                  </Label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="color"
-                      value={qrOptions.lightColor}
-                      onChange={(e) =>
-                        handleOptionsChange({ lightColor: e.target.value })
-                      }
-                      className="h-8 w-16 cursor-pointer rounded border"
-                    />
-                    <Input
-                      value={qrOptions.lightColor}
-                      onChange={(e) =>
-                        handleOptionsChange({ lightColor: e.target.value })
-                      }
-                      className="font-mono text-sm"
-                    />
-                  </div>
-                </div>
+                <p className="text-muted-foreground mt-2 text-xs">
+                  L: ~7% | M: ~15% | Q: ~25% | H: ~30% recovery
+                </p>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* QR Code Preview */}
-        <div className="space-y-6">
+        <div className="space-y-6 lg:sticky lg:top-16 lg:self-start">
           <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">QR Code Preview</CardTitle>
+            <CardHeader>
+              <CardTitle>Preview & Export</CardTitle>
             </CardHeader>
-            <CardContent className="pt-0">
-              {qrDataURL ? (
-                <div className="space-y-4 text-center">
-                  <div className="inline-block">
-                    <Image
-                      src={qrDataURL}
-                      width={qrOptions.size}
-                      height={qrOptions.size}
-                      alt="Generated QR Code"
-                      className="border-primary h-auto max-w-full rounded-lg border-2"
-                      style={{
-                        width: Math.min(qrOptions.size, 256),
-                        height: Math.min(qrOptions.size, 256),
-                      }}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Badge variant="secondary" className="text-xs">
-                      {qrOptions.size}x{qrOptions.size}px
-                    </Badge>
-                    <div className="text-muted-foreground text-xs">
-                      Error Correction: {qrOptions.errorCorrection}
-                    </div>
-                  </div>
-                </div>
+            <CardContent>
+              {qrRef ? (
+                <div
+                  ref={qrRef}
+                  className="bg-muted/30 flex items-center justify-center overflow-hidden rounded-md border p-4"
+                />
               ) : (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <QrCode className="text-muted-foreground mb-4 h-12 w-12" />
-                  <p className="text-muted-foreground text-sm">
-                    Enter content to generate QR code
+                <div className="bg-muted/30 flex items-center justify-center overflow-hidden rounded-md border p-4">
+                  <p className="text-muted-foreground text-xs">
+                    No QR code generated
                   </p>
                 </div>
               )}
             </CardContent>
           </Card>
 
-          {/* Quick Actions */}
           <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Quick Actions</CardTitle>
+            <CardHeader>
+              <CardTitle className="text-base">
+                Error Correction Levels
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
-              <Button
-                variant="outline"
-                className="w-full justify-start"
-                onClick={() => {
-                  setQrType("url")
-                  setInputText("https://github.com")
-                }}
-              >
-                <LinkIcon className="h-4 w-4" />
-                GitHub URL
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full justify-start"
-                onClick={() => {
-                  setQrType("email")
-                  setInputText("hello@example.com")
-                }}
-              >
-                <Mail className="h-4 w-4" />
-                Email Contact
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full justify-start"
-                onClick={() => {
-                  setQrType("phone")
-                  setInputText("+1234567890")
-                }}
-              >
-                <Phone className="h-4 w-4" />
-                Phone Number
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* QR Info */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">About QR Codes</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 text-sm">
-              <div>
-                <h4 className="font-semibold">Error Correction</h4>
-                <p className="text-muted-foreground text-xs">
-                  L: ~7% | M: ~15% | Q: ~25% | H: ~30%
-                </p>
-              </div>
-              <div>
-                <h4 className="font-semibold">Capacity</h4>
-                <p className="text-muted-foreground text-xs">
-                  Up to 4,296 alphanumeric characters
-                </p>
-              </div>
-              <div>
-                <h4 className="font-semibold">Compatibility</h4>
-                <p className="text-muted-foreground text-xs">
-                  Works with all QR code readers
-                </p>
+            <CardContent>
+              <div className="space-y-2 text-sm">
+                <div>
+                  <Badge variant="outline" className="mb-1">
+                    L (Low)
+                  </Badge>
+                  <p className="text-muted-foreground text-xs">
+                    Recovers ~7% of data, ideal for clean environments
+                  </p>
+                </div>
+                <div>
+                  <Badge variant="outline" className="mb-1">
+                    M (Medium)
+                  </Badge>
+                  <p className="text-muted-foreground text-xs">
+                    Recovers ~15% of data, balanced choice for most uses
+                  </p>
+                </div>
+                <div>
+                  <Badge variant="outline" className="mb-1">
+                    Q (Quartile)
+                  </Badge>
+                  <p className="text-muted-foreground text-xs">
+                    Recovers ~25% of data, better tolerance for damage
+                  </p>
+                </div>
+                <div>
+                  <Badge variant="outline" className="mb-1">
+                    H (High)
+                  </Badge>
+                  <p className="text-muted-foreground text-xs">
+                    Recovers ~30% of data, recommended with logo or damage
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
+
+      <Dialog open={showCropDialog} onOpenChange={setShowCropDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Crop Logo</DialogTitle>
+            <DialogDescription>
+              Adjust the crop area for your logo
+            </DialogDescription>
+          </DialogHeader>
+          <div className="relative h-96 w-full">
+            {logoSrc && (
+              <Cropper
+                image={logoSrc}
+                crop={crop}
+                zoom={zoom}
+                aspect={1}
+                onCropChange={setCrop}
+                onZoomChange={setZoom}
+                onCropComplete={onCropComplete}
+              />
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label>Zoom</Label>
+            <Slider
+              min={1}
+              max={3}
+              step={0.1}
+              value={[zoom]}
+              onValueChange={(v) => setZoom(v[0])}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCropDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={createCroppedImage}>Apply</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Separator className="my-12" />
+
+      <Card>
+        <CardHeader>
+          <CardTitle>How to Use</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="flex items-start gap-3">
+            <Badge variant="secondary" className="mt-0.5">
+              1
+            </Badge>
+            <p>Enter your content — like a URL or message</p>
+          </div>
+          <div className="flex items-start gap-3">
+            <Badge variant="secondary" className="mt-0.5">
+              2
+            </Badge>
+            <p>Customize appearance: dots, corners, colors</p>
+          </div>
+          <div className="flex items-start gap-3">
+            <Badge variant="secondary" className="mt-0.5">
+              3
+            </Badge>
+            <p>Upload & crop your logo (optional)</p>
+          </div>
+          <div className="flex items-start gap-3">
+            <Badge variant="secondary" className="mt-0.5">
+              4
+            </Badge>
+            <p>Preview it live and download as PNG or JPG</p>
+          </div>
+        </CardContent>
+      </Card>
 
       <FeatureGrid features={features} />
     </ToolLayout>

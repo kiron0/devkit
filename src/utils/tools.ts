@@ -12,6 +12,7 @@ import { CsvJsonConverter } from "@/components/tools/csv-json-converter"
 import { FontPairingSuggestions } from "@/components/tools/font-pairing-suggestions"
 import { GitCommandGenerator } from "@/components/tools/git-command-generator"
 import { HashGenerator } from "@/components/tools/hash-generator"
+import { HtmlPdfConverter } from "@/components/tools/html-pdf-converter"
 import { HTTPStatusLookup } from "@/components/tools/http-status-lookup"
 import { ImageConverter } from "@/components/tools/image-converter"
 import { JsonFormatter } from "@/components/tools/json-formatter"
@@ -1689,8 +1690,8 @@ export const TOOLS: Tool[] = [
     icon: "🔄",
     category: "PDF Tools",
     path: "/tools/html-pdf-converter",
-    featured: false,
-    component: ComingSoon,
+    featured: true,
+    component: HtmlPdfConverter,
   },
 
   // Productivity Tools from JSON
