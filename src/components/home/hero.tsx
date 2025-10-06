@@ -18,12 +18,12 @@ export function Hero() {
         <div className="mx-auto max-w-5xl space-y-8 sm:space-y-10">
           <Badge
             variant="outline"
-            className="bg-muted text-primary border-primary mx-auto w-fit border transition-colors"
+            className="border-primary/50 bg-primary/5 text-primary hover:bg-primary/10 mb-4 gap-1.5 border-2 px-4 py-1.5 text-sm font-medium transition-all duration-300 hover:scale-105"
           >
-            <Sparkles className="h-3 w-3" />
+            <Sparkles className="h-3.5 w-3.5" />
             Professional Tools Suite
           </Badge>
-          <h1 className="from-primary/90 to-primary/50 bg-gradient-to-r bg-clip-text text-5xl leading-tight font-bold text-transparent sm:text-6xl lg:text-7xl xl:text-8xl">
+          <h1 className="text-primary text-5xl leading-tight font-bold sm:text-6xl lg:text-7xl xl:text-8xl">
             {Config.title}
           </h1>
           <p className="text-muted-foreground mx-auto max-w-3xl text-base leading-relaxed sm:text-lg lg:text-xl">
@@ -35,7 +35,7 @@ export function Hero() {
               className={buttonVariants({
                 size: "lg",
                 className:
-                  "from-primary/90 to-primary/30 transform gap-2 bg-gradient-to-r shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl sm:w-auto",
+                  "transform gap-2 bg-gradient-to-r shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl sm:w-auto",
               })}
             >
               <Rocket className="h-5 w-5" />

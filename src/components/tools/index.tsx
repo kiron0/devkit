@@ -4,8 +4,13 @@ import * as React from "react"
 import { Route } from "next"
 import Link from "next/link"
 import { Config } from "@/config"
-import { TOOL_CATEGORIES, TOOLS } from "@/utils"
-import { ArrowRight, Code, Search, Sparkles, X } from "lucide-react"
+import {
+  getCategoryIcon,
+  isToolCompleted,
+  TOOL_CATEGORIES,
+  TOOLS,
+} from "@/utils"
+import { ArrowRight, Code, Search, SearchIcon, Sparkles, X } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -24,17 +29,15 @@ export function Tools() {
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(
     null
   )
+  const isDevelopment = Config.env.nodeEnv === "development"
 
-  // Filter tools based on search query and selected category
   const filteredTools = React.useMemo(() => {
     let filtered = TOOLS
 
-    // Filter by category if selected
     if (selectedCategory) {
       filtered = filtered.filter((tool) => tool.category === selectedCategory)
     }
 
-    // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase()
       filtered = filtered.filter(
@@ -49,7 +52,6 @@ export function Tools() {
     return filtered
   }, [searchQuery, selectedCategory])
 
-  // Group filtered tools by category
   const toolsByCategory = React.useMemo(() => {
     const grouped: Record<string, typeof TOOLS> = {}
 
@@ -60,7 +62,6 @@ export function Tools() {
       grouped[tool.category].push(tool)
     })
 
-    // Sort tools alphabetically by title within each category
     Object.keys(grouped).forEach((category) => {
       grouped[category].sort((a, b) => a.title.localeCompare(b.title))
     })
@@ -68,7 +69,6 @@ export function Tools() {
     return grouped
   }, [filteredTools])
 
-  // Get unique categories from filtered tools
   const availableCategories = React.useMemo(() => {
     return Array.from(new Set(filteredTools.map((tool) => tool.category)))
   }, [filteredTools])
@@ -79,69 +79,77 @@ export function Tools() {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-10 p-6">
+    <div className="flex flex-1 flex-col gap-10">
       <div className="space-y-4 text-center">
         <div className="group flex flex-col items-center justify-center gap-2">
           <Logo className="w-20 object-cover transition-transform duration-300 group-hover:scale-110 md:w-24" />
           <h1 className="text-primary text-3xl font-bold">{Config.title}</h1>
         </div>
-        <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
+        <p className="text-muted-foreground mx-auto max-w-2xl text-base leading-relaxed sm:text-lg">
           Professional-grade development tools designed to streamline your
           workflow and boost productivity
         </p>
       </div>
 
       <div className="grid auto-rows-min gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100 dark:border-blue-800 dark:from-blue-950/50 dark:to-blue-900/50">
+        <Card className="group border-accent/10 bg-card/50 hover:border-accent/30 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-lg">
           <CardContent className="p-6">
             <div className="text-center">
-              <div className="mb-2 text-3xl">🛠️</div>
+              <div className="mb-2 text-3xl transition-transform group-hover:scale-110">
+                🛠️
+              </div>
               <p className="text-muted-foreground text-sm font-medium">
                 Total Tools
               </p>
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-primary text-2xl font-bold">
                 {Math.floor(TOOLS.length / 5) * 5}+
               </p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-purple-200 bg-gradient-to-br from-purple-50 to-purple-100 dark:border-purple-800 dark:from-purple-950/50 dark:to-purple-900/50">
+        <Card className="group border-accent/10 bg-card/50 hover:border-accent/30 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-lg">
           <CardContent className="p-6">
             <div className="text-center">
-              <div className="mb-2 text-3xl">📊</div>
+              <div className="mb-2 text-3xl transition-transform group-hover:scale-110">
+                📊
+              </div>
               <p className="text-muted-foreground text-sm font-medium">
                 Categories
               </p>
-              <p className="text-2xl font-bold text-purple-600">
+              <p className="text-accent-foreground text-2xl font-bold">
                 {TOOL_CATEGORIES.length}
               </p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-green-200 bg-gradient-to-br from-green-50 to-green-100 dark:border-green-800 dark:from-green-950/50 dark:to-green-900/50">
+        <Card className="group border-secondary/10 bg-card/50 hover:border-secondary/30 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-lg">
           <CardContent className="p-6">
             <div className="text-center">
-              <div className="mb-2 text-3xl">⭐</div>
+              <div className="mb-2 text-3xl transition-transform group-hover:scale-110">
+                ⭐
+              </div>
               <p className="text-muted-foreground text-sm font-medium">
                 Featured
               </p>
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-primary text-2xl font-bold">
                 {TOOLS.filter((t) => t.featured).length}
               </p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-orange-200 bg-gradient-to-br from-orange-50 to-orange-100 dark:border-orange-800 dark:from-orange-950/50 dark:to-orange-900/50">
+        <Card className="group border-muted bg-card/50 hover:border-muted-foreground/20 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-lg">
           <CardContent className="p-6">
             <div className="text-center">
-              <div className="mb-2 text-3xl">🚀</div>
+              <div className="mb-2 text-3xl transition-transform group-hover:scale-110">
+                🚀
+              </div>
               <p className="text-muted-foreground text-sm font-medium">
                 Popular
               </p>
-              <p className="text-2xl font-bold text-orange-600">
+              <p className="text-foreground text-2xl font-bold">
                 {TOOLS.filter((t) => t.featured).length}
               </p>
             </div>
@@ -149,35 +157,34 @@ export function Tools() {
         </Card>
       </div>
 
-      {/* Search and Filter Section */}
       <div className="space-y-4">
         <div className="relative">
-          <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+          <SearchIcon className="text-muted-foreground absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2" />
           <Input
             type="text"
             placeholder="Search tools by name, description, or category..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pr-10 pl-10"
+            className="border-border/50 focus:border-primary/50 focus:ring-primary/20 h-12 pr-12 pl-12 text-base transition-all"
           />
           {searchQuery && (
             <Button
               variant="ghost"
               size="sm"
               onClick={clearSearch}
-              className="absolute top-1/2 right-2 h-6 w-6 -translate-y-1/2 p-0"
+              className="hover:bg-destructive/10 hover:text-destructive absolute top-1/2 right-2 h-8 w-8 -translate-y-1/2 rounded-full p-0 transition-all"
             >
               <X className="h-4 w-4" />
             </Button>
           )}
         </div>
 
-        {/* Category Filter */}
         <div className="flex flex-wrap gap-2">
           <Button
             variant={selectedCategory === null ? "default" : "outline"}
             size="sm"
             onClick={() => setSelectedCategory(null)}
+            className="transition-all hover:scale-105"
           >
             All Categories
           </Button>
@@ -187,54 +194,75 @@ export function Tools() {
               variant={selectedCategory === category ? "default" : "outline"}
               size="sm"
               onClick={() => setSelectedCategory(category)}
+              className="border-border/50 hover:border-primary/30 gap-1.5 transition-all hover:scale-105"
             >
-              {getCategoryIcon(category)} {category}
+              <span className="text-base">{getCategoryIcon(category)}</span>
+              <span>{category}</span>
             </Button>
           ))}
         </div>
 
-        {/* Search Results Summary */}
-        {searchQuery && (
-          <div className="text-muted-foreground text-center text-sm">
-            Found {filteredTools.length} tool
-            {filteredTools.length !== 1 ? "s" : ""}
-            {selectedCategory && ` in ${selectedCategory}`}
-            {searchQuery && ` matching "${searchQuery}"`}
+        {(searchQuery || selectedCategory) && (
+          <div className="text-muted-foreground flex items-center justify-center gap-2 text-center text-sm">
+            <Badge variant="secondary" className="px-3 py-1">
+              {filteredTools.length} tool
+              {filteredTools.length !== 1 ? "s" : ""} found
+            </Badge>
+            {selectedCategory && (
+              <span className="text-xs">
+                in <span className="font-semibold">{selectedCategory}</span>
+              </span>
+            )}
+            {searchQuery && (
+              <span className="text-xs">
+                matching{" "}
+                <span className="font-semibold">
+                  &ldquo;{searchQuery}&rdquo;
+                </span>
+              </span>
+            )}
           </div>
         )}
       </div>
 
-      {/* Tools Display */}
       {filteredTools.length > 0 ? (
-        <div className="space-y-8">
+        <div className="space-y-10">
           <div className="text-center">
-            <h2 className="mb-2 text-2xl font-bold">
+            <h2 className="mb-2 text-2xl font-bold md:text-3xl">
               {searchQuery ? "Search Results" : "Tools by Category"}
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-sm sm:text-base">
               {searchQuery
                 ? `Found ${filteredTools.length} tool${filteredTools.length !== 1 ? "s" : ""}`
                 : "Organized by functionality for easy discovery"}
             </p>
           </div>
 
-          {/* Show tools grouped by category or as a flat list for search results */}
           {searchQuery ? (
-            // Flat list for search results
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
               {filteredTools.map((tool) => (
                 <Link key={tool.id} href={tool.path as Route}>
-                  <Card className="group from-background to-muted/30 border-0 bg-gradient-to-br transition-all duration-200 hover:scale-105 hover:shadow-lg">
+                  <Card className="group border-border/40 bg-card/50 hover:border-primary/30 hover:shadow-primary/5 relative h-full overflow-hidden backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                    <div className="from-primary/0 via-accent/0 to-secondary/0 absolute inset-0 -z-10 bg-gradient-to-br opacity-0 transition-opacity duration-300 group-hover:opacity-10" />
+
                     <CardHeader className="pb-3">
-                      <div className="flex items-center justify-between">
-                        <div className="text-3xl transition-transform duration-200 group-hover:scale-110">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="bg-primary/10 group-hover:bg-primary/20 flex h-12 w-12 items-center justify-center rounded-xl text-2xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
                           {tool.icon}
                         </div>
-                        <div className="flex gap-1">
+                        <div className="flex flex-wrap gap-1">
                           {tool.featured && (
-                            <Badge variant="default" className="text-xs">
+                            <Badge variant="default" className="gap-1 text-xs">
                               <Sparkles className="h-3 w-3" />
                               Featured
+                            </Badge>
+                          )}
+                          {isDevelopment && isToolCompleted(tool) && (
+                            <Badge
+                              variant="default"
+                              className="bg-green-600 text-xs hover:bg-green-700"
+                            >
+                              Done
                             </Badge>
                           )}
                           <Badge variant="secondary" className="text-xs">
@@ -242,17 +270,17 @@ export function Tools() {
                           </Badge>
                         </div>
                       </div>
-                      <CardTitle className="group-hover:text-primary text-lg transition-colors">
+                      <CardTitle className="group-hover:text-primary mt-3 text-lg font-bold transition-colors">
                         {tool.title}
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <CardDescription className="mb-4 text-sm leading-relaxed">
+                      <CardDescription className="text-muted-foreground mb-4 text-sm leading-relaxed">
                         {tool.description}
                       </CardDescription>
-                      <div className="text-primary flex items-center text-sm font-medium transition-transform duration-200 group-hover:translate-x-1">
+                      <div className="text-primary flex items-center gap-2 text-sm font-semibold transition-transform duration-200 group-hover:translate-x-2">
                         Try Tool
-                        <ArrowRight className="ml-1 h-4 w-4" />
+                        <ArrowRight className="h-4 w-4" />
                       </div>
                     </CardContent>
                   </Card>
@@ -260,60 +288,64 @@ export function Tools() {
               ))}
             </div>
           ) : (
-            // Grouped by category for normal view
             availableCategories.map((category: string) => {
               const categoryTools = toolsByCategory[category]
               return (
-                <div key={category} className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="flex items-center gap-2 text-xl font-semibold">
-                      <span className="text-2xl">
+                <div key={category} className="space-y-6">
+                  <div className="border-border/40 flex items-center justify-between border-b pb-3">
+                    <h3 className="flex items-center gap-3 text-xl font-bold md:text-2xl">
+                      <span className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg text-2xl">
                         {getCategoryIcon(category)}
                       </span>
                       {category}
                     </h3>
-                    <Badge variant="secondary">
+                    <Badge variant="secondary" className="px-3 py-1">
                       {categoryTools.length} tools
                     </Badge>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {categoryTools.map((tool) => (
                       <Link key={tool.id} href={tool.path as Route}>
-                        <Card className="group from-background to-muted/30 border-0 bg-gradient-to-br transition-all duration-200 hover:scale-105 hover:shadow-lg">
+                        <Card className="group border-border/40 bg-card/50 hover:border-primary/30 hover:shadow-primary/5 relative h-full overflow-hidden backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                          <div className="from-primary/0 via-accent/0 to-secondary/0 absolute inset-0 -z-10 bg-gradient-to-br opacity-0 transition-opacity duration-300 group-hover:opacity-10" />
+
                           <CardHeader className="pb-3">
-                            <div className="flex items-center justify-between">
-                              <div className="text-3xl transition-transform duration-200 group-hover:scale-110">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="bg-primary/10 group-hover:bg-primary/20 flex h-12 w-12 items-center justify-center rounded-xl text-2xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
                                 {tool.icon}
                               </div>
-                              <div className="flex gap-1">
+                              <div className="flex flex-wrap gap-1">
                                 {tool.featured && (
-                                  <Badge variant="default" className="text-xs">
+                                  <Badge
+                                    variant="default"
+                                    className="gap-1 text-xs"
+                                  >
                                     <Sparkles className="h-3 w-3" />
                                     Featured
                                   </Badge>
                                 )}
-                                {tool.featured && (
+                                {isDevelopment && isToolCompleted(tool) && (
                                   <Badge
-                                    variant="secondary"
-                                    className="bg-orange-600 text-xs text-white"
+                                    variant="default"
+                                    className="bg-green-600 text-xs hover:bg-green-700"
                                   >
-                                    Popular
+                                    Done
                                   </Badge>
                                 )}
                               </div>
                             </div>
-                            <CardTitle className="group-hover:text-primary text-lg transition-colors">
+                            <CardTitle className="group-hover:text-primary mt-3 text-lg font-bold transition-colors">
                               {tool.title}
                             </CardTitle>
                           </CardHeader>
                           <CardContent>
-                            <CardDescription className="mb-4 text-sm leading-relaxed">
+                            <CardDescription className="text-muted-foreground mb-4 text-sm leading-relaxed">
                               {tool.description}
                             </CardDescription>
-                            <div className="text-primary flex items-center text-sm font-medium transition-transform duration-200 group-hover:translate-x-1">
+                            <div className="text-primary flex items-center gap-2 text-sm font-semibold transition-transform duration-200 group-hover:translate-x-2">
                               Try Tool
-                              <ArrowRight className="ml-1 h-4 w-4" />
+                              <ArrowRight className="h-4 w-4" />
                             </div>
                           </CardContent>
                         </Card>
@@ -326,72 +358,65 @@ export function Tools() {
           )}
         </div>
       ) : (
-        // No results found
-        <div className="space-y-4 py-12 text-center">
-          <div className="text-6xl">🔍</div>
-          <h3 className="text-xl font-semibold">No tools found</h3>
-          <p className="text-muted-foreground">
-            Try adjusting your search terms or category filter
-          </p>
-          <Button onClick={clearSearch} variant="outline">
-            Clear Search
-          </Button>
-        </div>
+        <Card className="border-border/40 bg-card/50 mx-auto max-w-md backdrop-blur-sm">
+          <CardContent className="space-y-4 py-12 text-center">
+            <div className="text-6xl">🔍</div>
+            <h3 className="text-xl font-bold">No tools found</h3>
+            <p className="text-muted-foreground text-sm">
+              Try adjusting your search terms or category filter
+            </p>
+            <Button
+              onClick={clearSearch}
+              variant="outline"
+              className="hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all"
+            >
+              Clear Search
+            </Button>
+          </CardContent>
+        </Card>
       )}
 
-      {/* Quick Actions */}
-      <div className="space-y-4 border-t pt-8 text-center">
-        <h3 className="text-xl font-semibold">Quick Actions</h3>
-        <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/tools/regex-tester">
-            <Button variant="default">
-              <Search className="h-4 w-4" />
-              Test Regex
-            </Button>
-          </Link>
-          <Link href="/tools/json-formatter">
-            <Button variant="outline">
-              <Code className="h-4 w-4" />
-              Format JSON
-            </Button>
-          </Link>
-          <Link href="/tools/password-generator">
-            <Button variant="outline">
-              <Sparkles className="h-4 w-4" />
-              Generate Password
-            </Button>
-          </Link>
-        </div>
-      </div>
+      <Card className="border-border/40 bg-card/50 backdrop-blur-sm">
+        <CardContent className="space-y-6 py-8 text-center">
+          <div>
+            <h3 className="mb-2 text-xl font-bold md:text-2xl">
+              Quick Actions
+            </h3>
+            <p className="text-muted-foreground text-sm">
+              Popular tools for your everyday workflow
+            </p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Link href="/tools/regex-tester">
+              <Button
+                variant="default"
+                className="gap-2 transition-all hover:scale-105"
+              >
+                <Search className="h-4 w-4" />
+                Test Regex
+              </Button>
+            </Link>
+            <Link href="/tools/json-formatter">
+              <Button
+                variant="outline"
+                className="hover:bg-primary/10 hover:text-primary hover:border-primary/30 gap-2 transition-all hover:scale-105"
+              >
+                <Code className="h-4 w-4" />
+                Format JSON
+              </Button>
+            </Link>
+            <Link href="/tools/password-generator">
+              <Button
+                variant="outline"
+                className="hover:bg-primary/10 hover:text-primary hover:border-primary/30 gap-2 transition-all hover:scale-105"
+              >
+                <Sparkles className="h-4 w-4" />
+                Generate Password
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
-}
-
-function getCategoryIcon(category: string): string {
-  const icons: Record<string, string> = {
-    "AI Client-side Tools": "🤖",
-    "CSS Tools": "🎨",
-    "Code Formatters": "✨",
-    "Code Optimizers": "⚡",
-    "Color Tools": "🌈",
-    "Data Converters": "🔄",
-    "Data Viewers": "📊",
-    "Debug Tools": "🐛",
-    "Design Tools": "🎨",
-    "Developer Tools": "💻",
-    "File Tools": "📁",
-    "Font Tools": "🔤",
-    "Image Tools": "🖼️",
-    "Input Validators": "✅",
-    "Math Tools": "🧮",
-    "PDF Tools": "📄",
-    "Productivity Tools": "⚡",
-    "SEO Tools": "🔍",
-    "Security Tools": "🔒",
-    "String Encoders": "🔐",
-    "Text Tools": "📝",
-    "UI Calculators": "🧮",
-    "Video Tools": "🎬",
-  }
-  return icons[category] || "🛠️"
 }

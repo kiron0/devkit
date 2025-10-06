@@ -1867,3 +1867,34 @@ export const getToolStats = () => ({
   totalCategories: TOOL_CATEGORIES.length,
   featuredTools: getFeaturedTools().length,
 })
+
+export function getCategoryIcon(category: string): string {
+  const toolsInCategory = TOOLS.filter((tool) => tool.category === category)
+  if (toolsInCategory.length === 0) return "🛠️"
+
+  const iconFrequency: Record<string, number> = {}
+  for (const tool of toolsInCategory) {
+    const icon = tool.icon || ""
+    if (!icon) continue
+    iconFrequency[icon] = (iconFrequency[icon] || 0) + 1
+  }
+
+  if (Object.keys(iconFrequency).length === 0) {
+    return toolsInCategory[0]?.icon || "🛠️"
+  }
+
+  let mostCommonIcon = ""
+  let highestCount = -1
+  for (const [icon, count] of Object.entries(iconFrequency)) {
+    if (count > highestCount) {
+      mostCommonIcon = icon
+      highestCount = count
+    }
+  }
+
+  return mostCommonIcon || "🛠️"
+}
+
+export function isToolCompleted(tool: Tool): boolean {
+  return tool.component.name !== "ComingSoon"
+}

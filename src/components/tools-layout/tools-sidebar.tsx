@@ -4,9 +4,15 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Config } from "@/config"
-import { getToolsGroupedByCategory } from "@/utils"
+import {
+  getCategoryIcon,
+  getToolsGroupedByCategory,
+  isToolCompleted,
+} from "@/utils"
+import { HouseHeartIcon, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
+import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import {
   Sidebar,
@@ -45,13 +51,13 @@ export function ToolsSidebar({
 
   const handleToolClick = (toolId: string | null) => {
     onToolSelect(toolId)
-    // Close mobile sidebar when tool is selected
     if (isMobile) {
       setOpenMobile(false)
     }
   }
 
   const toolsByCategory = getToolsGroupedByCategory()
+  const isDevelopment = Config.env.nodeEnv === "development"
 
   return (
     <Sidebar collapsible="offcanvas">
@@ -59,38 +65,66 @@ export function ToolsSidebar({
         <Link
           href="/"
           onClick={() => handleToolClick(null)}
-          className="flex flex-col items-center gap-2 px-2 py-6 text-center"
+          className="group flex flex-col items-center gap-3 px-4 py-6 text-center transition-all"
         >
-          <Logo className="w-14 object-cover md:w-16" />
-          <span className="text-primary text-xl font-bold md:text-2xl">
-            {Config.title}
-          </span>
-          <span className="text-muted-foreground text-xs md:text-sm">
-            {Config.shortDescription}
-          </span>
+          <Logo className="w-14 object-cover transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 md:w-16" />
+          <div className="space-y-1">
+            <span className="text-sidebar-primary text-xl font-bold transition-colors md:text-2xl">
+              {Config.title}
+            </span>
+            <p className="text-sidebar-foreground/70 text-xs leading-relaxed md:text-sm">
+              {Config.shortDescription}
+            </p>
+          </div>
         </Link>
       </SidebarHeader>
-      <Separator className="mb-2" />
-      <SidebarContent>
+
+      <SidebarContent className="bg-sidebar">
         <SidebarGroup>
-          <SidebarGroupLabel>Tools</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sidebar-foreground/60 px-4 py-2 text-xs font-semibold tracking-wider uppercase">
+            Navigation
+          </SidebarGroupLabel>
           <SidebarMenu>
+            <SidebarMenuItem key="home">
+              <Link href="/" onClick={() => handleToolClick(null)}>
+                <SidebarMenuButton
+                  tooltip="Home"
+                  className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-all"
+                >
+                  <HouseHeartIcon className="h-4 w-4" />
+                  <span>Home</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
             <SidebarMenuItem key="tools">
               <SidebarMenuButton
                 isActive={isToolsPage}
                 onClick={() => handleToolClick("")}
-                tooltip="Tools"
+                tooltip="All Tools"
+                className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground transition-all"
               >
-                <span className="text-lg">🔧</span>
-                <span>All Tools</span>
+                <span className="text-base">🔧</span>
+                <span className="font-medium">All Tools</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
+
+        <Separator className="bg-sidebar-border my-2" />
+
         {Object.entries(toolsByCategory).map(([category, tools]) => (
           <SidebarGroup key={category}>
-            <SidebarGroupLabel>
-              {category} ({tools.length})
+            <SidebarGroupLabel className="text-sidebar-foreground/60 flex items-center justify-between px-4 py-2">
+              <span className="flex items-center gap-2 text-xs font-semibold tracking-wider uppercase">
+                <span className="text-base">{getCategoryIcon(category)}</span>
+                {category}
+              </span>
+              <Badge
+                variant="secondary"
+                className="bg-sidebar-accent text-sidebar-accent-foreground h-5 px-2 text-xs"
+              >
+                {tools.length}
+              </Badge>
             </SidebarGroupLabel>
             <SidebarMenu>
               {tools.map((tool) => (
@@ -99,9 +133,20 @@ export function ToolsSidebar({
                     isActive={selectedTool === tool.id}
                     onClick={() => handleToolClick(tool.id)}
                     tooltip={tool.title}
+                    className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground group transition-all"
                   >
-                    <span className="text-lg">{tool.icon}</span>
-                    <span>{tool.title}</span>
+                    <span className="text-base transition-transform group-hover:scale-110">
+                      {tool.icon}
+                    </span>
+                    <span className="flex-1 text-sm">{tool.title}</span>
+                    {isDevelopment && isToolCompleted(tool) && (
+                      <Badge
+                        variant="default"
+                        className="h-5 bg-green-600 px-1.5 text-[10px] hover:bg-green-700"
+                      >
+                        Done
+                      </Badge>
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -110,25 +155,29 @@ export function ToolsSidebar({
         ))}
       </SidebarContent>
 
-      <SidebarFooter>
-        <div className="p-1">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                onClick={toggleTheme}
-                tooltip="Toggle Theme"
-                className="border"
-              >
-                <span className="text-lg">
-                  {resolvedTheme === "dark" ? "🌞" : "🌜"}
-                </span>
-                <span>
-                  {resolvedTheme === "dark" ? "Light Mode" : "Dark Mode"}
-                </span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </div>
+      <SidebarFooter className="border-sidebar-border from-sidebar to-sidebar/95 border-t bg-gradient-to-t p-4">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={toggleTheme}
+              tooltip={
+                resolvedTheme === "dark"
+                  ? "Switch to Light Mode"
+                  : "Switch to Dark Mode"
+              }
+              className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground group border-sidebar-border/50 border transition-all"
+            >
+              {resolvedTheme === "dark" ? (
+                <Sun className="h-4 w-4 transition-transform group-hover:rotate-12" />
+              ) : (
+                <Moon className="h-4 w-4 transition-transform group-hover:rotate-12" />
+              )}
+              <span className="font-medium">
+                {resolvedTheme === "dark" ? "Light Mode" : "Dark Mode"}
+              </span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { MoonIcon, SunIcon } from "lucide-react"
 import { useTheme } from "next-themes"
 
 import { Button } from "@/components/ui/button"
@@ -18,7 +19,7 @@ export function ThemeSwitcher() {
       className="group/toggle h-8 w-8 px-0"
       onClick={toggleTheme}
     >
-      {resolvedTheme === "dark" ? "🌞" : "🌜"}
+      {resolvedTheme === "dark" ? <SunIcon /> : <MoonIcon />}
       <span className="sr-only">Toggle theme</span>
     </Button>
   )

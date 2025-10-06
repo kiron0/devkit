@@ -63,4 +63,7 @@ export const Config = {
     twitter: "#",
     linkedin: "#",
   },
+  env: {
+    nodeEnv: process.env.NEXT_PUBLIC_NODE_ENV as "development" | "production",
+  },
 }

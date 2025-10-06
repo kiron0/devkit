@@ -1,0 +1,777 @@
+[
+  {
+    "category": "Developer Tools",
+    "title": "UUID Generator",
+    "subTitle": "Unique ID creator"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "ULID Generator",
+    "subTitle": "Sortable unique ID generator"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "Regex Tester",
+    "subTitle": "Test regular expressions with live highlighting"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "Query String ↔ JSON Converter",
+    "subTitle": "Convert URL parameters to JSON and vice versa"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "Faker / Dummy Data Generator",
+    "subTitle": "Generate fake JSON or CSV data"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "Chmod Calculator",
+    "subTitle": "Convert file permissions to rwx, numeric & binary"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "JWT Debugger",
+    "subTitle": "& Generator Decode, verify, and create JWTs"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "Code Line Counter",
+    "subTitle": "Code length tool"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "Hash Generator",
+    "subTitle": "Generate MD5, SHA, SHA3, HMAC hashes"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "Keyboard Info",
+    "subTitle": "Viewer Inspect keyCode, code, and visualize keyboard layout"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "Slug Generator",
+    "subTitle": "Convert text into SEO-friendly slugs"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "SVG to React Component",
+    "subTitle": "Convert SVGs into reusable React components"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "CSS Cursor Viewer",
+    "subTitle": "Live preview of all CSS cursor styles"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "CSS Specificity Checker",
+    "subTitle": "Calculate selector specificity"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "Responsive Font Checker",
+    "subTitle": "Test font scaling on screens"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "Copyright Code Generator",
+    "subTitle": "Legal footer & license snippet generator"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "QR Code Generator",
+    "subTitle": "QR image encoder"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "Data URL Generator",
+    "subTitle": "Encode/decode data: URIs locally"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "HTML ⇄ JSX Converter",
+    "subTitle": "HTML ↔ JSX with correct attrs & styles"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "HTML Previewer",
+    "subTitle": "Sandboxed live HTML preview"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "JSON → Code Generate",
+    "subTitle": "types & validators from JSON"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "PHP Serialize ⇄ Unserialize PHP",
+    "subTitle": "serialize() ↔ JSON (safe)"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "SCSS Formatter",
+    "subTitle": "Beautify & minify SCSS"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "Semver Calculator",
+    "subTitle": "Parse, compare & bump SemVer"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "SVG ⇄ CSS SVG ↔ CSS",
+    "subTitle": "data URI & mask"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "UID / ULID Decoder",
+    "subTitle": "Decode ULID/UUID/ObjectId"
+  },
+  {
+    "category": "Developer Tools",
+    "title": "URL Parser",
+    "subTitle": "Inspect, clean & rebuild URLs"
+  },
+  {
+    "category": "Text Tools",
+    "title": "Lorem Ipsum Generator",
+    "subTitle": "Dummy text generator"
+  },
+  {
+    "category": "Text Tools",
+    "title": "ASCII Art Text Generator",
+    "subTitle": "Convert text into ASCII banner art"
+  },
+  {
+    "category": "Text Tools",
+    "title": "Text Case Converter",
+    "subTitle": "Upper/lower converter"
+  },
+  {
+    "category": "Text Tools",
+    "title": "ROT13 Encoder",
+    "subTitle": "/ Decoder Reversible Caesar cipher tool"
+  },
+  {
+    "category": "Text Tools",
+    "title": "Morse Code Translator",
+    "subTitle": "Text to Morse and Morse to Text"
+  },
+  {
+    "category": "Text Tools",
+    "title": "Whitespace Cleaner",
+    "subTitle": "Remove extra spaces and lines"
+  },
+  {
+    "category": "Text Tools",
+    "title": "Text Compressor",
+    "subTitle": "Compress using RLE and Base64"
+  },
+  {
+    "category": "Text Tools",
+    "title": "Reading & Speaking Time Estimator",
+    "subTitle": "Estimate reading time"
+  },
+  {
+    "category": "Text Tools",
+    "title": "Paragraph & Sentence Counter",
+    "subTitle": "Count text blocks"
+  },
+  {
+    "category": "Text Tools",
+    "title": "Escape / Unescape Backslash",
+    "subTitle": "utilities for JS/JSON/Regex"
+  },
+  {
+    "category": "Text Tools",
+    "title": "Line Sort & Dedupe Sort,",
+    "subTitle": "dedupe, count & filter lines"
+  },
+  {
+    "category": "Text Tools",
+    "title": "Text Delimiter Split/join",
+    "subTitle": "text with regex & CSV-aware"
+  },
+  {
+    "category": "Color Tools",
+    "title": "Color Picker & Palette Generator",
+    "subTitle": "Advanced color selection with palette export and favorites"
+  },
+  {
+    "category": "Color Tools",
+    "title": "RGB to HEX Converter",
+    "subTitle": "Color format converter"
+  },
+  {
+    "category": "Color Tools",
+    "title": "HEX to RGB Converter",
+    "subTitle": "HEX to RGB"
+  },
+  {
+    "category": "Color Tools",
+    "title": "Color Gradient Generator",
+    "subTitle": "CSS gradient maker"
+  },
+  {
+    "category": "Color Tools",
+    "title": "Color Contrast Checker",
+    "subTitle": "Check WCAG contrast ratio"
+  },
+  {
+    "category": "Color Tools",
+    "title": "Color Relationship Generator",
+    "subTitle": "Explore complementary, triadic, and analogous palettes"
+  },
+  {
+    "category": "Color Tools",
+    "title": "Color Blindness Simulator",
+    "subTitle": "Simulate color perception"
+  },
+  {
+    "category": "Color Tools",
+    "title": "Color Meaning Tool",
+    "subTitle": "Understand color psychology, symbolism & contrast"
+  },
+  {
+    "category": "Color Tools",
+    "title": "Color Code Validator",
+    "subTitle": "Validate HEX, RGB, and HSL values"
+  },
+  {
+    "category": "Color Tools",
+    "title": "Color Converter",
+    "subTitle": "Universal color converter & contrast checker"
+  },
+  {
+    "category": "Image Tools",
+    "title": "Image Compressor",
+    "subTitle": "Compress images"
+  },
+  {
+    "category": "Image Tools",
+    "title": "SVG Optimizer",
+    "subTitle": "Clean and minify SVG code"
+  },
+  {
+    "category": "Image Tools",
+    "title": "Favicon Generator",
+    "subTitle": "Favicon from text or image"
+  },
+  {
+    "category": "Image Tools",
+    "title": "Base64 Image Optimizer",
+    "subTitle": "Compress base64 image size"
+  },
+  {
+    "category": "Image Tools",
+    "title": "Image Base64 Optimizer",
+    "subTitle": "Compress, resize, and optimize Base64 images in your browser."
+  },
+  {
+    "category": "Image Tools",
+    "title": "Base64 Image Converter",
+    "subTitle": "Encode images to Base64 and decode Base64 to images — offline."
+  },
+  {
+    "category": "Image Tools",
+    "title": "Code Preview Maker",
+    "subTitle": "Beautiful code screenshots"
+  },
+  {
+    "category": "Image Tools",
+    "title": "Icon Maker",
+    "subTitle": "(ICO/ICNS & Favicon) Generate ICO, ICNS & favicon packs"
+  },
+  {
+    "category": "Image Tools",
+    "title": "Image Background Remover",
+    "subTitle": "AI cutout with transparent PNG"
+  },
+  {
+    "category": "Image Tools",
+    "title": "Image Extractor",
+    "subTitle": "Extract images from URL/HTML/ZIP"
+  },
+  {
+    "category": "Image Tools",
+    "title": "SVG Extractor",
+    "subTitle": "Extract, dedupe & optimize SVGs"
+  },
+  {
+    "category": "Image Tools",
+    "title": "Text to SVG Converter",
+    "subTitle": "Text → SVG with custom fonts"
+  },
+  {
+    "category": "Security Tools",
+    "title": "Random Password Generator",
+    "subTitle": "Secure key generator"
+  },
+  {
+    "category": "Security Tools",
+    "title": "HMAC Generator",
+    "subTitle": "Generate HMAC with SHA-1, SHA-256, SHA-512"
+  },
+  {
+    "category": "Security Tools",
+    "title": "Basic Auth Generator",
+    "subTitle": "Encode credentials into Base64 Authorization"
+  },
+  {
+    "category": "Security Tools",
+    "title": "Bcrypt Generator",
+    "subTitle": "Secure bcrypt hashing and verifier"
+  },
+  {
+    "category": "Security Tools",
+    "title": "Password Strength Checker",
+    "subTitle": "Evaluate password security"
+  },
+  {
+    "category": "Security Tools",
+    "title": "BIP39 Passphrase Generate",
+    "subTitle": "or inspect BIP39 passphrases locally with entropy & safety tools."
+  },
+  {
+    "category": "Security Tools",
+    "title": "Data Encrypt · Decrypt AES-256 + PBKDF2 + HMAC,",
+    "subTitle": "in-browser"
+  },
+  {
+    "category": "Security Tools",
+    "title": "PGP Key Generator",
+    "subTitle": "Generate RSA/ECC OpenPGP keys in-browser"
+  },
+  {
+    "category": "Code Formatters",
+    "title": "JSON Formatter",
+    "subTitle": "Prettify and visualize JSON data"
+  },
+  {
+    "category": "Code Formatters",
+    "title": "HTML Formatter",
+    "subTitle": "Format and preview HTML code"
+  },
+  {
+    "category": "Code Formatters",
+    "title": "CSS Formatter",
+    "subTitle": "Format and organize CSS code"
+  },
+  {
+    "category": "Code Formatters",
+    "title": "JavaScript Formatter",
+    "subTitle": "Beautify JavaScript code"
+  },
+  {
+    "category": "Code Formatters",
+    "title": "SQL Formatter",
+    "subTitle": "Format SQL queries"
+  },
+  {
+    "category": "Code Formatters",
+    "title": "XML Formatter",
+    "subTitle": "Format and beautify XML"
+  },
+  {
+    "category": "Code Formatters",
+    "title": "GraphQL Formatter",
+    "subTitle": "Format, validate, and export GraphQL queries"
+  },
+  {
+    "category": "Code Formatters",
+    "title": "CSS to SCSS/SASS Converter",
+    "subTitle": "Convert CSS to SCSS or SASS with nesting"
+  },
+  {
+    "category": "Code Formatters",
+    "title": "ERB Formatter",
+    "subTitle": "Beautify & minify ERB safely"
+  },
+  {
+    "category": "Code Formatters",
+    "title": "HAML ⇄ HTML Converter",
+    "subTitle": "Bidirectional HAML ↔ HTML conversion"
+  },
+  {
+    "category": "CSS Tools",
+    "title": "CSS Validator",
+    "subTitle": "Validate CSS syntax and rules"
+  },
+  {
+    "category": "CSS Tools",
+    "title": "CSS Triangle Generator",
+    "subTitle": "Create border-based or clip-path triangles"
+  },
+  {
+    "category": "CSS Tools",
+    "title": "CSS Box Shadow Generator",
+    "subTitle": "Create custom shadows with live preview"
+  },
+  {
+    "category": "CSS Tools",
+    "title": "Glassmorphism CSS Generator",
+    "subTitle": "Create frosted-glass UI with live preview"
+  },
+  {
+    "category": "CSS Tools",
+    "title": "CSS 3D Text Generator",
+    "subTitle": "Design layered 3D text shadows with CSS"
+  },
+  {
+    "category": "CSS Tools",
+    "title": "CSS Animation Generator",
+    "subTitle": "Design custom animations with live CSS preview"
+  },
+  {
+    "category": "CSS Tools",
+    "title": "LESS Formatter",
+    "subTitle": "Beautify & minify LESS"
+  },
+  {
+    "category": "Input Validators",
+    "title": "HTML Validator",
+    "subTitle": "Validate HTML structure"
+  },
+  {
+    "category": "Input Validators",
+    "title": "JSON Validator",
+    "subTitle": "Check if JSON is valid and well-formed"
+  },
+  {
+    "category": "Input Validators",
+    "title": "XML Validator",
+    "subTitle": "Validate XML syntax and structure"
+  },
+  {
+    "category": "Input Validators",
+    "title": "Email Validator",
+    "subTitle": "Check if email format is valid"
+  },
+  {
+    "category": "Input Validators",
+    "title": "URL Validator",
+    "subTitle": "Validate web URLs with regex"
+  },
+  {
+    "category": "Input Validators",
+    "title": "Credit Card Validator",
+    "subTitle": "Validate card number using Luhn's algorithm"
+  },
+  {
+    "category": "Input Validators",
+    "title": "Favicon Checker",
+    "subTitle": "Verify favicon presence"
+  },
+  {
+    "category": "Data Converters",
+    "title": "Unix Timestamp Converter",
+    "subTitle": "Date/time format"
+  },
+  {
+    "category": "Data Converters",
+    "title": "YAML to JSON Converter",
+    "subTitle": "Convert YAML and JSON"
+  },
+  {
+    "category": "Data Converters",
+    "title": "Markdown ↔ HTML ↔ Plaintext Convert Markdown",
+    "subTitle": "to HTML, HTML to Markdown, or plain text"
+  },
+  {
+    "category": "Data Converters",
+    "title": "Binary to Decimal Converter",
+    "subTitle": "Binary number conversion"
+  },
+  {
+    "category": "Data Converters",
+    "title": "Base Converter",
+    "subTitle": "Convert numbers between binary, octal, decimal, hex, and custom bases."
+  },
+  {
+    "category": "Data Converters",
+    "title": "Hex ⇄ ASCII Converter",
+    "subTitle": "Hex ↔ ASCII with hexdump & hashes"
+  },
+  {
+    "category": "Data Converters",
+    "title": "JSON ⇄ CSV Converter",
+    "subTitle": "JSON ↔ CSV with flatten & NDJSON"
+  },
+  {
+    "category": "Data Converters",
+    "title": "PHP ⇄ JSON Converter",
+    "subTitle": "PHP array/object ↔ JSON (safe)"
+  },
+  {
+    "category": "File Tools",
+    "title": "GZip Converter",
+    "subTitle": "Compress & decompress text/files"
+  },
+  {
+    "category": "String Encoders",
+    "title": "Base64 Encoder/Decoder",
+    "subTitle": "Text to base64"
+  },
+  {
+    "category": "String Encoders",
+    "title": "Base58 Encoder",
+    "subTitle": "/ Decoder Convert text to/from Base58"
+  },
+  {
+    "category": "String Encoders",
+    "title": "URL Encoder/Decoder",
+    "subTitle": "Link-safe format"
+  },
+  {
+    "category": "String Encoders",
+    "title": "HTML Entities Encoder/Decoder",
+    "subTitle": "Escape/unescape HTML"
+  },
+  {
+    "category": "SEO Tools",
+    "title": "Meta Tag Generator",
+    "subTitle": "SEO tag builder"
+  },
+  {
+    "category": "SEO Tools",
+    "title": "Meta Tag Checker",
+    "subTitle": "Audit SEO meta tags"
+  },
+  {
+    "category": "SEO Tools",
+    "title": "Social Share Link Generator",
+    "subTitle": "Social link builder"
+  },
+  {
+    "category": "SEO Tools",
+    "title": "Alt Text Checker",
+    "subTitle": "Check images for alt text"
+  },
+  {
+    "category": "SEO Tools",
+    "title": "Broken Link Checker",
+    "subTitle": "Check for dead links"
+  },
+  {
+    "category": "SEO Tools",
+    "title": "HTML Tag Counter",
+    "subTitle": "Tag usage stats"
+  },
+  {
+    "category": "Design Tools",
+    "title": "Font Pair Previewer",
+    "subTitle": "Preview Google Font pairs for headings and body text"
+  },
+  {
+    "category": "Font Tools",
+    "title": "Font Previewer",
+    "subTitle": "Test and preview custom fonts live"
+  },
+  {
+    "category": "Font Tools",
+    "title": "Font Ligature Tester",
+    "subTitle": "Preview ligatures and OpenType features in fonts"
+  },
+  {
+    "category": "Font Tools",
+    "title": "Font Fallback Tester",
+    "subTitle": "Preview how fallback fonts render when primary fonts fail"
+  },
+  {
+    "category": "Font Tools",
+    "title": "Font Line Height Tester",
+    "subTitle": "Visualize and generate line-height styles for better readability"
+  },
+  {
+    "category": "Font Tools",
+    "title": "Font Metadata Viewer",
+    "subTitle": "Inspect font name, glyphs, features, and coverage"
+  },
+  {
+    "category": "Font Tools",
+    "title": "Font Glyph Viewer",
+    "subTitle": "Explore full character map of any font"
+  },
+  {
+    "category": "Font Tools",
+    "title": "Font Comparison Tool",
+    "subTitle": "Compare multiple fonts side-by-side"
+  },
+  {
+    "category": "Font Tools",
+    "title": "Font Subsetter",
+    "subTitle": "Remove unused glyphs from fonts"
+  },
+  {
+    "category": "Font Tools",
+    "title": "Font Converter",
+    "subTitle": "Convert TTF, OTF, and WOFF font formats"
+  },
+  {
+    "category": "Video Tools",
+    "title": "Screen Recorder",
+    "subTitle": "Record screen, crop video, and export in MP4, AVI, MOV"
+  },
+  {
+    "category": "UI Calculators",
+    "title": "Aspect Ratio Calculator",
+    "subTitle": "Resize with correct proportions"
+  },
+  {
+    "category": "UI Calculators",
+    "title": "Pixel to REM Calculator",
+    "subTitle": "Convert px to rem and vice versa"
+  },
+  {
+    "category": "UI Calculators",
+    "title": "CSS Clamp Calculator",
+    "subTitle": "Generate responsive font sizes"
+  },
+  {
+    "category": "UI Calculators",
+    "title": "Line Height Calculator",
+    "subTitle": "Calculate optimal text spacing"
+  },
+  {
+    "category": "UI Calculators",
+    "title": "Grid Column Width Calculator",
+    "subTitle": "Visualize column spans in CSS Grid"
+  },
+  {
+    "category": "UI Calculators",
+    "title": "CSS Unit Converter",
+    "subTitle": "Convert px, rem, em, %, vw, vh"
+  },
+  {
+    "category": "UI Calculators",
+    "title": "Z-Index Conflict Checker",
+    "subTitle": "Visualize layer stacking order"
+  },
+  {
+    "category": "Code Optimizers",
+    "title": "Minify CSS Remove",
+    "subTitle": "whitespace and comments"
+  },
+  {
+    "category": "Code Optimizers",
+    "title": "Minify JavaScript Strip",
+    "subTitle": "comments, compress, and mangle"
+  },
+  {
+    "category": "Code Optimizers",
+    "title": "JSON Minifier",
+    "subTitle": "Compact and validate JSON"
+  },
+  {
+    "category": "Code Optimizers",
+    "title": "HTML Minifier",
+    "subTitle": "Compress HTML and encode entities"
+  },
+  {
+    "category": "Data Viewers",
+    "title": "JSON to Table Viewer",
+    "subTitle": "Convert JSON into a visual table"
+  },
+  {
+    "category": "Data Viewers",
+    "title": "JSON Size Explorer Measure",
+    "subTitle": "size of each key in a JSON object"
+  },
+  {
+    "category": "Data Viewers",
+    "title": "Side-by-Side Diff Viewer",
+    "subTitle": "Compare text/code side-by-side"
+  },
+  {
+    "category": "Data Viewers",
+    "title": "JSON Key Counter",
+    "subTitle": "Count JSON fields"
+  },
+  {
+    "category": "Data Viewers",
+    "title": "Markdown to HTML Previewer",
+    "subTitle": "Live Markdown to HTML"
+  },
+  {
+    "category": "Debug Tools",
+    "title": "Device Info",
+    "subTitle": "Browser/OS/hardware snapshot & tests"
+  },
+  {
+    "category": "Debug Tools",
+    "title": "IP Info",
+    "subTitle": "Device & network snapshot + public IP"
+  },
+  {
+    "category": "Debug Tools",
+    "title": "User-Agent Parser",
+    "subTitle": "Parse UA strings & Client Hints"
+  },
+  {
+    "category": "PDF Tools",
+    "title": "Compare PDF Visual &",
+    "subTitle": "text diff for PDFs"
+  },
+  {
+    "category": "PDF Tools",
+    "title": "HTML ↔ PDF Converter",
+    "subTitle": "HTML → PDF & PDF → HTML, locally"
+  },
+  {
+    "category": "Productivity Tools",
+    "title": "Pomodoro Timer",
+    "subTitle": "Custom focus & break timer for deep work"
+  },
+  {
+    "category": "Productivity Tools",
+    "title": "Word & Character Counter",
+    "subTitle": "Text length tool"
+  },
+  {
+    "category": "Productivity Tools",
+    "title": "Line & Space Counter",
+    "subTitle": "Count text lines"
+  },
+  {
+    "category": "Productivity Tools",
+    "title": "Byte Counter",
+    "subTitle": "File size checker"
+  },
+  {
+    "category": "AI Client-side Tools",
+    "title": "AI Sentiment Analyzer",
+    "subTitle": "Analyze text sentiment instantly, directly in your browser."
+  },
+  {
+    "category": "AI Client-side Tools",
+    "title": "AI Text Summarizer Summarize",
+    "subTitle": "long text into clear, concise output."
+  },
+  {
+    "category": "Math Tools",
+    "title": "Unit Converter",
+    "subTitle": "Metric ↔ imperial length units"
+  },
+  {
+    "category": "Math Tools",
+    "title": "Angle Converter",
+    "subTitle": "Degrees ↔ radians ↔ arc & more"
+  },
+  {
+    "category": "Math Tools",
+    "title": "Temperature Converter",
+    "subTitle": "Celsius ↔ Fahrenheit ↔ Kelvin"
+  },
+  {
+    "category": "Math Tools",
+    "title": "Weight Converter",
+    "subTitle": "Metric ↔ imperial weight units"
+  },
+  {
+    "category": "Math Tools",
+    "title": "Time Converter",
+    "subTitle": "Convert between common time units"
+  }
+]

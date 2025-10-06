@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next"
 import NextTopLoader from "nextjs-toploader"
 
 import { Toaster } from "@/components/ui/toaster"
@@ -18,6 +19,7 @@ export function Providers({
       <main>{children}</main>
       <Toaster />
       <NextTopLoader showForHashAnchor={false} />
+      <Analytics />
     </ThemeProvider>
   )
 }
