@@ -4,6 +4,7 @@ import { ComingSoon } from "@/components/common/coming-soon"
 import { Base64Tool } from "@/components/tools/base64"
 import { CodeBeautifier } from "@/components/tools/code-beautifier"
 import { ColorConverter } from "@/components/tools/color-converter"
+import { CopyrightGenerator } from "@/components/tools/copyright-code-generator"
 import { CronCalculator } from "@/components/tools/cron-calculator"
 import { CSSAnimationGenerator } from "@/components/tools/css-animation-generator"
 import { CSSBoxShadowGenerator } from "@/components/tools/css-box-shadow-generator"
@@ -632,7 +633,7 @@ export const TOOLS: Tool[] = [
     category: "Developer Tools",
     path: "/tools/copyright-code-generator",
     featured: false,
-    component: ComingSoon,
+    component: CopyrightGenerator,
   },
   {
     id: "data-url-generator",
